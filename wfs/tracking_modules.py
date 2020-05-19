@@ -58,7 +58,8 @@ tripletsLayers = ['BPix1+BPix2+BPix3', 'BPix2+BPix3+BPix4',
 #                 ]
      ]
 
-tripletsLayersEta4 = tripletsLayers + ['BPix1+BPix2+FPix2_pos', 'BPix1+BPix2+FPix2_neg','BPix1+FPix1_pos+FPix3_pos',
+tripletsLayersEta4 = tripletsLayers +
+                            ['BPix1+BPix2+FPix2_pos', 'BPix1+BPix2+FPix2_neg','BPix1+FPix1_pos+FPix3_pos',
                             'BPix1+FPix1_neg+FPix3_neg','FPix6_pos+FPix7_pos+FPix9_pos', 'FPix6_neg+FPix7_neg+FPix9_neg']
 
 #######################################
@@ -93,6 +94,15 @@ hltPhase2L1TrackSeedsFromL1Tracks = cms.EDProducer("SeedGeneratorFromTTracksEDPr
     TrajectoryBuilderPSet = cms.PSet(refToPSet_ = cms.string('hltPhase2L1TrackStepTrajectoryBuilder'))
     #TrajectoryBuilder = cms.string('GroupedCkfTrajectoryBuilder'),
     #TrajectoryBuilderPSet = cms.PSet( refToPSet_ = cms.string('L1TrackStepTrajectoryBuilder'))
+)
+
+hltPhase2L1TracksSelectionHighPurity = cms.EDProducer( "TrackCollectionFilterCloner",
+    minQuality = cms.string( "highPurity" ),
+    copyExtras = cms.untracked.bool( True ),
+    copyTrajectories = cms.untracked.bool( False ),
+    originalSource = cms.InputTag( "hltPhase2L1CtfTracks" ),
+    originalQualVals = cms.InputTag( 'hltPhase2L1TracksCutClassifier','QualityMasks' ),
+    originalMVAVals = cms.InputTag( 'hltPhase2L1TracksCutClassifier','MVAValues' )
 )
 
 hltPhase2L1TrackStepTrajectoryFilter = cms.PSet(
@@ -252,7 +262,7 @@ hltPhase2L1CtfTracks = cms.EDProducer( "TrackProducer",
 trackAlgoPriorityOrderL1 = cms.ESProducer("TrackAlgoPriorityOrderESProducer",
     ComponentName = cms.string('trackAlgoPriorityOrderL1'),
     algoOrder = cms.vstring(
-        'ctf',
+        'l1',
         'initialStep'#,
         #'highPtTripletStep'### v2
     ),
@@ -365,7 +375,7 @@ hltPhase2L1StepSelector = cms.EDProducer("MultiTrackSelector",
     vertices = cms.InputTag("hltPhase2PixelVertices")
 )
 
-hltPhase2L1TrackCutClassifier = cms.EDProducer( "TrackCutClassifier",
+hltPhase2L1TracksCutClassifier = cms.EDProducer( "TrackCutClassifier",
     src = cms.InputTag( "hltPhase2L1CtfTracks" ),
     beamspot = cms.InputTag( "offlineBeamSpot" ),
     vertices = cms.InputTag( "hltPhase2PixelVertices" ), # pixelVertices previous hltPhase2FirstStepPrimaryVertices" ),
@@ -449,7 +459,7 @@ hltPhase2PixelTracksHitQuadruplets = cms.EDProducer( "CAHitQuadrupletEDProducer"
     CAPhiCut = cms.double( 0.2 ),
     useBendingCorrection = cms.bool( True ),
     fitFastCircleChi2Cut = cms.bool( True )#,
-)
+
 
 hltPhase2PixelTracksHitTriplets = cms.EDProducer( "CAHitTripletEDProducer",
     CAHardPtCut = cms.double( 0.5 ),
@@ -2134,7 +2144,7 @@ hltPhase2L1TracksSequence = cms.Sequence(
     hltPhase2L1CtfTracks +
     #L1StepPVSequence +
     hltPhase2L1StepSelector# +
-    #hltPhase2L1TrackCutClassifier #+
+    #hltPhase2L1TracksCutClassifier #+
     #L1TrackSelectionHighPurity
 )
 
