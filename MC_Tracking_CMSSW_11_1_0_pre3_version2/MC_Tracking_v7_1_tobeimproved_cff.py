@@ -1,4 +1,4 @@
-    import FWCore.ParameterSet.Config as cms
+import FWCore.ParameterSet.Config as cms
 ############################################  reconstruction_step version v6 ( using pixeltracks/vertices for track selection + pixelhitdoublets/triplets for initialstep seeding )
 """
 ################################# list of actually needed modules that are in a cms.Path (here for bookkeeping)
@@ -39,13 +39,13 @@ hltPhase2L1TrackStepClusters = cms.EDProducer("TrackClusterRemoverPhase2",
 
 hltPhase2L1TrackSeedsFromL1Tracks = cms.EDProducer("SeedGeneratorFromTTracksEDProducer",
     InputCollection = cms.InputTag("TTTracksFromTrackletEmulation", "Level1TTTracks"),
-    estimator = cms.string('L1TrackStepChi2Est'),
+    estimator = cms.string('hltPhase2L1TrackStepChi2Est'),
     propagator = cms.string('PropagatorWithMaterial'),
     MeasurementTrackerEvent = cms.InputTag("MeasurementTrackerEvent"),
     maxEtaForTOB = cms.double(1.2),
     minEtaForTEC = cms.double(0.8),
     TrajectoryBuilder = cms.string('GroupedCkfTrajectoryBuilder'),
-    TrajectoryBuilderPSet = cms.PSet(refToPSet_ = cms.string('L1TrackStepTrajectoryBuilder'))
+    TrajectoryBuilderPSet = cms.PSet(refToPSet_ = cms.string('hltPhase2L1TrackStepTrajectoryBuilder'))
     #TrajectoryBuilder = cms.string('GroupedCkfTrajectoryBuilder'),
     #TrajectoryBuilderPSet = cms.PSet( refToPSet_ = cms.string('L1TrackStepTrajectoryBuilder'))
 )
@@ -177,7 +177,7 @@ hltPhase2L1TrackCandidates= cms.EDProducer("CkfTrackCandidateMaker",
     src = cms.InputTag('hltPhase2L1TrackSeedsFromL1Tracks'),
     alias = cms.string('hltPhase2L1TrackCandidates'),
     TrajectoryBuilder = cms.string('GroupedCkfTrajectoryBuilder'),
-    TrajectoryBuilderPSet = cms.PSet( refToPSet_ = cms.string('hltPhase2L1TrackStepTrajectoryFilter')),
+    TrajectoryBuilderPSet = cms.PSet( refToPSet_ = cms.string('hltPhase2L1TrackStepTrajectoryBuilder')),
     TransientInitialStateEstimatorParameters = cms.PSet(
         numberMeasurementsForFit = cms.int32(4),
         propagatorAlongTISE = cms.string('PropagatorWithMaterial'),
@@ -186,7 +186,7 @@ hltPhase2L1TrackCandidates= cms.EDProducer("CkfTrackCandidateMaker",
 )
 
 hltPhase2L1CtfTracks = cms.EDProducer( "TrackProducer",
-    AlgorithmName = cms.string('hltPhase2L1CtfTracks'),
+    AlgorithmName = cms.string('ctf'),
     Fitter = cms.string('FlexibleKFFittingSmoother'),
     GeometricInnerState = cms.bool(False),
     MeasurementTracker = cms.string(''),
@@ -198,7 +198,7 @@ hltPhase2L1CtfTracks = cms.EDProducer( "TrackProducer",
     TrajectoryInEvent = cms.bool(False),
     alias = cms.untracked.string('ctfWithMaterialTracks'),
     beamSpot = cms.InputTag("offlineBeamSpot"),
-    clusterRemovalInfo = cms.InputTag("hltPhase2L1TrackStepClusters"),
+    clusterRemovalInfo = cms.InputTag(""),#hltPhase2L1TrackStepClusters"),
     #src = cms.InputTag("L1TrackCandidates"),
     src = cms.InputTag("hltPhase2L1TrackCandidates"),
     useHitsSplitting = cms.bool(False),
@@ -208,7 +208,7 @@ hltPhase2L1CtfTracks = cms.EDProducer( "TrackProducer",
 trackAlgoPriorityOrderL1 = cms.ESProducer("TrackAlgoPriorityOrderESProducer",
     ComponentName = cms.string('trackAlgoPriorityOrderL1'),
     algoOrder = cms.vstring(
-        'l1',
+        'ctf',
         'initialStep'#,
         #'highPtTripletStep'### v2
     ),
@@ -906,7 +906,7 @@ hltPhase2GeneralTracks = cms.EDProducer("TrackListMerger",
 )
 
 
-hltPhase2GeneralTracksL1 = cms.EDProducer("TrackListMerger",
+hltPhase2GeneralTracks = cms.EDProducer("TrackListMerger",
     Epsilon = cms.double(-0.001),
     FoundHitBonus = cms.double(5.0),
     LostHitPenalty = cms.double(5.0),
@@ -915,16 +915,16 @@ hltPhase2GeneralTracksL1 = cms.EDProducer("TrackListMerger",
     MinPT = cms.double(0.9), # ptcut previous 0.05
     ShareFrac = cms.double(0.19),
     TrackProducers = cms.VInputTag(
-    "L1CtfTracks",
-    "hltPhase2InitialStepTracks"#, "hltPhase2HighPtTripletStepTracks" ### v2
+    "hltPhase2L1CtfTracks",
+    #"hltPhase2InitialStepTracks"#, "hltPhase2HighPtTripletStepTracks" ### v2
     #"L1TrackSelectionHighPurity",
-    #"hltPhase2InitialStepTrackSelectionHighPurity", "hltPhase2HighPtTripletStepTrackSelectionHighPurity" ### v2 # trackcutclassifier
+    "hltPhase2InitialStepTrackSelectionHighPurity"#, "hltPhase2HighPtTripletStepTrackSelectionHighPurity" ### v2 # trackcutclassifier
     ),
     allowFirstHitShare = cms.bool(True),
     copyExtras = cms.untracked.bool(True),
     copyMVA = cms.bool(False), # trackcutclassifier before True
     hasSelector = cms.vint32(
-        1,1#,1#, 1#, 1, 1,  ### v2 # trackcutclassifier
+        1,0#,1#, 1#, 1, 1,  ### v2 # trackcutclassifier
         #1
     ),
     indivShareFrac = cms.vdouble(
@@ -936,7 +936,7 @@ hltPhase2GeneralTracksL1 = cms.EDProducer("TrackListMerger",
     newQuality = cms.string('confirmed'),
     selectedTrackQuals = cms.VInputTag(
     cms.InputTag("hltPhase2L1StepSelector","L1StepCut"),
-    cms.InputTag("hltInitialStepSelector","initialStep")#, cms.InputTag("hltHighPtTripletStepSelector","highPtTripletStep")### v2
+    cms.InputTag("hltPhase2InitialStepTrackSelectionHighPurity")#, cms.InputTag("hltHighPtTripletStepSelector","highPtTripletStep")### v2
 	#cms.InputTag("L1TrackSelectionHighPurity"),
     #cms.InputTag("hltPhase2InitialStepTrackSelectionHighPurity"), cms.InputTag("hltPhase2HighPtTripletStepTrackSelectionHighPurity") # trackcutclassifier
 
@@ -2029,7 +2029,7 @@ hltPhase2L1TracksSequence = cms.Sequence(
     hltPhase2L1TrackStepClusters +
     hltPhase2L1TrackSeedsFromL1Tracks +
     #L1TrackCandidates +
-    hltPhase2L1TrackCandidatesCustom +
+    hltPhase2L1TrackCandidates +
     hltPhase2L1CtfTracks +
     #L1StepPVSequence +
     hltPhase2L1StepSelector +
@@ -2066,7 +2066,7 @@ MC_Tracking_v7_L1_v1 = cms.Path(
     hltPhase2L1TracksSequence +
     #hltPhase2HighPtTripletStepSequence +
 ##############################################
-    hltPhase2GeneralTracksL1
+    hltPhase2GeneralTracks
 )
 
 
