@@ -1,11 +1,15 @@
 import FWCore.ParameterSet.Config as cms
 from tracking_modules import *
 from generic_sequences import *
+from L1Trigger.TrackFindingTracklet.Tracklet_cfi import *
+
 
 
 ####################################################
 ########################## Commons
 #############
+
+hltPhase2L1TTTracksEmulation = TTTracksFromTrackletEmulation.clone()
 
 hltPhase2StartUp = cms.Sequence(
     itLocalReco +
@@ -79,7 +83,7 @@ hltPhase2HighPtTripletStepSequence = cms.Sequence(
 
 
 original_v7 = cms.Path(
-    hltPhase2Commons +
+    hltPhase2StartUp +
     hltPhase2PixelTracksSequence + # pixeltracks
     hltPhase2PixelVerticesSequence + # pixelvertices
     hltPhase2InitialStepSequence +
@@ -113,17 +117,18 @@ hltPhase2L1PVSequence = cms.Sequence(
 )
 
 hltPhase2L1TracksSequence = cms.Sequence(
-    hltPhase2L1TrackStepClusters +
+   
     hltPhase2L1TrackSeedsFromL1Tracks +
     hltPhase2L1TrackCandidates +
     hltPhase2L1CtfTracks +
     hltPhase2L1PVSequence +
-    hltPhase2L1TrackCutClassifier +#+
+    hltPhase2L1TracksCutClassifier +#+
     hltPhase2L1TracksSelectionHighPurity
 )
 
 pure_l1tracks = cms.Path(
-    hltPhase2Commons +
+    hltPhase2StartUp +
+    hltPhase2L1TTTracksEmulation +
     hltPhase2L1TracksSequence
 )
 
