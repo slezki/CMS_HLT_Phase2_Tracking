@@ -148,7 +148,7 @@ process.PixelCPEGenericESProducer.Upgrade = cms.bool(True)
 
 
 # Schedule definition
-process.schedule = cms.Schedule(*[ process.raw2digi_step, process.MC_Tracking_v7_L1_v1, process.MC_Vertexing_v6, process.MC_prevalidation_v6, process.MC_validation_v6, process.MC_Dqmoffline, process.DQMoutput_step ])
+process.schedule = cms.Schedule(*[ process.raw2digi_step, process.MC_Tracking_v7_L1_v1, process.MC_Vertexing, process.MC_prevalidation_v6, process.MC_validation_v6, process.MC_Dqmoffline, process.DQMoutput_step ])
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 
