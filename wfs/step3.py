@@ -26,19 +26,28 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000),
+    input = cms.untracked.int32(10),
     output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
 
-"""
+
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('file:step2.root'),
+    fileNames = cms.untracked.vstring('file:54AA18A6-0B6A-284B-B15E-9074463466AF.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
-"""
 
-process.load("input_TTbar_Phase2HLTTDRWinter20-PU200_110X_upgrade2026D49_realistic_v3-v2_cff")
+process.MessageLogger = cms.Service("MessageLogger",
+       destinations      = cms.untracked.vstring('debug'),
+       debug = cms.untracked.PSet(
+                                threshold = cms.untracked.string('DEBUG'),
+                                default = cms.untracked.PSet(limit = cms.untracked.int32(-1))),
+       debugModules      = cms.untracked.vstring('*')                               #7
+)                                                                       #8
+
+
+
+#process.load("input_TTbar_Phase2HLTTDRWinter20-PU200_110X_upgrade2026D49_realistic_v3-v2_cff")
 
 process.options = cms.untracked.PSet(
 )
@@ -146,10 +155,15 @@ process.PixelCPEGenericESProducer.DoCosmics = False
 process.PixelCPEGenericESProducer.Upgrade = cms.bool(True)
 ######
 
+process.Timing = cms.Service("Timing",
+  summaryOnly = cms.untracked.bool(False),
+  useJobReport = cms.untracked.bool(True)
+)
 
 # Schedule definition
-#process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks])#process.MC_Tracking_v6, process.MC_Vertexing_v6, process.MC_prevalidation_v6, process.MC_validation_v6, process.MC_Dqmoffline, process.DQMoutput_step ])
-process.schedule = cms.Schedule(*[ process.raw2digi_step,process.original_v7])#process.MC_Tracking_v6, process.MC_Vertexing_v6, process.MC_prevalidation_v6, process.MC_validation_v6, process.MC_Dqmoffline, process.DQMoutput_step ])
+process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks])#process.MC_Tracking_v6, process.MC_Vertexing_v6, process.MC_prevalidation_v6, process.MC_validation_v6, process.MC_Dqmoffline, process.DQMoutput_step ])
+
+#process.schedule = cms.Schedule(*[ process.raw2digi_step,process.original_v7])#process.MC_Tracking_v6, process.MC_Vertexing_v6, process.MC_prevalidation_v6, process.MC_validation_v6, process.MC_Dqmoffline, process.DQMoutput_step ])
 
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)

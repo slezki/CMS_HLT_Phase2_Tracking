@@ -58,8 +58,7 @@ tripletsLayers = ['BPix1+BPix2+BPix3', 'BPix2+BPix3+BPix4',
 #                 ]
      ]
 
-tripletsLayersEta4 = tripletsLayers +
-                            ['BPix1+BPix2+FPix2_pos', 'BPix1+BPix2+FPix2_neg','BPix1+FPix1_pos+FPix3_pos',
+tripletsLayersEta4 = tripletsLayers + ['BPix1+BPix2+FPix2_pos', 'BPix1+BPix2+FPix2_neg','BPix1+FPix1_pos+FPix3_pos',
                             'BPix1+FPix1_neg+FPix3_neg','FPix6_pos+FPix7_pos+FPix9_pos', 'FPix6_neg+FPix7_neg+FPix9_neg']
 
 #######################################
@@ -253,7 +252,7 @@ hltPhase2L1CtfTracks = cms.EDProducer( "TrackProducer",
 trackAlgoPriorityOrderL1 = cms.ESProducer("TrackAlgoPriorityOrderESProducer",
     ComponentName = cms.string('trackAlgoPriorityOrderL1'),
     algoOrder = cms.vstring(
-        'l1',
+        'ctf',
         'initialStep'#,
         #'highPtTripletStep'### v2
     ),
@@ -450,7 +449,7 @@ hltPhase2PixelTracksHitQuadruplets = cms.EDProducer( "CAHitQuadrupletEDProducer"
     CAPhiCut = cms.double( 0.2 ),
     useBendingCorrection = cms.bool( True ),
     fitFastCircleChi2Cut = cms.bool( True )#,
-
+)
 
 hltPhase2PixelTracksHitTriplets = cms.EDProducer( "CAHitTripletEDProducer",
     CAHardPtCut = cms.double( 0.5 ),

@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 from tracking_modules import *
-from generic_modules import *
+from generic_sequences import *
 
 ####################################################
 ########################## Basic V/ setup

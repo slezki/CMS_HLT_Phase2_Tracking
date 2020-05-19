@@ -21,12 +21,6 @@ from Configuration.StandardSequences.Reconstruction_cff import *
 
 ############# ordered setup
 
-
-MC_Vertexing = cms.Path(
-    caloLocalReco +
-    vertexReco
-)
-
 ecalUncalibRecHitSequence = cms.Sequence(
     bunchSpacingProducer +
     ecalMultiFitUncalibRecHit +
@@ -51,3 +45,4 @@ itLocalReco = cms.Sequence(
 otLocalReco = cms.Sequence(
     MeasurementTrackerEvent
 )
+
