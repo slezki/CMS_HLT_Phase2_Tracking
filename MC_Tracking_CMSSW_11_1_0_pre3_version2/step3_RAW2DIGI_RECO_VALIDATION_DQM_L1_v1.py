@@ -1,5 +1,3 @@
-# Auto generated configuration file
-# using:
 # Revision: 1.19
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v
 # with command line options: step3 --conditions auto:phase2_realistic_T15 -n 10 --era Phase2C9 --eventcontent RECOSIM,DQM --runUnscheduled -s RAW2DIGI,RECO:reconstruction_trackingOnly,VALIDATION:@trackingOnlyValidation,DQM:@trackingOnlyDQM --datatier GEN-SIM-RECO,DQMIO --geometry Extended2026D49 --filein file:step2.root --fileout file:step3.root
@@ -26,7 +24,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000),
+    input = cms.untracked.int32(10),
     output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
 
@@ -38,7 +36,7 @@ process.source = cms.Source("PoolSource",
 )
 """
 
-process.load("input_TTbar_Phase2HLTTDRWinter20-PU200_110X_upgrade2026D49_realistic_v3-v2_cff")
+process.load("local_input_TTbar_Phase2HLTTDRWinter20-PU200_110X_upgrade2026D49_realistic_v3-v2_cff")
 
 process.options = cms.untracked.PSet(
 )
@@ -122,8 +120,13 @@ process.RECOSIMoutput_step = cms.EndPath(process.RECOSIMoutput)
 process.load('raw2digi_step_cff')
 process.load("MC_Tracking_v7_1_tobeimproved_cff")
 process.load('MC_prevalidation_v6_cff')
-process.load('MC_Dqmoffline_cff')
+process.load('MC_Dqmoffline_l1_v1_cff')
 process.DQMoutput_step = cms.EndPath(process.DQMoutput)
+
+process.load('raw2digi_step_cff')
+process.load("L1Trigger.TrackFindingTracklet.Tracklet_cfi")
+process.load("RecoVertex.BeamSpotProducer.BeamSpot_cfi")
+process.TTTracks_step = cms.Path(process.offlineBeamSpot*process.TTTracksFromTrackletEmulation)
 
 # load the DQMStore and DQMRootOutputModule
 # enable multithreading
@@ -148,7 +151,7 @@ process.PixelCPEGenericESProducer.Upgrade = cms.bool(True)
 
 
 # Schedule definition
-process.schedule = cms.Schedule(*[ process.raw2digi_step, process.MC_Tracking_v7_L1_v1, process.MC_Vertexing, process.MC_prevalidation_v6, process.MC_validation_v6, process.MC_Dqmoffline, process.DQMoutput_step ])
+process.schedule = cms.Schedule(*[ process.raw2digi_step, process.TTTracks_step , process.MC_Tracking_v7_L1_v1, process.MC_Vertexing, process.MC_prevalidation_v6, process.MC_validation_v6, process.MC_Dqmoffline, process.DQMoutput_step ])
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 
