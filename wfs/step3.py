@@ -1,7 +1,7 @@
 # Auto generated configuration file
-# using: 
-# Revision: 1.19 
-# Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
+# using:
+# Revision: 1.19
+# Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v
 # with command line options: step3 --conditions auto:phase2_realistic_T15 -n 10 --era Phase2C9 --eventcontent RECOSIM,DQM --runUnscheduled -s RAW2DIGI,RECO:reconstruction_trackingOnly,VALIDATION:@trackingOnlyValidation,DQM:@trackingOnlyDQM --datatier GEN-SIM-RECO,DQMIO --geometry Extended2026D49 --filein file:step2.root --fileout file:step3.root
 import FWCore.ParameterSet.Config as cms
 
@@ -120,8 +120,8 @@ process.dqmofflineOnPAT_step = cms.EndPath(process.PostDQMOffline)
 process.RECOSIMoutput_step = cms.EndPath(process.RECOSIMoutput)
 """
 process.load('raw2digi_step_cff')
-process.load("MC_Tracking_v6_cff")
-process.load('MC_prevalidation_v6_cff') 
+process.load("tracking_sequences")
+process.load('MC_prevalidation_v6_cff')
 process.load('MC_Dqmoffline_cff')
 process.DQMoutput_step = cms.EndPath(process.DQMoutput)
 
@@ -143,19 +143,21 @@ process.PixelCPEGenericESProducer.LoadTemplatesFromDB = False
 process.PixelCPEGenericESProducer.TruncatePixelCharge = False
 process.PixelCPEGenericESProducer.IrradiationBiasCorrection = False
 process.PixelCPEGenericESProducer.DoCosmics = False
-process.PixelCPEGenericESProducer.Upgrade = cms.bool(True) 
+process.PixelCPEGenericESProducer.Upgrade = cms.bool(True)
 ######
 
 
 # Schedule definition
-process.schedule = cms.Schedule(*[ process.raw2digi_step, process.MC_Tracking_v6, process.MC_Vertexing_v6, process.MC_prevalidation_v6, process.MC_validation_v6, process.MC_Dqmoffline, process.DQMoutput_step ])
+#process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks])#process.MC_Tracking_v6, process.MC_Vertexing_v6, process.MC_prevalidation_v6, process.MC_validation_v6, process.MC_Dqmoffline, process.DQMoutput_step ])
+process.schedule = cms.Schedule(*[ process.raw2digi_step,process.original_v7])#process.MC_Tracking_v6, process.MC_Vertexing_v6, process.MC_prevalidation_v6, process.MC_validation_v6, process.MC_Dqmoffline, process.DQMoutput_step ])
+
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 
 # customisation of the process.
 
 # Automatic addition of the customisation function from SimGeneral.MixingModule.fullMixCustomize_cff
-from SimGeneral.MixingModule.fullMixCustomize_cff import setCrossingFrameOn 
+from SimGeneral.MixingModule.fullMixCustomize_cff import setCrossingFrameOn
 
 #call to customisation function setCrossingFrameOn imported from SimGeneral.MixingModule.fullMixCustomize_cff
 process = setCrossingFrameOn(process)
