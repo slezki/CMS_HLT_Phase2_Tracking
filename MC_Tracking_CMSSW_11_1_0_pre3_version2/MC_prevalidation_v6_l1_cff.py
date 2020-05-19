@@ -791,8 +791,8 @@ hltPhase2TrackValidatorL1TrackingOnly = cms.EDProducer("MultiTrackValidator", #c
 hltPhase2TrackValidatorTrackingOnly = cms.EDProducer("MultiTrackValidator", #cmssw_11_1 previous cms.EDAnalyzer
     cores = cms.InputTag("highPtJetsForTrk"), #cmssw_10_6    # cmssw_11_1
     UseAssociators = cms.bool(False),
-    #associators = cms.untracked.VInputTag("hltPhase2TrackingParticleRecoTrackAsssociation"),
-    associators = cms.untracked.VInputTag("hltPhase2TrackingParticleL1TrackAsssociation"),
+    associators = cms.untracked.VInputTag("hltPhase2TrackingParticleRecoTrackAsssociation"),
+    #associators = cms.untracked.VInputTag("hltPhase2TrackingParticleL1TrackAsssociation"),
     beamSpot = cms.InputTag("offlineBeamSpot"),
     calculateDrSingleCollection = cms.untracked.bool(True),
     chargedOnlyTP = cms.bool(True),
@@ -807,6 +807,7 @@ hltPhase2TrackValidatorTrackingOnly = cms.EDProducer("MultiTrackValidator", #cms
         "hltPhase2GeneralTracks",# "hltPhase2CutsRecoTracksHp", "hltPhase2GeneralTracksPt09", "hltPhase2CutsRecoTracksBtvLike","hltPhase2CutsRecoTracksL1Step"),#,,
         "hltPhase2L1CtfTracks",
         "hltPhase2CutsRecoTracksL1Step",
+        "hltPhase2CutsRecoTracksInitialStep"
         #"hltPhase2CutsRecoTracksL1StepHp", "hltPhase2CutsRecoTracksPt09L1StepHp", "hltPhase2L1CtfTracksPt09"
     ),
     doSeedPlots = cms.untracked.bool(False),
@@ -1140,6 +1141,7 @@ hltPhase2TrackValidatorTrackingOnly = cms.EDProducer("MultiTrackValidator", #cms
         "hltPhase2GeneralTracks",
         "hltPhase2L1CtfTracks",
         "hltPhase2CutsRecoTracksL1Step",
+        "hltPhase2CutsRecoTracksInitialStep"
         #"hltPhase2CutsRecoTracksL1StepHp", "hltPhase2CutsRecoTracksPt09L1StepHp", "hltPhase2L1CtfTracksPt09"
     ),
     label_pileupinfo = cms.InputTag("addPileupInfo"),

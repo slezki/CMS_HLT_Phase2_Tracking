@@ -915,7 +915,7 @@ hltPhase2GeneralTracks = cms.EDProducer("TrackListMerger",
     MinPT = cms.double(0.8), # ptcut previous 0.05
     ShareFrac = cms.double(0.25),
     TrackProducers = cms.VInputTag(
-    "L1CtfTracks",
+    "hltPhase2L1CtfTracks",
     "hltPhase2InitialStepTracks"#, "hltPhase2HighPtTripletStepTracks" ### v2
     #"L1TrackSelectionHighPurity",
     #"hltPhase2InitialStepTrackSelectionHighPurity", "hltPhase2HighPtTripletStepTrackSelectionHighPurity" ### v2 # trackcutclassifier
@@ -2063,7 +2063,7 @@ MC_Tracking_v7_L1_v1 = cms.Path(
     hltPhase2PixelTracksSequence + # pixeltracks
     hltPhase2PixelVerticesSequence + # pixelvertices
 ##############################################
-    hltPhase2InitialStepSequence +
+    hltPhase2InitialStepSequenceL1 +
     hltPhase2L1TracksSequence +
     #hltPhase2HighPtTripletStepSequence +
 ##############################################
