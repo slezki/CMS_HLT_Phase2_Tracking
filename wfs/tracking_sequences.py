@@ -3,14 +3,9 @@ from tracking_modules import *
 from generic_sequences import *
 from L1Trigger.TrackFindingTracklet.Tracklet_cfi import *
 
-import RecoTracker.MkFit.mkFitInputConverter_cfi as mkFitInputConverter_cfi
-import RecoTracker.MkFit.mkFitProducer_cfi as mkFitProducer_cfi
-import RecoTracker.MkFit.mkFitOutputConverter_cfi as mkFitOutputConverter_cfi
-
-
 
 ####################################################
-########################## Commons
+########################## Commonssoriginal_v7
 #############
 
 hltPhase2L1TTTracksEmulation = TTTracksFromTrackletEmulation.clone()
@@ -120,14 +115,23 @@ hltPhase2L1PVSequence = cms.Sequence(
     hltPhase2L1TracksStepPrimaryVertices
 )
 
-hltPhase2L1TracksSequence = cms.Sequence(
+hltPhase2L1TracksTaskSeed = cms.Task(
+            hltPhase2L1TrackSeedsFromL1Tracks
+)
+hltPhase2L1TracksSeqSeed = cms.Sequence(hltPhase2L1TracksTaskSeed)
 
-    hltPhase2L1TrackSeedsFromL1Tracks +
-    hltPhase2L1TrackCandidates +
-    hltPhase2L1CtfTracks +
-    hltPhase2L1PVSequence +
-    hltPhase2L1TracksCutClassifier +#+
-    hltPhase2L1TracksSelectionHighPurity
+hltPhase2L1TracksSeqPattern = cms.Sequence(
+            hltPhase2L1TracksSeqSeed +
+            hltPhase2L1TrackCandidates +
+            hltPhase2L1CtfTracks +
+            hltPhase2L1PVSequence +
+            hltPhase2L1TracksCutClassifier +#+
+            hltPhase2L1TracksSelectionHighPurity
+)
+
+hltPhase2L1TracksSequence = cms.Sequence(
+    hltPhase2L1TracksSeqSeed +
+    hltPhase2L1TracksSeqPattern
 )
 
 pure_l1tracks = cms.Path(
@@ -155,6 +159,19 @@ hltPhase2InitialStepSequenceL1 = cms.Sequence(
     #hltPhase2InitialStepTrackSelectionHighPurity
 )
 
+vertexReco = cms.Sequence(
+    hltPhase2InitialStepPVSequence + # pixelVertices moved to here, for now still keeping it
+    hltPhase2Ak4CaloJetsForTrk + # uses caloTowerForTrk
+    hltPhase2UnsortedOfflinePrimaryVertices +
+    hltPhase2TrackWithVertexRefSelectorBeforeSorting +
+    hltPhase2TrackRefsForJetsBeforeSorting +
+    hltPhase2OfflinePrimaryVertices +
+    hltPhase2OfflinePrimaryVerticesWithBS +
+    hltPhase2InclusiveVertexFinder +
+    hltPhase2VertexMerger +
+    hltPhase2TrackVertexArbitrator +
+    hltPhase2InclusiveSecondaryVertices
+)
 
 vertexing = cms.Path(
     caloLocalReco +

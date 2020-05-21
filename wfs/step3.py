@@ -7,44 +7,7 @@ import FWCore.ParameterSet.Config as cms
 from Configuration.Eras.Era_Phase2C9_cff import Phase2C9
 from ttbar_14_D49PU200 import *
 from FWCore.ParameterSet.VarParsing import VarParsing
-
-# options = VarParsing ('analysis')
-#
-# options.register ('setup',
-# 				  VarParsing.multiplicity.singleton,
-# 				  VarParsing.varType.string,
-# 				  "Setup")
-# options.parseArguments()
-
-########################################################
-############################ Customisers
-##############
-
-def customizeL1TracksStepToMkFit(process):
-
-    process.hltPhase2L1TracksCandidates = mkFitOutputConverter_cfi.mkFitOutputConverter.clone(
-        seeds = "hltPhase2L1TrackSeedsFromL1Tracks",
-        hitsSeeds = "hltPhase2L1TracksCandidatesMkFitInput",
-        tracks = "initialStepTrackCandidatesMkFit",
-    )
-
-    return process
-
-def customizeGeneralTracksToPureL1TracksStep(process):
-
-    process.trackAlgoPriorityOrder.algoOrder = cms.vstring('ctf')
-    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1CtfTracks")
-    process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0)
-    process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0)
-    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2L1TracksSelectionHighPurity"))
-    process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0)
-
-    process.hltPhase2FirstStepPrimaryVerticesUnsorted.TrackLabel = cms.InputTag("hltPhase2L1CtfTracks")
-    process.hltPhase2InitialStepTrackRefsForJets.src = cms.InputTag("hltPhase2L1CtfTracks")
-
-    return process
-
-
+from customize_steps import *
 
 process = cms.Process('RECO',Phase2C9)
 
@@ -183,6 +146,7 @@ process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
                                    process.validation_purel1, process.dqm_purel1, process.DQMoutput_step])
 
 customizeGeneralTracksToPureL1TracksStep(process)
+customizeL1TracksStepToMkFit(process)
 
 # process.schedule = cms.Schedule(*[ process.raw2digi_step,process.original_v7,
 #                                    process.vertexing, process.prevalidation_original,
