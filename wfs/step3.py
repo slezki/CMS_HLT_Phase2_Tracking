@@ -4,8 +4,47 @@
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v
 # with command line options: step3 --conditions auto:phase2_realistic_T15 -n 10 --era Phase2C9 --eventcontent RECOSIM,DQM --runUnscheduled -s RAW2DIGI,RECO:reconstruction_trackingOnly,VALIDATION:@trackingOnlyValidation,DQM:@trackingOnlyDQM --datatier GEN-SIM-RECO,DQMIO --geometry Extended2026D49 --filein file:step2.root --fileout file:step3.root
 import FWCore.ParameterSet.Config as cms
-
 from Configuration.Eras.Era_Phase2C9_cff import Phase2C9
+from ttbar_14_D49PU200 import *
+from FWCore.ParameterSet.VarParsing import VarParsing
+
+# options = VarParsing ('analysis')
+#
+# options.register ('setup',
+# 				  VarParsing.multiplicity.singleton,
+# 				  VarParsing.varType.string,
+# 				  "Setup")
+# options.parseArguments()
+
+########################################################
+############################ Customisers
+##############
+
+def customizeL1TracksStepToMkFit(process):
+
+    process.hltPhase2L1TracksCandidates = mkFitOutputConverter_cfi.mkFitOutputConverter.clone(
+        seeds = "hltPhase2L1TrackSeedsFromL1Tracks",
+        hitsSeeds = "hltPhase2L1TracksCandidatesMkFitInput",
+        tracks = "initialStepTrackCandidatesMkFit",
+    )
+
+    return process
+
+def customizeGeneralTracksToPureL1TracksStep(process):
+
+    process.trackAlgoPriorityOrder.algoOrder = cms.vstring('ctf')
+    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1CtfTracks")
+    process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0)
+    process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0)
+    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2L1TracksSelectionHighPurity"))
+    process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0)
+
+    process.hltPhase2FirstStepPrimaryVerticesUnsorted.TrackLabel = cms.InputTag("hltPhase2L1CtfTracks")
+    process.hltPhase2InitialStepTrackRefsForJets.src = cms.InputTag("hltPhase2L1CtfTracks")
+
+    return process
+
+
 
 process = cms.Process('RECO',Phase2C9)
 
@@ -26,16 +65,10 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10),
+    input = cms.untracked.int32(1),
     output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
 
-
-# Input source
-process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('file:54AA18A6-0B6A-284B-B15E-9074463466AF.root'),
-    secondaryFileNames = cms.untracked.vstring()
-)
 
 process.MessageLogger = cms.Service("MessageLogger",
        destinations      = cms.untracked.vstring('debug'),
@@ -46,38 +79,20 @@ process.MessageLogger = cms.Service("MessageLogger",
 )                                                                       #8
 
 
+LOCAL = True
+RECAS = True
+if not RECAS:
+    if LOCAL:
+        process.load("local_files")
+    else:
+        process.load("input_TTbar_Phase2HLTTDRWinter20-PU200_110X_upgrade2026D49_realistic_v3-v2_cff")
+else:
+    process.source = cms.Source("PoolSource",
+        fileNames = cms.untracked.vstring(filelist),
+        secondaryFileNames = cms.untracked.vstring()
+        )
 
-#process.load("input_TTbar_Phase2HLTTDRWinter20-PU200_110X_upgrade2026D49_realistic_v3-v2_cff")
-
-process.options = cms.untracked.PSet(
-)
-"""
-    FailPath = cms.untracked.vstring(),
-    IgnoreCompletely = cms.untracked.vstring(),
-    Rethrow = cms.untracked.vstring(),
-    SkipEvent = cms.untracked.vstring(),
-    allowUnscheduled = cms.obsolete.untracked.bool,
-    canDeleteEarly = cms.untracked.vstring(),
-    emptyRunLumiMode = cms.obsolete.untracked.string,
-    eventSetup = cms.untracked.PSet(
-        forceNumberOfConcurrentIOVs = cms.untracked.PSet(
-
-        ),
-        numberOfConcurrentIOVs = cms.untracked.uint32(1)
-    ),
-    fileMode = cms.untracked.string('FULLMERGE'),
-    forceEventSetupCacheClearOnNewRun = cms.untracked.bool(False),
-    makeTriggerResults = cms.obsolete.untracked.bool,
-    numberOfConcurrentLuminosityBlocks = cms.untracked.uint32(1),
-    numberOfConcurrentRuns = cms.untracked.uint32(1),
-    numberOfStreams = cms.untracked.uint32(0),
-    numberOfThreads = cms.untracked.uint32(1),
-    printDependencies = cms.untracked.bool(False),
-    sizeOfStackForThreadsInKB = cms.optional.untracked.uint32,
-    throwIfIllegalParameter = cms.untracked.bool(True),
-    wantSummary = cms.untracked.bool(False)
-)
-"""
+process.options = cms.untracked.PSet()
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
@@ -130,8 +145,10 @@ process.RECOSIMoutput_step = cms.EndPath(process.RECOSIMoutput)
 """
 process.load('raw2digi_step_cff')
 process.load("tracking_sequences")
-process.load('MC_prevalidation_v6_cff')
-process.load('MC_Dqmoffline_cff')
+process.load('validation_sequences')
+process.load('prevalidation_sequences')
+process.load('dqm_sequences')
+
 process.DQMoutput_step = cms.EndPath(process.DQMoutput)
 
 # load the DQMStore and DQMRootOutputModule
@@ -161,9 +178,15 @@ process.Timing = cms.Service("Timing",
 )
 
 # Schedule definition
-process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks])#process.MC_Tracking_v6, process.MC_Vertexing_v6, process.MC_prevalidation_v6, process.MC_validation_v6, process.MC_Dqmoffline, process.DQMoutput_step ])
+process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
+                                   process.vertexing, process.prevalidation_purel1,
+                                   process.validation_purel1, process.dqm_purel1, process.DQMoutput_step])
 
-#process.schedule = cms.Schedule(*[ process.raw2digi_step,process.original_v7])#process.MC_Tracking_v6, process.MC_Vertexing_v6, process.MC_prevalidation_v6, process.MC_validation_v6, process.MC_Dqmoffline, process.DQMoutput_step ])
+customizeGeneralTracksToPureL1TracksStep(process)
+
+# process.schedule = cms.Schedule(*[ process.raw2digi_step,process.original_v7,
+#                                    process.vertexing, process.prevalidation_original,
+#                                    process.validation_original, process.dqm_original, process.DQMoutput_step ])
 
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)

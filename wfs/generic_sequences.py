@@ -45,4 +45,3 @@ itLocalReco = cms.Sequence(
 otLocalReco = cms.Sequence(
     MeasurementTrackerEvent
 )
-

@@ -16,4 +16,4 @@ muonRPCNewDigis = cms.EDProducer("RPCDigiMerger",
 )
 """
 
-raw2digi_step = cms.Path(cms.Task(ecalDigis, hcalDigis, muonCSCDigis, muonDTDigis, muonGEMDigis, muonRPCDigis,  scalersRawToDigi)) #muonRPCNewDigis 
+raw2digi_step = cms.Path(cms.Task(ecalDigis, hcalDigis, muonCSCDigis, muonDTDigis, muonGEMDigis, muonRPCDigis,  scalersRawToDigi)) #muonRPCNewDigis

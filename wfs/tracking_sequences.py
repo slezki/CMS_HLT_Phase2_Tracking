@@ -3,6 +3,10 @@ from tracking_modules import *
 from generic_sequences import *
 from L1Trigger.TrackFindingTracklet.Tracklet_cfi import *
 
+import RecoTracker.MkFit.mkFitInputConverter_cfi as mkFitInputConverter_cfi
+import RecoTracker.MkFit.mkFitProducer_cfi as mkFitProducer_cfi
+import RecoTracker.MkFit.mkFitOutputConverter_cfi as mkFitOutputConverter_cfi
+
 
 
 ####################################################
@@ -117,7 +121,7 @@ hltPhase2L1PVSequence = cms.Sequence(
 )
 
 hltPhase2L1TracksSequence = cms.Sequence(
-   
+
     hltPhase2L1TrackSeedsFromL1Tracks +
     hltPhase2L1TrackCandidates +
     hltPhase2L1CtfTracks +
@@ -128,9 +132,13 @@ hltPhase2L1TracksSequence = cms.Sequence(
 
 pure_l1tracks = cms.Path(
     hltPhase2StartUp +
-    hltPhase2L1TTTracksEmulation +
-    hltPhase2L1TracksSequence
+    hltPhase2PixelTracksSequence + # pixeltracks
+    hltPhase2PixelVerticesSequence + # pixelvertices
+    TTTracksFromTrackletEmulation +
+    hltPhase2L1TracksSequence +
+    hltPhase2GeneralTracks
 )
+
 
 
 hltPhase2InitialStepSequenceL1 = cms.Sequence(
@@ -148,7 +156,7 @@ hltPhase2InitialStepSequenceL1 = cms.Sequence(
 )
 
 
-MC_Vertexing = cms.Path(
+vertexing = cms.Path(
     caloLocalReco +
     vertexReco
 )
