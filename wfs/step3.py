@@ -145,8 +145,10 @@ process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
                                    process.vertexing, process.prevalidation_purel1,
                                    process.validation_purel1, process.dqm_purel1, process.DQMoutput_step])
 
-customizeGeneralTracksToPureL1TracksStep(process)
-customizeL1TracksStepToMkFit(process)
+#customizeGeneralTracksToPureL1TracksStep(process)
+customizePixelSeedsEta4(process)
+customizeGeneralTracksToPixelL1TracksStep(process)
+#customizeL1TracksStepToMkFit(process)
 
 # process.schedule = cms.Schedule(*[ process.raw2digi_step,process.original_v7,
 #                                    process.vertexing, process.prevalidation_original,

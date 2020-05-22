@@ -118,7 +118,7 @@ hltPhase2L1PVSequence = cms.Sequence(
 hltPhase2L1TracksTaskSeed = cms.Task(
             hltPhase2L1TrackSeedsFromL1Tracks
 )
-hltPhase2L1TracksSeqSeed = cms.Sequence(hltPhase2L1TracksTaskSeed)
+hltPhase2L1TracksSeqSeed = cms.Sequence(hltPhase2L1TracksTaskSeed) ##need this strange syntax to add mkFit steps
 
 hltPhase2L1TracksSeqPattern = cms.Sequence(
             hltPhase2L1TracksSeqSeed +

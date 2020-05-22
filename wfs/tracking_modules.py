@@ -456,24 +456,21 @@ hltPhase2PixelTracksHitTriplets = cms.EDProducer( "CAHitTripletEDProducer",
 
 hltPhase2PixelTracksSeedLayersForTriplets = cms.EDProducer( "SeedingLayersEDProducer",
     layerList = cms.vstring(
-        'BPix1+BPix2+BPix3+BPix4',
+        'BPix1+BPix2+BPix3','BPix2+BPix3+BPix4',
+        'BPix1+BPix3+BPix4','BPix1+BPix2+BPix4',
+        'BPix2+BPix3+FPix1_pos','BPix2+BPix3+FPix1_neg',
+        'BPix1+BPix2+FPix1_pos','BPix1+BPix2+FPix1_neg',
+        'BPix1+BPix3+FPix1_pos', 'BPix1+BPix3+FPix1_neg',
+        'BPix2+FPix1_pos+FPix2_pos', 'BPix2+FPix1_neg+FPix2_neg',
+        'BPix1+FPix1_pos+FPix2_pos', 'BPix1+FPix1_neg+FPix2_neg',
+        'BPix1+BPix2+FPix2_pos', 'BPix1+BPix2+FPix2_neg',
+        'FPix1_pos+FPix2_pos+FPix3_pos', 'FPix1_neg+FPix2_neg+FPix3_neg',
+        'BPix1+FPix2_pos+FPix3_pos', 'BPix1+FPix2_neg+FPix3_neg',
+        'BPix1+FPix1_pos+FPix3_pos', 'BPix1+FPix1_neg+FPix3_neg',
 
-        'BPix1+BPix2+BPix3+FPix1_pos',
-        'BPix1+BPix2+BPix3+FPix1_neg',
-        'BPix1+BPix2+FPix1_pos+FPix2_pos',
-        'BPix1+BPix2+FPix1_neg+FPix2_neg',
-        'BPix1+FPix1_pos+FPix2_pos+FPix3_pos',
-        'BPix1+FPix1_neg+FPix2_neg+FPix3_neg',
-        'FPix1_pos+FPix2_pos+FPix3_pos+FPix4_pos',
-        'FPix1_neg+FPix2_neg+FPix3_neg+FPix4_neg',
-        'FPix2_pos+FPix3_pos+FPix4_pos+FPix5_pos',
-        'FPix2_neg+FPix3_neg+FPix4_neg+FPix5_neg',
-        'FPix3_pos+FPix4_pos+FPix5_pos+FPix6_pos',
-        'FPix3_neg+FPix4_neg+FPix5_neg+FPix6_neg',
-        'FPix4_pos+FPix5_pos+FPix6_pos+FPix7_pos',
-        'FPix4_neg+FPix5_neg+FPix6_neg+FPix7_neg',
-        'FPix5_pos+FPix6_pos+FPix7_pos+FPix8_pos',
-        'FPix5_neg+FPix6_neg+FPix7_neg+FPix8_neg'
+        'FPix1_pos+FPix2_pos+FPix3_pos','FPix1_pos+FPix2_pos+FPix4_pos',
+        'FPix2_pos+FPix3_pos+FPix4_pos','FPix2_pos+FPix4_pos+FPix5_pos',
+        'FPix1_pos+FPix2_pos+FPix3_pos','FPix1_pos+FPix2_pos+FPix4_pos',
 #      'BPix1+BPix2+BPix3+BPix4',
 #      'BPix1+BPix2+BPix3+FPix1_pos',
 #      'BPix1+BPix2+BPix3+FPix1_neg',
@@ -512,36 +509,6 @@ hltPhase2PixelTracksSeedLayersForTriplets = cms.EDProducer( "SeedingLayersEDProd
 
 hltPhase2PixelTracksSeedLayers = cms.EDProducer( "SeedingLayersEDProducer",
     layerList = cms.vstring(layerListForPhase2),
-    MTOB = cms.PSet(  ),
-    TEC = cms.PSet(  ),
-    MTID = cms.PSet(  ),
-    FPix = cms.PSet(
-        HitProducer = cms.string('siPixelRecHits'), #PreSplitting'),
-        TTRHBuilder = cms.string('WithTrackAngle')
-#      hitErrorRPhi = cms.double( 0.0051 ),
-#      TTRHBuilder = cms.string( "hltESPTTRHBuilderPixelOnly" ),
-#      useErrorsFromParam = cms.bool( True ),
-#      hitErrorRZ = cms.double( 0.0036 ),
-#      HitProducer = cms.string( "hltSiPixelRecHits" )
-    ),
-    MTEC = cms.PSet(  ),
-    MTIB = cms.PSet(  ),
-    TID = cms.PSet(  ),
-    TOB = cms.PSet(  ),
-    BPix = cms.PSet(
-        HitProducer = cms.string('siPixelRecHits'), #PreSplitting'),
-        TTRHBuilder = cms.string('WithTrackAngle')
-#      hitErrorRPhi = cms.double( 0.0027 ),
-#      TTRHBuilder = cms.string( "hltESPTTRHBuilderPixelOnly" ),
-#      useErrorsFromParam = cms.bool( True ),
-#      hitErrorRZ = cms.double( 0.006 ),
-#      HitProducer = cms.string( "hltSiPixelRecHits" )
-    ),
-    TIB = cms.PSet(  )
-)
-
-hltPhase2PixelTracksSeedLayersEta4 = cms.EDProducer( "SeedingLayersEDProducer",
-    layerList = cms.vstring(layerListForPhase2Eta4),
     MTOB = cms.PSet(  ),
     TEC = cms.PSet(  ),
     MTID = cms.PSet(  ),
@@ -623,6 +590,49 @@ hltPhase2TrimmedPixelVertices = cms.EDProducer( "PixelVertexCollectionTrimmer",
     PVcomparer = cms.PSet(  refToPSet_ = cms.string( "hltPhase2PSetPvClusterComparerForIT" ) ),
     maxVtx = cms.uint32( 100 ) # > 200 # previous 100
 )
+
+hltPhase2PixelTracksCutClassifier = cms.EDProducer( "TrackCutClassifier",
+    src = cms.InputTag( "hltPhase2PixelTracks" ),
+    beamspot = cms.InputTag( "offlineBeamSpot" ),
+    vertices = cms.InputTag( "" ),
+    qualityCuts = cms.vdouble( -0.7, 0.1, 0.7 ),
+    mva = cms.PSet(
+      minPixelHits = cms.vint32( 0, 3, 3 ),
+      maxDzWrtBS = cms.vdouble( 3.40282346639E38, 3.40282346639E38, 60.0 ),
+      dr_par = cms.PSet(
+        d0err = cms.vdouble( 0.003, 0.003, 3.40282346639E38 ),
+        dr_par2 = cms.vdouble( 0.3, 0.3, 3.40282346639E38 ),
+        dr_par1 = cms.vdouble( 0.4, 0.4, 3.40282346639E38 ),
+        dr_exp = cms.vint32( 4, 4, 4 ),
+        d0err_par = cms.vdouble( 0.001, 0.001, 3.40282346639E38 )
+      ),
+      maxLostLayers = cms.vint32( 99, 99, 99 ),
+      min3DLayers = cms.vint32( 0, 2, 3 ),
+      dz_par = cms.PSet(
+        dz_par1 = cms.vdouble( 0.4, 0.4, 3.40282346639E38 ),
+        dz_par2 = cms.vdouble( 0.35, 0.35, 3.40282346639E38 ),
+        dz_exp = cms.vint32( 4, 4, 4 )
+      ),
+      minNVtxTrk = cms.int32( 3 ),
+      maxDz = cms.vdouble( 3.40282346639E38, 3.40282346639E38, 3.40282346639E38 ),
+      minNdof = cms.vdouble( 1.0E-5, 1.0E-5, 1.0E-5 ),
+      maxChi2 = cms.vdouble( 9999., 9999., 30.0 ),
+      maxDr = cms.vdouble( 99., 99., 1. ),
+      minLayers = cms.vint32( 0, 2, 3 )
+    ),
+    ignoreVertices = cms.bool( True ),
+)
+
+hltPhase2PixelTracksSelectionHighPurity = cms.EDProducer( "TrackCollectionFilterCloner",
+    minQuality = cms.string( "highPurity" ),
+    copyExtras = cms.untracked.bool( True ),
+    copyTrajectories = cms.untracked.bool( False ),
+    originalSource = cms.InputTag( "hltPhase2PixelTracks" ),
+    originalQualVals = cms.InputTag( 'hltPhase2PixelTracksCutClassifier','QualityMasks' ),
+    originalMVAVals = cms.InputTag( 'hltPhase2PixelTracksCutClassifier','MVAValues' )
+)
+
+#######
 
 hltPhase2VertexMerger = cms.EDProducer("VertexMerger",
     maxFraction = cms.double(0.7),
@@ -1559,7 +1569,7 @@ hltPhase2InitialStepHitQuadruplets = cms.EDProducer("CAHitQuadrupletEDProducer",
     doublets = cms.InputTag("hltPhase2InitialStepHitDoublets"),
     extraHitRPhitolerance = cms.double(0.032),
     fitFastCircle = cms.bool(True),
-    fitFastCirclfeChi2Cut = cms.bool(True),
+    fitFastCircleChi2Cut = cms.bool(True),
     maxChi2 = cms.PSet(
         enabled = cms.bool(True),
         pt1 = cms.double(0.7),
