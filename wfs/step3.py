@@ -28,7 +28,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10),
+    input = cms.untracked.int32(8),
     output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
 
@@ -140,6 +140,52 @@ process.Timing = cms.Service("Timing",
   useJobReport = cms.untracked.bool(True)
 )
 
+
+### For timing
+### Tracking @ HLT: set up FastTimerService; analogous setting can be obtained with option --timing in hltGetConfiguration
+# configure the FastTimerService
+process.load( "HLTrigger.Timer.FastTimerService_cfi" )
+# print a text summary at the end of the job
+process.FastTimerService.printEventSummary         = False
+process.FastTimerService.printRunSummary           = False
+process.FastTimerService.printJobSummary           = True
+
+
+# enable DQM plots
+process.FastTimerService.enableDQM                 = True
+
+# enable per-path DQM plots (starting with CMSSW 9.2.3-patch2)
+process.FastTimerService.enableDQMbyPath           = True
+
+# enable per-module DQM plots
+process.FastTimerService.enableDQMbyModule         = True
+
+# enable per-event DQM plots vs lumisection
+process.FastTimerService.enableDQMbyLumiSection    = True
+process.FastTimerService.dqmLumiSectionsRange      = 2500
+
+# set the time resolution of the DQM plots
+process.FastTimerService.dqmTimeRange              = 100000.
+process.FastTimerService.dqmTimeResolution         =    0.5
+process.FastTimerService.dqmPathTimeRange          = 100000.
+process.FastTimerService.dqmPathTimeResolution     =    0.5
+process.FastTimerService.dqmModuleTimeRange        =   8000.
+process.FastTimerService.dqmModuleTimeResolution   =    0.5
+
+process.FastTimerService.dqmMemoryRange            = 1000000
+process.FastTimerService.dqmMemoryResolution       =    5000
+process.FastTimerService.dqmPathMemoryRange        = 1000000
+process.FastTimerService.dqmPathMemoryResolution   =    5000
+process.FastTimerService.dqmModuleMemoryRange      =  100000
+process.FastTimerService.dqmModuleMemoryResolution =     500
+
+# set the base DQM folder for the plots
+process.FastTimerService.dqmPath                   = 'HLT/TimerService'
+process.FastTimerService.enableDQMbyProcesses      = False
+
+#process.FastTimerOutput = cms.EndPath( process.dqmOutput )
+process.DQMoutput_step = cms.EndPath( process.DQMoutput) 
+
 # Schedule definition
 #process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
 #                                   process.vertexing, process.prevalidation_purel1,
@@ -151,7 +197,7 @@ process.Timing = cms.Service("Timing",
 
 process.schedule = cms.Schedule(*[ process.raw2digi_step,process.initial_l1tracks_mask,
                                    process.vertexing, process.prevalidation_l1initial,
-                                   process.validation_purel1, process.dqm_l1initial, process.DQMoutput_step])
+                                   process.validation_l1initial, process.dqm_l1initial, process.DQMoutput_step])
 
 #customizeGeneralTracksToPureL1TracksStep(process)
 customizePixelSeedsEta4(process)

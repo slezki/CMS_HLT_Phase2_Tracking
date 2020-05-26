@@ -66,8 +66,7 @@ hltPhase2L1TrackStepClusters = cms.EDProducer("TrackClusterRemoverPhase2",
 )
 
 hltPhase2L1StepSeedClusterMask = seedClusterRemoverPhase2.clone(
-    trajectories = cms.InputTag("hltPhase2L1TrackSeedsFromL1Tracks"),
-    oldClusterRemovalInfo = cms.InputTag("")
+    trajectories = cms.InputTag("hltPhase2L1TrackSeedsFromL1Tracks")
 )
 
 hltPhase2L1TrackSeedsFromL1Tracks = cms.EDProducer("SeedGeneratorFromTTracksEDProducer",
