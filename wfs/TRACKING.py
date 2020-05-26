@@ -1,5 +1,24 @@
 import FWCore.ParameterSet.Config as cms
+############################################  reconstruction_step version v6 ( using pixeltracks/vertices for track selection + pixelhitdoublets/triplets for initialstep seeding )
+"""
+################################# list of actually needed modules that are in a cms.Path (here for bookkeeping)
+from Configuration.StandardSequences.Reconstruction_cff import TrackProducer
+# TTRHBuilder = cms.string('WithAngleAndTemplate'), # this will be changed in the main file for now to "WithTrackAngle" Currently all the rest TTRHBuilder are WithTrackAngle
+from Configuration.StandardSequences.Reconstruction_cff import SiStripClusterChargeCutNone, SiStripClusterChargeCutLoose, SiStripClusterChargeCutTight ###added for cmssw_10_6
+from Configuration.StandardSequences.Reconstruction_cff import CkfBaseTrajectoryFilter_block, offlineBeamSpot, trackerClusterCheck
+###################### caloLocalReco
+from Configuration.StandardSequences.Reconstruction_cff import bunchSpacingProducer,ecalDetIdToBeRecovered, ecalMultiFitUncalibRecHit
+from Configuration.StandardSequences.Reconstruction_cff import ecalRecHit, hbhereco, hfreco # changes in cmssw_11_1
+from Configuration.StandardSequences.Reconstruction_cff import hfprereco, horeco
+###################### itlocalreco
+from Configuration.StandardSequences.Reconstruction_cff import siPhase2Clusters, siPixelClusterShapeCache
+from Configuration.StandardSequences.Reconstruction_cff import siPixelClusters, siPixelRecHits # changes in cmssw_11_1
+##################### vertexReco
+from Configuration.StandardSequences.Reconstruction_cff import  caloTowerForTrk
+"""
+
 from Configuration.StandardSequences.Reconstruction_cff import *
+from L1Trigger.TrackFindingTracklet.Tracklet_cfi import *
 
 #################################################################
 ########################## SEEDING LAYERS
@@ -42,15 +61,13 @@ tripletsLayers = ['BPix1+BPix2+BPix3', 'BPix2+BPix3+BPix4',
 tripletsLayersEta4 = tripletsLayers +  ['BPix1+BPix2+FPix2_pos', 'BPix1+BPix2+FPix2_neg','BPix1+FPix1_pos+FPix3_pos',
                             'BPix1+FPix1_neg+FPix3_neg','FPix6_pos+FPix7_pos+FPix9_pos', 'FPix6_neg+FPix7_neg+FPix9_neg']
 
-
-
-
 #######################################
 ###################### L1 Tracks step
 #############
 
-#hltPhase2TTTracksFromTracklet = TTTracksFromTrackletEmulation.clone()
+hltPhase2TTTracksFromTracklet = TTTracksFromTrackletEmulation.clone()
 
+#cluster cleaning
 hltPhase2L1TrackStepClusters = cms.EDProducer("TrackClusterRemoverPhase2",
     TrackQuality = cms.string('highPurity'),
     maxChi2 = cms.double(9.0),
@@ -65,14 +82,9 @@ hltPhase2L1TrackStepClusters = cms.EDProducer("TrackClusterRemoverPhase2",
     trajectories = cms.InputTag("hltPhase2InitialStepTrackSelectionHighPurity")
 )
 
-hltPhase2L1StepSeedClusterMask = seedClusterRemoverPhase2.clone(
-    trajectories = cms.InputTag("hltPhase2L1TrackSeedsFromL1Tracks"),
-    oldClusterRemovalInfo = cms.InputTag("")
-)
-
 hltPhase2L1TrackSeedsFromL1Tracks = cms.EDProducer("SeedGeneratorFromTTracksEDProducer",
-    InputCollection = cms.InputTag("TTTracksFromTrackletEmulation","Level1TTTracks"),
-    estimator = cms.string('hltPhase2L1TrackStepChi2Est'),
+    InputCollection = cms.InputTag("TTTracksFromTrackletEmulation", "Level1TTTracks"),
+    estimator = cms.string('L1TrackStepChi2Est'),
     propagator = cms.string('PropagatorWithMaterial'),
     MeasurementTrackerEvent = cms.InputTag("MeasurementTrackerEvent"),
     maxEtaForTOB = cms.double(1.2),
@@ -246,6 +258,16 @@ hltPhase2L1CtfTracks = cms.EDProducer( "TrackProducer",
     useSimpleMF = cms.bool(False)
 )
 
+trackAlgoPriorityOrderL1 = cms.ESProducer("TrackAlgoPriorityOrderESProducer",
+    ComponentName = cms.string('trackAlgoPriorityOrderL1'),
+    algoOrder = cms.vstring(
+        'ctf',
+        'initialStep'#,
+        #'highPtTripletStep'### v2
+    ),
+    appendToDataLabel = cms.string('')
+)
+
 hltPhase2L1StepSelector = cms.EDProducer("MultiTrackSelector",
     beamspot = cms.InputTag("offlineBeamSpot"),
     src = cms.InputTag("hltPhase2L1CtfTracks"),
@@ -385,7 +407,6 @@ hltPhase2L1TracksCutClassifier = cms.EDProducer( "TrackCutClassifier",
     ignoreVertices = cms.bool( False )
 )
 
-
 ######### pixelCPE to be added
 
 ############## pixelTracks/Vertices
@@ -464,21 +485,24 @@ hltPhase2PixelTracksHitTriplets = cms.EDProducer( "CAHitTripletEDProducer",
 
 hltPhase2PixelTracksSeedLayersForTriplets = cms.EDProducer( "SeedingLayersEDProducer",
     layerList = cms.vstring(
-        'BPix1+BPix2+BPix3','BPix2+BPix3+BPix4',
-        'BPix1+BPix3+BPix4','BPix1+BPix2+BPix4',
-        'BPix2+BPix3+FPix1_pos','BPix2+BPix3+FPix1_neg',
-        'BPix1+BPix2+FPix1_pos','BPix1+BPix2+FPix1_neg',
-        'BPix1+BPix3+FPix1_pos', 'BPix1+BPix3+FPix1_neg',
-        'BPix2+FPix1_pos+FPix2_pos', 'BPix2+FPix1_neg+FPix2_neg',
-        'BPix1+FPix1_pos+FPix2_pos', 'BPix1+FPix1_neg+FPix2_neg',
-        'BPix1+BPix2+FPix2_pos', 'BPix1+BPix2+FPix2_neg',
-        'FPix1_pos+FPix2_pos+FPix3_pos', 'FPix1_neg+FPix2_neg+FPix3_neg',
-        'BPix1+FPix2_pos+FPix3_pos', 'BPix1+FPix2_neg+FPix3_neg',
-        'BPix1+FPix1_pos+FPix3_pos', 'BPix1+FPix1_neg+FPix3_neg',
+        'BPix1+BPix2+BPix3+BPix4',
 
-        'FPix1_pos+FPix2_pos+FPix3_pos','FPix1_pos+FPix2_pos+FPix4_pos',
-        'FPix2_pos+FPix3_pos+FPix4_pos','FPix2_pos+FPix4_pos+FPix5_pos',
-        'FPix1_pos+FPix2_pos+FPix3_pos','FPix1_pos+FPix2_pos+FPix4_pos',
+        'BPix1+BPix2+BPix3+FPix1_pos',
+        'BPix1+BPix2+BPix3+FPix1_neg',
+        'BPix1+BPix2+FPix1_pos+FPix2_pos',
+        'BPix1+BPix2+FPix1_neg+FPix2_neg',
+        'BPix1+FPix1_pos+FPix2_pos+FPix3_pos',
+        'BPix1+FPix1_neg+FPix2_neg+FPix3_neg',
+        'FPix1_pos+FPix2_pos+FPix3_pos+FPix4_pos',
+        'FPix1_neg+FPix2_neg+FPix3_neg+FPix4_neg',
+        'FPix2_pos+FPix3_pos+FPix4_pos+FPix5_pos',
+        'FPix2_neg+FPix3_neg+FPix4_neg+FPix5_neg',
+        'FPix3_pos+FPix4_pos+FPix5_pos+FPix6_pos',
+        'FPix3_neg+FPix4_neg+FPix5_neg+FPix6_neg',
+        'FPix4_pos+FPix5_pos+FPix6_pos+FPix7_pos',
+        'FPix4_neg+FPix5_neg+FPix6_neg+FPix7_neg',
+        'FPix5_pos+FPix6_pos+FPix7_pos+FPix8_pos',
+        'FPix5_neg+FPix6_neg+FPix7_neg+FPix8_neg'
 #      'BPix1+BPix2+BPix3+BPix4',
 #      'BPix1+BPix2+BPix3+FPix1_pos',
 #      'BPix1+BPix2+BPix3+FPix1_neg',
@@ -522,8 +546,7 @@ hltPhase2PixelTracksSeedLayers = cms.EDProducer( "SeedingLayersEDProducer",
     MTID = cms.PSet(  ),
     FPix = cms.PSet(
         HitProducer = cms.string('siPixelRecHits'), #PreSplitting'),
-        TTRHBuilder = cms.string('WithTrackAngle'),
-        skipClusters = cms.InputTag("hltPhase2L1StepSeedClusterMask")
+        TTRHBuilder = cms.string('WithTrackAngle')
 #      hitErrorRPhi = cms.double( 0.0051 ),
 #      TTRHBuilder = cms.string( "hltESPTTRHBuilderPixelOnly" ),
 #      useErrorsFromParam = cms.bool( True ),
@@ -536,8 +559,37 @@ hltPhase2PixelTracksSeedLayers = cms.EDProducer( "SeedingLayersEDProducer",
     TOB = cms.PSet(  ),
     BPix = cms.PSet(
         HitProducer = cms.string('siPixelRecHits'), #PreSplitting'),
-        TTRHBuilder = cms.string('WithTrackAngle'),
-        skipClusters = cms.InputTag("hltPhase2L1StepSeedClusterMask")
+        TTRHBuilder = cms.string('WithTrackAngle')
+#      hitErrorRPhi = cms.double( 0.0027 ),
+#      TTRHBuilder = cms.string( "hltESPTTRHBuilderPixelOnly" ),
+#      useErrorsFromParam = cms.bool( True ),
+#      hitErrorRZ = cms.double( 0.006 ),
+#      HitProducer = cms.string( "hltSiPixelRecHits" )
+    ),
+    TIB = cms.PSet(  )
+)
+
+hltPhase2PixelTracksSeedLayersEta4 = cms.EDProducer( "SeedingLayersEDProducer",
+    layerList = cms.vstring(layerListForPhase2Eta4),
+    MTOB = cms.PSet(  ),
+    TEC = cms.PSet(  ),
+    MTID = cms.PSet(  ),
+    FPix = cms.PSet(
+        HitProducer = cms.string('siPixelRecHits'), #PreSplitting'),
+        TTRHBuilder = cms.string('WithTrackAngle')
+#      hitErrorRPhi = cms.double( 0.0051 ),
+#      TTRHBuilder = cms.string( "hltESPTTRHBuilderPixelOnly" ),
+#      useErrorsFromParam = cms.bool( True ),
+#      hitErrorRZ = cms.double( 0.0036 ),
+#      HitProducer = cms.string( "hltSiPixelRecHits" )
+    ),
+    MTEC = cms.PSet(  ),
+    MTIB = cms.PSet(  ),
+    TID = cms.PSet(  ),
+    TOB = cms.PSet(  ),
+    BPix = cms.PSet(
+        HitProducer = cms.string('siPixelRecHits'), #PreSplitting'),
+        TTRHBuilder = cms.string('WithTrackAngle')
 #      hitErrorRPhi = cms.double( 0.0027 ),
 #      TTRHBuilder = cms.string( "hltESPTTRHBuilderPixelOnly" ),
 #      useErrorsFromParam = cms.bool( True ),
@@ -600,49 +652,6 @@ hltPhase2TrimmedPixelVertices = cms.EDProducer( "PixelVertexCollectionTrimmer",
     PVcomparer = cms.PSet(  refToPSet_ = cms.string( "hltPhase2PSetPvClusterComparerForIT" ) ),
     maxVtx = cms.uint32( 100 ) # > 200 # previous 100
 )
-
-hltPhase2PixelTracksCutClassifier = cms.EDProducer( "TrackCutClassifier",
-    src = cms.InputTag( "hltPhase2PixelTracks" ),
-    beamspot = cms.InputTag( "offlineBeamSpot" ),
-    vertices = cms.InputTag( "" ),
-    qualityCuts = cms.vdouble( -0.7, 0.1, 0.7 ),
-    mva = cms.PSet(
-      minPixelHits = cms.vint32( 0, 3, 3 ),
-      maxDzWrtBS = cms.vdouble( 3.40282346639E38, 3.40282346639E38, 60.0 ),
-      dr_par = cms.PSet(
-        d0err = cms.vdouble( 0.003, 0.003, 3.40282346639E38 ),
-        dr_par2 = cms.vdouble( 0.3, 0.3, 3.40282346639E38 ),
-        dr_par1 = cms.vdouble( 0.4, 0.4, 3.40282346639E38 ),
-        dr_exp = cms.vint32( 4, 4, 4 ),
-        d0err_par = cms.vdouble( 0.001, 0.001, 3.40282346639E38 )
-      ),
-      maxLostLayers = cms.vint32( 99, 99, 99 ),
-      min3DLayers = cms.vint32( 0, 2, 3 ),
-      dz_par = cms.PSet(
-        dz_par1 = cms.vdouble( 0.4, 0.4, 3.40282346639E38 ),
-        dz_par2 = cms.vdouble( 0.35, 0.35, 3.40282346639E38 ),
-        dz_exp = cms.vint32( 4, 4, 4 )
-      ),
-      minNVtxTrk = cms.int32( 3 ),
-      maxDz = cms.vdouble( 3.40282346639E38, 3.40282346639E38, 3.40282346639E38 ),
-      minNdof = cms.vdouble( 1.0E-5, 1.0E-5, 1.0E-5 ),
-      maxChi2 = cms.vdouble( 9999., 9999., 30.0 ),
-      maxDr = cms.vdouble( 99., 99., 1. ),
-      minLayers = cms.vint32( 0, 2, 3 )
-    ),
-    ignoreVertices = cms.bool( True ),
-)
-
-hltPhase2PixelTracksSelectionHighPurity = cms.EDProducer( "TrackCollectionFilterCloner",
-    minQuality = cms.string( "highPurity" ),
-    copyExtras = cms.untracked.bool( True ),
-    copyTrajectories = cms.untracked.bool( False ),
-    originalSource = cms.InputTag( "hltPhase2PixelTracks" ),
-    originalQualVals = cms.InputTag( 'hltPhase2PixelTracksCutClassifier','QualityMasks' ),
-    originalMVAVals = cms.InputTag( 'hltPhase2PixelTracksCutClassifier','MVAValues' )
-)
-
-#######
 
 hltPhase2VertexMerger = cms.EDProducer("VertexMerger",
     maxFraction = cms.double(0.7),
@@ -978,9 +987,9 @@ hltPhase2GeneralTracks = cms.EDProducer("TrackListMerger",
     MinPT = cms.double(0.9), # ptcut previous 0.05
     ShareFrac = cms.double(0.19),
     TrackProducers = cms.VInputTag(
-                #"hltPhase2InitialStepTracks", "hltPhase2HighPtTripletStepTracks" ### v2
-        	"hltPhase2InitialStepTrackSelectionHighPurity", "hltPhase2HighPtTripletStepTrackSelectionHighPurity" ### v2 # trackcutclassifier
-            ),
+        #"hltPhase2InitialStepTracks", "hltPhase2HighPtTripletStepTracks" ### v2
+	"hltPhase2InitialStepTrackSelectionHighPurity", "hltPhase2HighPtTripletStepTrackSelectionHighPurity" ### v2 # trackcutclassifier
+    ),
     allowFirstHitShare = cms.bool(True),
     copyExtras = cms.untracked.bool(True),
     copyMVA = cms.bool(False), # trackcutclassifier before True
@@ -1011,54 +1020,51 @@ hltPhase2GeneralTracks = cms.EDProducer("TrackListMerger",
     writeOnlyTrkQuals = cms.bool(False)
 )
 
+hltPhase2GeneralTracks = cms.EDProducer("TrackListMerger",
+    Epsilon = cms.double(-0.001),
+    FoundHitBonus = cms.double(5.0),
+    LostHitPenalty = cms.double(5.0),
+    MaxNormalizedChisq = cms.double(1000.0),
+    MinFound = cms.int32(3),
+    MinPT = cms.double(0.8), # ptcut previous 0.05
+    ShareFrac = cms.double(0.25),
+    TrackProducers = cms.VInputTag(
+    "hltPhase2L1CtfTracks",
+    "hltPhase2InitialStepTracks"#, "hltPhase2HighPtTripletStepTracks" ### v2
+    #"L1TrackSelectionHighPurity",
+    #"hltPhase2InitialStepTrackSelectionHighPurity", "hltPhase2HighPtTripletStepTrackSelectionHighPurity" ### v2 # trackcutclassifier
+    ),
+    allowFirstHitShare = cms.bool(True),
+    copyExtras = cms.untracked.bool(True),
+    copyMVA = cms.bool(False), # trackcutclassifier before True
+    hasSelector = cms.vint32(
+        1,1#,1#, 1#, 1, 1,  ### v2 # trackcutclassifier
+        #1
+    ),
+    indivShareFrac = cms.vdouble(
+        #1.0, 0.16#, 0.095, 0.09, 0.09, ### v2
+        ##0.09
+	1.0,1.0#,0.9 # trackcutclassifier
+    ),
+    makeReKeyedSeeds = cms.untracked.bool(False),
+    newQuality = cms.string('confirmed'),
+    selectedTrackQuals = cms.VInputTag(
+    cms.InputTag("hltPhase2L1StepSelector","L1StepCut"),
+    cms.InputTag("hltPhase2InitialStepSelector","initialStep")#, cms.InputTag("hltHighPtTripletStepSelector","highPtTripletStep")### v2
+	#cms.InputTag("L1TrackSelectionHighPurity"),
+    #cms.InputTag("hltPhase2InitialStepTrackSelectionHighPurity"), cms.InputTag("hltPhase2HighPtTripletStepTrackSelectionHighPurity") # trackcutclassifier
 
-
-
-# hltPhase2GeneralTracks = cms.EDProducer("TrackListMerger",
-#     Epsilon = cms.double(-0.001),
-#     FoundHitBonus = cms.double(5.0),
-#     LostHitPenalty = cms.double(5.0),
-#     MaxNormalizedChisq = cms.double(1000.0),
-#     MinFound = cms.int32(3),
-#     MinPT = cms.double(0.8), # ptcut previous 0.05
-#     ShareFrac = cms.double(0.25),
-#     TrackProducers = cms.VInputTag(
-#     "hltPhase2L1CtfTracks",
-#     "hltPhase2InitialStepTracks"#, "hltPhase2HighPtTripletStepTracks" ### v2
-#     #"L1TrackSelectionHighPurity",
-#     #"hltPhase2InitialStepTrackSelectionHighPurity", "hltPhase2HighPtTripletStepTrackSelectionHighPurity" ### v2 # trackcutclassifier
-#     ),
-#     allowFirstHitShare = cms.bool(True),
-#     copyExtras = cms.untracked.bool(True),
-#     copyMVA = cms.bool(False), # trackcutclassifier before True
-#     hasSelector = cms.vint32(
-#         1,1#,1#, 1#, 1, 1,  ### v2 # trackcutclassifier
-#         #1
-#     ),
-#     indivShareFrac = cms.vdouble(
-#         #1.0, 0.16#, 0.095, 0.09, 0.09, ### v2
-#         ##0.09
-# 	1.0,1.0#,0.9 # trackcutclassifier
-#     ),
-#     makeReKeyedSeeds = cms.untracked.bool(False),
-#     newQuality = cms.string('confirmed'),
-#     selectedTrackQuals = cms.VInputTag(
-#     #cms.InputTag("hltPhase2L1StepSelector","L1StepCut"),
-#     cms.InputTag("hltPhase2InitialStepSelector","initialStep")#, cms.InputTag("hltHighPtTripletStepSelector","highPtTripletStep")### v2
-# 	#cms.InputTag("L1TrackSelectionHighPurity"),
-#     #cms.InputTag("hltPhase2InitialStepTrackSelectionHighPurity"), cms.InputTag("hltPhase2HighPtTripletStepTrackSelectionHighPurity") # trackcutclassifier
-#
-#     ),
-#     setsToMerge = cms.VPSet(cms.PSet(
-#         pQual = cms.bool(True),
-#         tLists = cms.vint32(
-#             0, 1#, 2#, 3, 4, ### v2
-#             #5
-#         )
-#     )),
-#     trackAlgoPriorityOrder = cms.string('trackAlgoPriorityOrderL1'),
-#     writeOnlyTrkQuals = cms.bool(False)
-# )
+    ),
+    setsToMerge = cms.VPSet(cms.PSet(
+        pQual = cms.bool(True),
+        tLists = cms.vint32(
+            0, 1#, 2#, 3, 4, ### v2
+            #5
+        )
+    )),
+    trackAlgoPriorityOrder = cms.string('trackAlgoPriorityOrderL1'),
+    writeOnlyTrkQuals = cms.bool(False)
+)
 
 ########## highpttriplet
 hltPhase2HighPtTripletStepClusters = cms.EDProducer("TrackClusterRemoverPhase2",
@@ -1726,21 +1732,6 @@ hltPhase2InitialStepSeeds = cms.EDProducer("SeedCreatorFromRegionConsecutiveHits
 """
 
 #hltIter0PFLowPixelSeedsFromPixelTracks
-
-hltPhase2InitialStepClusters = cms.EDProducer("TrackClusterRemoverPhase2",
-    TrackQuality = cms.string('highPurity'),
-    maxChi2 = cms.double(9.0),
-    mightGet = cms.optional.untracked.vstring, # cmssw_11_1
-    minNumberOfLayersWithMeasBeforeFiltering = cms.int32(0),
-    oldClusterRemovalInfo = cms.InputTag(""),
-    #overrideTrkQuals = cms.InputTag("initialStepSelector","initialStep"),
-    overrideTrkQuals = cms.InputTag(""), # trackcutclassifier
-    phase2OTClusters = cms.InputTag("siPhase2Clusters"),
-    phase2pixelClusters = cms.InputTag("siPixelClusters"),
-    trackClassifier = cms.InputTag("","QualityMasks"),
-    trajectories = cms.InputTag("hltPhase2L1TracksSelectionHighPurity")
-)
-
 hltPhase2InitialStepSeeds = cms.EDProducer( "SeedGeneratorFromProtoTracksEDProducer",
     useEventsWithNoVertex = cms.bool( True ),
     originHalfLength = cms.double(10), #10 1  previous 0.3 ),
@@ -2036,3 +2027,338 @@ hltPhase2InitialStepTracks = cms.EDProducer("TrackProducer",
     useHitsSplitting = cms.bool(False),
     useSimpleMF = cms.bool(False)
 )
+
+############# ordered setup
+
+ecalUncalibRecHitSequence = cms.Sequence(
+    bunchSpacingProducer +
+    ecalMultiFitUncalibRecHit +
+    ecalDetIdToBeRecovered
+)
+
+caloLocalReco = cms.Sequence(
+    hbhereco +
+    hfprereco +
+    hfreco + #uses hfprereco
+    horeco +
+    ecalUncalibRecHitSequence +
+    ecalRecHit
+)
+
+itLocalReco = cms.Sequence(
+    siPhase2Clusters +
+    siPixelClusters +
+    siPixelClusterShapeCache +
+    siPixelRecHits
+)
+otLocalReco = cms.Sequence(
+    MeasurementTrackerEvent
+)
+
+hltPhase2PixelTracksSequence = cms.Sequence(
+    hltPhase2PixelTrackFilterByKinematics +
+    hltPhase2PixelFitterByHelixProjections +
+    hltPhase2PixelTracksTrackingRegions +  # = hlt
+    hltPhase2PixelTracksSeedLayers +
+    hltPhase2PixelTracksHitDoublets +
+    hltPhase2PixelTracksHitQuadruplets +
+    hltPhase2PixelTracks
+)
+
+hltPhase2PixelVerticesSequence = cms.Sequence( # pixelVertices
+    hltPhase2PixelVertices +
+    hltPhase2TrimmedPixelVertices
+)
+
+
+hltPhase2InitialStepPVSequence = cms.Sequence(
+    hltPhase2FirstStepPrimaryVerticesUnsorted +
+    hltPhase2InitialStepTrackRefsForJets +
+    caloTowerForTrk + # uses hbhereco, hfreco, horeco, ecalRecHit
+    hltPhase2Ak4CaloJetsForTrk +  # uses caloTowerForTrk
+    hltPhase2FirstStepPrimaryVertices
+)
+
+
+
+hltPhase2InitialStepSequence = cms.Sequence(
+    #hltPhase2InitialStepSeedLayers +
+    #hltPhase2InitialStepTrackingRegions +
+    #hltPhase2InitialStepHitDoublets +
+    #hltPhase2InitialStepHitQuadruplets +
+    hltPhase2InitialStepSeeds +
+    hltPhase2InitialStepTrackCandidates +
+    hltPhase2InitialStepTracks +
+    #hltPhase2InitialStepPVSequence + # use pixelVertices
+    hltPhase2InitialStepTrackCutClassifier +
+    hltPhase2InitialStepTrackSelectionHighPurity
+)
+
+hltPhase2InitialStepSequenceL1 = cms.Sequence(
+    #hltPhase2InitialStepSeedLayers +
+    #hltPhase2InitialStepTrackingRegions +
+    #hltPhase2InitialStepHitDoublets +
+    #hltPhase2InitialStepHitQuadruplets +
+    hltPhase2InitialStepSeeds +
+    hltPhase2InitialStepTrackCandidates +
+    hltPhase2InitialStepTracks +
+    #hltPhase2InitialStepPVSequence + # use pixelVertices
+    hltPhase2InitialStepSelector
+    #hltPhase2InitialStepTrackCutClassifier +
+    #hltPhase2InitialStepTrackSelectionHighPurity
+)
+
+hltPhase2HighPtTripletStepSequence = cms.Sequence(
+    hltPhase2HighPtTripletStepClusters +
+    hltPhase2HighPtTripletStepSeedLayers +
+    hltPhase2HighPtTripletStepTrackingRegions +
+    hltPhase2HighPtTripletStepHitDoublets +
+    hltPhase2HighPtTripletStepHitTriplets +
+    hltPhase2HighPtTripletStepSeeds +
+    hltPhase2HighPtTripletStepTrackCandidates +
+    hltPhase2HighPtTripletStepTracks +
+    hltPhase2HighPtTripletStepTrackCutClassifier +
+    hltPhase2HighPtTripletStepTrackSelectionHighPurity
+)
+
+vertexReco = cms.Sequence(
+    hltPhase2InitialStepPVSequence + # pixelVertices moved to here, for now still keeping it
+    hltPhase2Ak4CaloJetsForTrk + # uses caloTowerForTrk
+    hltPhase2UnsortedOfflinePrimaryVertices +
+    hltPhase2TrackWithVertexRefSelectorBeforeSorting +
+    hltPhase2TrackRefsForJetsBeforeSorting +
+    hltPhase2OfflinePrimaryVertices +
+    hltPhase2OfflinePrimaryVerticesWithBS +
+    hltPhase2InclusiveVertexFinder +
+    hltPhase2VertexMerger +
+    hltPhase2TrackVertexArbitrator +
+    hltPhase2InclusiveSecondaryVertices
+)
+
+hltPhase2L1TracksSequence = cms.Sequence(
+    hltPhase2L1TrackStepClusters +
+    hltPhase2L1TrackSeedsFromL1Tracks +
+    #L1TrackCandidates +
+    hltPhase2L1TrackCandidates +
+    hltPhase2L1CtfTracks +
+    #L1StepPVSequence +
+    hltPhase2L1StepSelector# +
+    #hltPhase2L1TracksCutClassifier #+
+    #L1TrackSelectionHighPurity
+)
+
+MC_Tracking_v7 = cms.Path(
+    itLocalReco +
+    offlineBeamSpot + #cmssw_10_6
+    otLocalReco +
+    #caloLocalReco +
+    trackerClusterCheck +
+    hltPhase2PixelTracksSequence + # pixeltracks
+    hltPhase2PixelVerticesSequence + # pixelvertices
+##############################################
+    hltPhase2InitialStepSequence +
+    hltPhase2HighPtTripletStepSequence +
+##############################################
+    hltPhase2GeneralTracks
+)
+
+
+MC_Tracking_v7_L1_v1 = cms.Path(
+    itLocalReco +
+    offlineBeamSpot + #cmssw_10_6
+    hltPhase2TTTracksFromTracklet +
+    otLocalReco +
+    #caloLocalReco +
+    trackerClusterCheck +
+    hltPhase2PixelTracksSequence + # pixeltracks
+    hltPhase2PixelVerticesSequence + # pixelvertices
+##############################################
+    hltPhase2InitialStepSequenceL1 +
+    hltPhase2L1TracksSequence +
+    #hltPhase2HighPtTripletStepSequence +
+##############################################
+    hltPhase2GeneralTracks
+)
+
+
+MC_Vertexing = cms.Path(
+    caloLocalReco +
+    vertexReco
+)
+import FWCore.ParameterSet.Config as cms
+from tracking_modules import *
+from generic_sequences import *
+from L1Trigger.TrackFindingTracklet.Tracklet_cfi import *
+
+
+
+####################################################
+########################## Commons
+#############
+
+hltPhase2L1TTTracksEmulation = TTTracksFromTrackletEmulation.clone()
+
+hltPhase2StartUp = cms.Sequence(
+    itLocalReco +
+    offlineBeamSpot + #cmssw_10_6
+    otLocalReco +
+    #caloLocalReco +
+    trackerClusterCheck
+    )
+
+hltPhase2InitialStepPVSequence = cms.Sequence(
+    hltPhase2FirstStepPrimaryVerticesUnsorted +
+    hltPhase2InitialStepTrackRefsForJets +
+    caloTowerForTrk + # uses hbhereco, hfreco, horeco, ecalRecHit
+    hltPhase2Ak4CaloJetsForTrk +  # uses caloTowerForTrk
+    hltPhase2FirstStepPrimaryVertices
+)
+
+hltPhase2InitialStepSequence = cms.Sequence(
+    #hltPhase2InitialStepSeedLayers +
+    #hltPhase2InitialStepTrackingRegions +
+    #hltPhase2InitialStepHitDoublets +
+    #hltPhase2InitialStepHitQuadruplets +
+    hltPhase2InitialStepSeeds +
+    hltPhase2InitialStepTrackCandidates +
+    hltPhase2InitialStepTracks +
+    #hltPhase2InitialStepPVSequence + # use pixelVertices
+    hltPhase2InitialStepTrackCutClassifier +
+    hltPhase2InitialStepTrackSelectionHighPurity
+)
+
+####################################################
+########################## Basic V7 setup
+#############
+
+hltPhase2PixelTracksSequence = cms.Sequence(
+    hltPhase2PixelTrackFilterByKinematics +
+    hltPhase2PixelFitterByHelixProjections +
+    hltPhase2PixelTracksTrackingRegions +
+    hltPhase2PixelTracksSeedLayers +
+    hltPhase2PixelTracksHitDoublets +
+    hltPhase2PixelTracksHitQuadruplets +
+    hltPhase2PixelTracks
+)
+
+hltPhase2PixelVerticesSequence = cms.Sequence(
+    hltPhase2PixelVertices +
+    hltPhase2TrimmedPixelVertices
+)
+
+
+hltPhase2InitialStepSequenceFromPixelTracks = cms.Sequence(
+    hltPhase2InitialStepSeeds +
+    hltPhase2InitialStepTrackCandidates +
+    hltPhase2InitialStepTracks +
+    hltPhase2InitialStepTrackCutClassifier +
+    hltPhase2InitialStepTrackSelectionHighPurity
+)
+
+hltPhase2HighPtTripletStepSequence = cms.Sequence(
+    hltPhase2HighPtTripletStepClusters +
+    hltPhase2HighPtTripletStepSeedLayers +
+    hltPhase2HighPtTripletStepTrackingRegions +
+    hltPhase2HighPtTripletStepHitDoublets +
+    hltPhase2HighPtTripletStepHitTriplets +
+    hltPhase2HighPtTripletStepSeeds +
+    hltPhase2HighPtTripletStepTrackCandidates +
+    hltPhase2HighPtTripletStepTracks +
+    hltPhase2HighPtTripletStepTrackCutClassifier +
+    hltPhase2HighPtTripletStepTrackSelectionHighPurity
+)
+
+
+original_v7 = cms.Path(
+    hltPhase2StartUp +
+    hltPhase2PixelTracksSequence + # pixeltracks
+    hltPhase2PixelVerticesSequence + # pixelvertices
+    hltPhase2InitialStepSequence +
+    hltPhase2HighPtTripletStepSequence +
+    hltPhase2GeneralTracks
+)
+
+####################################################
+########################## Pure L1 setup (\w vertexing)
+#############
+
+hltPhase2L1TracksStepPrimaryVerticesUnsorted = hltPhase2FirstStepPrimaryVerticesUnsorted.clone()
+hltPhase2L1TracksStepPrimaryVerticesUnsorted.TrackLabel = cms.InputTag("hltPhase2L1CtfTracks")
+
+hltPhase2L1TracksStepTrackRefsForJets = hltPhase2InitialStepTrackRefsForJets.clone()
+hltPhase2L1TracksStepTrackRefsForJets.src = cms.InputTag("hltPhase2L1CtfTracks")
+
+hltPhase2Ak4CaloJetsForTrkL1 = hltPhase2Ak4CaloJetsForTrk.clone()
+hltPhase2Ak4CaloJetsForTrkL1.srcPVs = cms.InputTag("hltPhase2L1TracksStepPrimaryVerticesUnsorted")
+
+hltPhase2L1TracksStepPrimaryVertices = hltPhase2FirstStepPrimaryVertices.clone()
+hltPhase2L1TracksStepPrimaryVertices.jets = cms.InputTag("hltPhase2Ak4CaloJetsForTrkL1")
+hltPhase2L1TracksStepPrimaryVertices.particles = cms.InputTag("hltPhase2L1TracksStepTrackRefsForJets")
+
+hltPhase2L1PVSequence = cms.Sequence(
+    hltPhase2L1TracksStepPrimaryVerticesUnsorted +
+    hltPhase2L1TracksStepTrackRefsForJets +
+    caloTowerForTrk + # uses hbhereco, hfreco, horeco, ecalRecHit
+    hltPhase2Ak4CaloJetsForTrkL1 +  # uses caloTowerForTrk
+    hltPhase2L1TracksStepPrimaryVertices
+)
+
+hltPhase2L1TracksSequence = cms.Sequence(
+   
+    hltPhase2L1TrackSeedsFromL1Tracks +
+    hltPhase2L1TrackCandidates +
+    hltPhase2L1CtfTracks +
+    hltPhase2L1PVSequence +
+    hltPhase2L1TracksCutClassifier +#+
+    hltPhase2L1TracksSelectionHighPurity
+)
+
+pure_l1tracks = cms.Path(
+    hltPhase2StartUp +
+    hltPhase2L1TTTracksEmulation +
+    hltPhase2L1TracksSequence
+)
+
+
+hltPhase2InitialStepSequenceL1 = cms.Sequence(
+    #hltPhase2InitialStepSeedLayers +
+    #hltPhase2InitialStepTrackingRegions +
+    #hltPhase2InitialStepHitDoublets +
+    #hltPhase2InitialStepHitQuadruplets +
+    hltPhase2InitialStepSeeds +
+    hltPhase2InitialStepTrackCandidates +
+    hltPhase2InitialStepTracks +
+    #hltPhase2InitialStepPVSequence + # use pixelVertices
+    hltPhase2InitialStepSelector
+    #hltPhase2InitialStepTrackCutClassifier +
+    #hltPhase2InitialStepTrackSelectionHighPurity
+)
+
+
+MC_Vertexing = cms.Path(
+    caloLocalReco +
+    vertexReco
+)
+
+
+
+#
+#
+#
+#
+# MC_Tracking_v7_L1_v1 = cms.Path(
+#     itLocalReco +
+#     offlineBeamSpot + #cmssw_10_6
+#     hltPhase2TTTracksFromTracklet +
+#     otLocalReco +
+#     #caloLocalReco +
+#     trackerClusterCheck +
+#     hltPhase2PixelTracksSequence + # pixeltracks
+#     hltPhase2PixelVerticesSequence + # pixelvertices
+# ##############################################
+#     hltPhase2InitialStepSequenceL1 +
+#     hltPhase2L1TracksSequence +
+#     #hltPhase2HighPtTripletStepSequence +
+# ##############################################
+#     hltPhase2GeneralTracks
+# )

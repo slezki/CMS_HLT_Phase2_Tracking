@@ -77,12 +77,12 @@ def customizeL1TracksStepToMkFit(process):
 def customizeGeneralTracksToInitialL1TracksStep(process):
 
     process.hltPhase2L1TracksTaskSeed.add(process.hltPhase2L1TrackStepClusters)
-
+    
     process.trackAlgoPriorityOrder.algoOrder = cms.vstring('initialStep','ctf')
-    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1TracksSelectionHighPurity","hltPhase2L1TracksSelectionHighPurity")
+    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2InitialStepTrackSelectionHighPurity","hltPhase2L1TracksSelectionHighPurity")
     process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0)
     process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,1.0)
-    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2L1TracksSelectionHighPurity"),
+    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2InitialStepTrackSelectionHighPurity"),
                                                                      cms.InputTag("hltPhase2L1TracksSelectionHighPurity"))
     process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1)
 
