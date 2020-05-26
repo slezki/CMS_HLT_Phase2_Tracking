@@ -385,7 +385,7 @@ hltPhase2TrackValidatorPixelTrackingOnly.vertexAssociator = cms.untracked.InputT
 hltPhase2TrackValidatorL1 = hltPhase2TrackValidatorPixelTrackingOnly.clone()
 hltPhase2TrackValidatorL1.cores = cms.InputTag("highPtJetsForTrk")
 hltPhase2TrackValidatorL1.associators = cms.untracked.VInputTag("hltPhase2TrackingParticleL1TrackAsssociation")
-hltPhase2TrackValidatorL1.dirName = cms.string('Tracking/L1Tracks/')
+hltPhase2TrackValidatorL1.dirName = cms.string('Tracking/Track/')
 hltPhase2TrackValidatorL1.label = cms.VInputTag("hltPhase2L1CtfTracks")
 hltPhase2TrackValidatorL1.trackCollectionForDrCalculation = cms.InputTag("hltPhase2L1CtfTracks")
 
