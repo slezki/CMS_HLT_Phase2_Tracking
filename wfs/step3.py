@@ -43,7 +43,7 @@ process.MessageLogger = cms.Service("MessageLogger",
 
 
 LOCAL = True
-RECAS = True
+RECAS = False
 if not RECAS:
     if LOCAL:
         process.load("local_files")
@@ -141,13 +141,18 @@ process.Timing = cms.Service("Timing",
 )
 
 # Schedule definition
-process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
-                                   process.vertexing, process.prevalidation_purel1,
-                                   process.validation_purel1, process.dqm_purel1, process.DQMoutput_step])
+#process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
+#                                   process.vertexing, process.prevalidation_purel1,
+#                                   process.validation_purel1, process.dqm_purel1, process.DQMoutput_step])
+
+process.schedule = cms.Schedule(*[ process.raw2digi_step,process.initial_l1tracks,
+                                   process.vertexing, process.prevalidation_l1initial,
+                                   process.validation_purel1, process.dqm_l1initial, process.DQMoutput_step])
 
 #customizeGeneralTracksToPureL1TracksStep(process)
 customizePixelSeedsEta4(process)
-customizeGeneralTracksToPixelL1TracksStep(process)
+# customizeGeneralTracksToPixelL1TracksStep(process)
+customizeGeneralTracksToInitialL1TracksStep(process)
 #customizeL1TracksStepToMkFit(process)
 
 # process.schedule = cms.Schedule(*[ process.raw2digi_step,process.original_v7,

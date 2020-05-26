@@ -42,6 +42,9 @@ tripletsLayers = ['BPix1+BPix2+BPix3', 'BPix2+BPix3+BPix4',
 tripletsLayersEta4 = tripletsLayers +  ['BPix1+BPix2+FPix2_pos', 'BPix1+BPix2+FPix2_neg','BPix1+FPix1_pos+FPix3_pos',
                             'BPix1+FPix1_neg+FPix3_neg','FPix6_pos+FPix7_pos+FPix9_pos', 'FPix6_neg+FPix7_neg+FPix9_neg']
 
+
+
+
 #######################################
 ###################### L1 Tracks step
 #############
@@ -1716,6 +1719,21 @@ hltPhase2InitialStepSeeds = cms.EDProducer("SeedCreatorFromRegionConsecutiveHits
 """
 
 #hltIter0PFLowPixelSeedsFromPixelTracks
+
+hltPhase2InitialStepClusters = cms.EDProducer("TrackClusterRemoverPhase2",
+    TrackQuality = cms.string('highPurity'),
+    maxChi2 = cms.double(9.0),
+    mightGet = cms.optional.untracked.vstring, # cmssw_11_1
+    minNumberOfLayersWithMeasBeforeFiltering = cms.int32(0),
+    oldClusterRemovalInfo = cms.InputTag(""),
+    #overrideTrkQuals = cms.InputTag("initialStepSelector","initialStep"),
+    overrideTrkQuals = cms.InputTag(""), # trackcutclassifier
+    phase2OTClusters = cms.InputTag("siPhase2Clusters"),
+    phase2pixelClusters = cms.InputTag("siPixelClusters"),
+    trackClassifier = cms.InputTag("","QualityMasks"),
+    trajectories = cms.InputTag("hltPhase2L1TracksSelectionHighPurity")
+)
+
 hltPhase2InitialStepSeeds = cms.EDProducer( "SeedGeneratorFromProtoTracksEDProducer",
     useEventsWithNoVertex = cms.bool( True ),
     originHalfLength = cms.double(10), #10 1  previous 0.3 ),

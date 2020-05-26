@@ -71,8 +71,33 @@ def customizeL1TracksStepToMkFit(process):
     # proccess.siPixelClusters =
     process.hltPhase2L1TracksTaskSeed.add(process.hltPhase2L1TracksCandidatesMkFitInput,
                               process.hltPhase2L1TracksCandidatesMkFit)
+
     return process
 
+def customizeGeneralTracksToInitialL1TracksStep(process):
+
+    process.hltPhase2L1TracksTaskSeed.add(process.hltPhase2L1TrackStepClusters)
+
+    process.trackAlgoPriorityOrder.algoOrder = cms.vstring('initialStep','ctf')
+    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1TracksSelectionHighPurity","hltPhase2L1TracksSelectionHighPurity")
+    process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0)
+    process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,1.0)
+    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2L1TracksSelectionHighPurity"),
+                                                                     cms.InputTag("hltPhase2L1TracksSelectionHighPurity"))
+    process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1)
+
+    process.hltPhase2FirstStepPrimaryVerticesUnsorted.TrackLabel = cms.InputTag("hltPhase2L1CtfTracks")
+    process.hltPhase2InitialStepTrackRefsForJets.src = cms.InputTag("hltPhase2L1CtfTracks")
+
+    process.hltPhase2InitialStepTracks.clusterRemovalInfo = cms.InputTag("hltPhase2L1TrackStepClusters")
+
+    process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag(
+    "hltPhase2GeneralTracks", "hltPhase2CutsRecoTracksHp", "hltPhase2CutsRecoTracksInitialStep", "hltPhase2CutsRecoTracksInitialStepHp",
+    "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo", "hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
+    "hltPhase2GeneralTracksPt09", "hltPhase2CutsRecoTracksPt09Hp", "hltPhase2CutsRecoTracksBtvLike", "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
+    "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp", "hltPhase2CutsRecoTracksPt09InitialStep", "hltPhase2CutsRecoTracksPt09InitialStepHp")
+
+    return process
 
 def customizeGeneralTracksToPixelL1TracksStep(process):
 
@@ -100,5 +125,7 @@ def customizeGeneralTracksToPureL1TracksStep(process):
 
     process.hltPhase2FirstStepPrimaryVerticesUnsorted.TrackLabel = cms.InputTag("hltPhase2L1CtfTracks")
     process.hltPhase2InitialStepTrackRefsForJets.src = cms.InputTag("hltPhase2L1CtfTracks")
+
+    process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag("hltPhase2GeneralTracks")
 
     return process

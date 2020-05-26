@@ -24,4 +24,5 @@ dqm_general = cms.Task(hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTra
 dqm_l1 = cms.Task()
 
 dqm_original = cms.EndPath(dqm_commons,dqm_vertex,dqm_initial,dqm_highpt,dqm_general)
+dqm_l1initial = cms.EndPath(dqm_commons,dqm_vertex,dqm_initial,dqm_general)
 dqm_purel1 = cms.EndPath(dqm_commons)

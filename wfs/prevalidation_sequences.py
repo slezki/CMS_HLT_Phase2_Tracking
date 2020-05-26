@@ -59,4 +59,11 @@ prevalidation_original = cms.Path(prevalidation_startup,
                                   prevalidation_general)
 
 prevalidation_purel1 = cms.Path(prevalidation_startup,
-                                 prevalidation_l1)
+                                 prevalidation_l1,
+                                 prevalidation_general)
+
+prevalidation_l1initial = cms.Path(prevalidation_startup,
+                                  prevalidation_v0,
+                                  prevalidation_l1,
+                                  prevalidation_initial,
+                                  prevalidation_general)
