@@ -67,14 +67,6 @@ hltPhase2InitialStepSequenceFromPixelTracks = cms.Sequence(
     hltPhase2InitialStepTrackSelectionHighPurity
 )
 
-hltPhase2InitialStepSequenceFromPixelTracks = cms.Sequence(
-    hltPhase2InitialStepSeeds +
-    hltPhase2InitialStepTrackCandidates +
-    hltPhase2InitialStepTracks +
-    hltPhase2InitialStepTrackCutClassifier +
-    hltPhase2InitialStepTrackSelectionHighPurity
-)
-
 hltPhase2HighPtTripletStepSequence = cms.Sequence(
     hltPhase2HighPtTripletStepClusters +
     hltPhase2HighPtTripletStepSeedLayers +
@@ -189,6 +181,16 @@ initial_l1tracks = cms.Path(
     hltPhase2PixelVerticesSequence + # pixelvertices
     TTTracksFromTrackletEmulation +
     hltPhase2InitialStepSequenceL1 +
+    hltPhase2L1TracksSequence +
+    hltPhase2GeneralTracks
+)
+
+initial_l1tracks_mask = cms.Path(
+    hltPhase2StartUp +
+    TTTracksFromTrackletEmulation +
+    hltPhase2InitialStepSequenceL1 +
+    hltPhase2PixelTracksSequence + # pixeltracks
+    hltPhase2PixelVerticesSequence + # pixelvertices
     hltPhase2L1TracksSequence +
     hltPhase2GeneralTracks
 )

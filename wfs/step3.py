@@ -145,14 +145,19 @@ process.Timing = cms.Service("Timing",
 #                                   process.vertexing, process.prevalidation_purel1,
 #                                   process.validation_purel1, process.dqm_purel1, process.DQMoutput_step])
 
-process.schedule = cms.Schedule(*[ process.raw2digi_step,process.initial_l1tracks,
+# process.schedule = cms.Schedule(*[ process.raw2digi_step,process.initial_l1tracks,
+#                                    process.vertexing, process.prevalidation_l1initial,
+#                                    process.validation_purel1, process.dqm_l1initial, process.DQMoutput_step])
+
+process.schedule = cms.Schedule(*[ process.raw2digi_step,process.initial_l1tracks_mask,
                                    process.vertexing, process.prevalidation_l1initial,
                                    process.validation_purel1, process.dqm_l1initial, process.DQMoutput_step])
 
 #customizeGeneralTracksToPureL1TracksStep(process)
 customizePixelSeedsEta4(process)
 # customizeGeneralTracksToPixelL1TracksStep(process)
-customizeGeneralTracksToInitialL1TracksStep(process)
+#customizeGeneralTracksToInitialL1TracksStep(process)
+customizeGeneralTracksToInitialL1TracksStepMasking(process)
 #customizeL1TracksStepToMkFit(process)
 
 # process.schedule = cms.Schedule(*[ process.raw2digi_step,process.original_v7,
