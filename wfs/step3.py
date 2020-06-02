@@ -51,7 +51,7 @@ process.MessageLogger = cms.Service("MessageLogger",
 
 
 LOCAL = True
-RECAS = True#False
+RECAS = False
 if not RECAS:
     if LOCAL:
         process.load("local_files")
@@ -234,12 +234,23 @@ process.DQMFileSaverOutput = cms.EndPath( process.fastTimerServiceClient + proce
 #                                    process.vertexing, process.prevalidation_original,
 #                                    process.validation_original, process.dqm_original, process.DQMoutput_step ])
 
-#customizeOriginal(process)
-#customizeGeneralTracksToPureL1TracksStep(process)
+if options.wf == -1:
+    customizeOriginal(process)
+if options.wf == 0:
+    customizeGeneralTracksToPureL1TracksStep(process)
+    print("0")
+if options.wf == 1:
+    customizeGeneralTracksToPixelL1TracksStep(process)
+if options.wf == 2:
+    customizeGeneralTracksToInitialL1TracksStep(process)
+if options.wf == 3:
+    customizeGeneralTracksToInitialL1TracksStep(process)
+
+#
 #ustomizeGeneralTracksToPixelL1TracksStep(process)
 #customizeGeneralTracksToPixelTripletL1TracksStep(process)
 #customizeGeneralTracksToInitialL1TracksStep(process)
-customizeGeneralTracksToInitialL1TracksStepMasking(process)
+#customizeGeneralTracksToInitialL1TracksStepMasking(process)
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 
