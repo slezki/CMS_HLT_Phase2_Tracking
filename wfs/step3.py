@@ -6,10 +6,10 @@
 import FWCore.ParameterSet.Config as cms
 from Configuration.Eras.Era_Phase2C9_cff import Phase2C9
 from ttbar_14_D49PU200 import *
-from FWCore.ParameterSet.VarParsing import VarParsing
+import FWCore.ParameterSet.VarParsing as VarParsing
 from customize_steps import *
 
-process = cms.Process('RECO',Phase2C9)
+process = cms.Process('RECO',Phase2C9,l1tracking)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -26,9 +26,17 @@ process.load('DQMServices.Core.DQMStoreNonLegacy_cff')
 process.load('DQMOffline.Configuration.DQMOfflineMC_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
+options = VarParsing.VarParsing('analysis')
+options.register ('wf',
+                  -1, # default value
+                  VarParsing.VarParsing.multiplicity.singleton, # singleton or list
+                  VarParsing.VarParsing.varType.int,          # string, int, or float
+                  "Wf number")
+
+options.parseArguments()
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(8),
+    input = cms.untracked.int32(1),
     output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
 
@@ -43,7 +51,7 @@ process.MessageLogger = cms.Service("MessageLogger",
 
 
 LOCAL = True
-RECAS = False
+RECAS = True#False
 if not RECAS:
     if LOCAL:
         process.load("local_files")
@@ -81,7 +89,7 @@ process.DQMoutput = cms.OutputModule("DQMRootOutputModule",
         dataTier = cms.untracked.string('DQMIO'),
         filterName = cms.untracked.string('')
     ),
-    fileName = cms.untracked.string('file:step3_inDQM.root'),
+    fileName = cms.untracked.string('file:step3_inDQM_2.root'),
     outputCommands = process.DQMEventContent.outputCommands,
     splitLevel = cms.untracked.int32(0)
 )
@@ -135,19 +143,14 @@ process.PixelCPEGenericESProducer.DoCosmics = False
 process.PixelCPEGenericESProducer.Upgrade = cms.bool(True)
 ######
 
-process.Timing = cms.Service("Timing",
-  summaryOnly = cms.untracked.bool(False),
-  useJobReport = cms.untracked.bool(True)
-)
-
 
 ### For timing
 ### Tracking @ HLT: set up FastTimerService; analogous setting can be obtained with option --timing in hltGetConfiguration
 # configure the FastTimerService
 process.load( "HLTrigger.Timer.FastTimerService_cfi" )
 # print a text summary at the end of the job
-process.FastTimerService.printEventSummary         = False
-process.FastTimerService.printRunSummary           = False
+process.FastTimerService.printEventSummary         = True
+process.FastTimerService.printRunSummary           = True
 process.FastTimerService.printJobSummary           = True
 
 
@@ -161,15 +164,15 @@ process.FastTimerService.enableDQMbyPath           = True
 process.FastTimerService.enableDQMbyModule         = True
 
 # enable per-event DQM plots vs lumisection
-process.FastTimerService.enableDQMbyLumiSection    = True
+process.FastTimerService.enableDQMbyLumiSection    = False
 process.FastTimerService.dqmLumiSectionsRange      = 2500
 
 # set the time resolution of the DQM plots
-process.FastTimerService.dqmTimeRange              = 100000.
+process.FastTimerService.dqmTimeRange              = 1000000.
 process.FastTimerService.dqmTimeResolution         =    0.5
-process.FastTimerService.dqmPathTimeRange          = 100000.
+process.FastTimerService.dqmPathTimeRange          = 1000000.
 process.FastTimerService.dqmPathTimeResolution     =    0.5
-process.FastTimerService.dqmModuleTimeRange        =   8000.
+process.FastTimerService.dqmModuleTimeRange        =  8000000.
 process.FastTimerService.dqmModuleTimeResolution   =    0.5
 
 process.FastTimerService.dqmMemoryRange            = 1000000
@@ -184,7 +187,7 @@ process.FastTimerService.dqmPath                   = 'HLT/TimerService'
 process.FastTimerService.enableDQMbyProcesses      = False
 
 #process.FastTimerOutput = cms.EndPath( process.dqmOutput )
-process.DQMoutput_step = cms.EndPath( process.DQMoutput) 
+process.DQMoutput_step = cms.EndPath( process.DQMoutput)
 
 # Schedule definition
 #process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
@@ -195,21 +198,48 @@ process.DQMoutput_step = cms.EndPath( process.DQMoutput)
 #                                    process.vertexing, process.prevalidation_l1initial,
 #                                    process.validation_purel1, process.dqm_l1initial, process.DQMoutput_step])
 
-process.schedule = cms.Schedule(*[ process.raw2digi_step,process.initial_l1tracks_mask,
-                                   process.vertexing, process.prevalidation_l1initial,
-                                   process.validation_l1initial, process.dqm_l1initial, process.DQMoutput_step])
+# process.schedule = cms.Schedule(*[ process.raw2digi_step,process.initial_l1tracks_mask,
+#                                    process.vertexing, process.prevalidation_l1initial,
+#                                    process.validation_l1initial, process.dqm_l1initial, process.DQMoutput_step])
 
-#customizeGeneralTracksToPureL1TracksStep(process)
-customizePixelSeedsEta4(process)
+
+# FastTimerService client
+process.load('HLTrigger.Timer.fastTimerServiceClient_cfi')
+process.fastTimerServiceClient.dqmPath = "HLT/TimerService"
+
+# DQM file saver
+process.load('DQMServices.Components.DQMFileSaver_cfi')
+process.dqmSaver.workflow = "/HLT/FastTimerService/All"
+
+process.DQMFileSaverOutput = cms.EndPath( process.fastTimerServiceClient + process.dqmSaver )
+
+
+#######
+# -1 - original v7
+# 0 - l1tracks only
+# 1 - pixeltracks + l1tracks
+# 2 - pixelTracks + initial step + l1tracks
+# 3 - initialstep + l1tracks
+# 4 - pixelTracksTriplets + l1tracks
+#
+
+# customizeGeneralTracksToPureL1TracksStep(process)
+# customizePixelSeedsEta4(process)
 # customizeGeneralTracksToPixelL1TracksStep(process)
-#customizeGeneralTracksToInitialL1TracksStep(process)
-customizeGeneralTracksToInitialL1TracksStepMasking(process)
-#customizeL1TracksStepToMkFit(process)
+# customizeGeneralTracksToInitialL1TracksStep(process)
+# customizeGeneralTracksToInitialL1TracksStepMasking(process)
+# customizeL1TracksStepToMkFit(process)
 
 # process.schedule = cms.Schedule(*[ process.raw2digi_step,process.original_v7,
 #                                    process.vertexing, process.prevalidation_original,
 #                                    process.validation_original, process.dqm_original, process.DQMoutput_step ])
 
+#customizeOriginal(process)
+#customizeGeneralTracksToPureL1TracksStep(process)
+#ustomizeGeneralTracksToPixelL1TracksStep(process)
+#customizeGeneralTracksToPixelTripletL1TracksStep(process)
+#customizeGeneralTracksToInitialL1TracksStep(process)
+customizeGeneralTracksToInitialL1TracksStepMasking(process)
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 

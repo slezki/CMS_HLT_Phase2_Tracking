@@ -415,7 +415,7 @@ hltPhase2PixelFitterByHelixProjections = cms.EDProducer( "PixelFitterByHelixProj
     scaleFactor = cms.double( 0.65 )
 )
 
-hltPhase2PixelTracksHitQuadruplets = cms.EDProducer( "CAHitQuadrupletEDProducer",
+hltPhase2PixelTracksHitSeeds = cms.EDProducer( "CAHitQuadrupletEDProducer",
     CAHardPtCut = cms.double( 0.0 ),
     SeedComparitorPSet = cms.PSet(
       clusterShapeHitFilter = cms.string( "ClusterShapeHitFilter" ),
@@ -436,82 +436,6 @@ hltPhase2PixelTracksHitQuadruplets = cms.EDProducer( "CAHitQuadrupletEDProducer"
     CAPhiCut = cms.double( 0.2 ),
     useBendingCorrection = cms.bool( True ),
     fitFastCircleChi2Cut = cms.bool( True )#,
-)
-
-hltPhase2PixelTracksHitTriplets = cms.EDProducer( "CAHitTripletEDProducer",
-    CAHardPtCut = cms.double( 0.5 ),
-    SeedComparitorPSet = cms.PSet(
-      clusterShapeHitFilter = cms.string( "ClusterShapeHitFilter" ),
-      ComponentName = cms.string( "LowPtClusterShapeSeedComparitor" ),
-      clusterShapeCacheSrc = cms.InputTag( "siPixelClusterShapeCache") # pixelVertices
-    ),
-    extraHitRPhitolerance = cms.double( 0.032 ),
-    doublets = cms.InputTag( "hltPhase2PixelTracksHitDoublets" ),
-    fitFastCircle = cms.bool( True ),
-    CAThetaCut = cms.double( 0.0012 ), # 0.002 ),
-    maxChi2 = cms.PSet(
-      value2 = cms.double( 50.0 ),
-      value1 = cms.double( 200.0 ),
-      pt1 = cms.double( 0.7 ),
-      enabled = cms.bool( True ),
-      pt2 = cms.double( 2.0 )
-    ),
-    CAPhiCut = cms.double( 0.18 ),
-    useBendingCorrection = cms.bool( True ),
-    fitFastCircleChi2Cut = cms.bool( True )#,
-)
-
-hltPhase2PixelTracksSeedLayersForTriplets = cms.EDProducer( "SeedingLayersEDProducer",
-    layerList = cms.vstring(
-        'BPix1+BPix2+BPix3','BPix2+BPix3+BPix4',
-        'BPix1+BPix3+BPix4','BPix1+BPix2+BPix4',
-        'BPix2+BPix3+FPix1_pos','BPix2+BPix3+FPix1_neg',
-        'BPix1+BPix2+FPix1_pos','BPix1+BPix2+FPix1_neg',
-        'BPix1+BPix3+FPix1_pos', 'BPix1+BPix3+FPix1_neg',
-        'BPix2+FPix1_pos+FPix2_pos', 'BPix2+FPix1_neg+FPix2_neg',
-        'BPix1+FPix1_pos+FPix2_pos', 'BPix1+FPix1_neg+FPix2_neg',
-        'BPix1+BPix2+FPix2_pos', 'BPix1+BPix2+FPix2_neg',
-        'FPix1_pos+FPix2_pos+FPix3_pos', 'FPix1_neg+FPix2_neg+FPix3_neg',
-        'BPix1+FPix2_pos+FPix3_pos', 'BPix1+FPix2_neg+FPix3_neg',
-        'BPix1+FPix1_pos+FPix3_pos', 'BPix1+FPix1_neg+FPix3_neg',
-
-        'FPix1_pos+FPix2_pos+FPix3_pos','FPix1_pos+FPix2_pos+FPix4_pos',
-        'FPix2_pos+FPix3_pos+FPix4_pos','FPix2_pos+FPix4_pos+FPix5_pos',
-        'FPix1_pos+FPix2_pos+FPix3_pos','FPix1_pos+FPix2_pos+FPix4_pos',
-#      'BPix1+BPix2+BPix3+BPix4',
-#      'BPix1+BPix2+BPix3+FPix1_pos',
-#      'BPix1+BPix2+BPix3+FPix1_neg',
-#      'BPix1+BPix2+FPix1_pos+FPix2_pos',
-#      'BPix1+BPix2+FPix1_neg+FPix2_neg',
-#      'BPix1+FPix1_pos+FPix2_pos+FPix3_pos',
-#      'BPix1+FPix1_neg+FPix2_neg+FPix3_neg'
-    ),
-    MTOB = cms.PSet(  ),
-    TEC = cms.PSet(  ),
-    MTID = cms.PSet(  ),
-    FPix = cms.PSet(
-        HitProducer = cms.string('siPixelRecHits'), #PreSplitting'),
-        TTRHBuilder = cms.string('WithTrackAngle')
-#      hitErrorRPhi = cms.double( 0.0051 ),
-#      TTRHBuilder = cms.string( "hltESPTTRHBuilderPixelOnly" ),
-#      useErrorsFromParam = cms.bool( True ),
-#      hitErrorRZ = cms.double( 0.0036 ),
-#      HitProducer = cms.string( "hltSiPixelRecHits" )
-    ),
-    MTEC = cms.PSet(  ),
-    MTIB = cms.PSet(  ),
-    TID = cms.PSet(  ),
-    TOB = cms.PSet(  ),
-    BPix = cms.PSet(
-        HitProducer = cms.string('siPixelRecHits'), #PreSplitting'),
-        TTRHBuilder = cms.string('WithTrackAngle')
-#      hitErrorRPhi = cms.double( 0.0027 ),
-#      TTRHBuilder = cms.string( "hltESPTTRHBuilderPixelOnly" ),
-#      useErrorsFromParam = cms.bool( True ),
-#      hitErrorRZ = cms.double( 0.006 ),
-#      HitProducer = cms.string( "hltSiPixelRecHits" )
-    ),
-    TIB = cms.PSet(  )
 )
 
 hltPhase2PixelTracksSeedLayers = cms.EDProducer( "SeedingLayersEDProducer",
@@ -570,7 +494,7 @@ hltPhase2PixelTracks = cms.EDProducer("PixelTrackProducer",
     passLabel = cms.string('hltPhase2PixelTracks'),
     Filter = cms.InputTag("hltPhase2PixelTrackFilterByKinematics"),
     Fitter = cms.InputTag("hltPhase2PixelFitterByHelixProjections"),
-    SeedingHitSets = cms.InputTag("hltPhase2PixelTracksHitQuadruplets"),
+    SeedingHitSets = cms.InputTag("hltPhase2PixelTracksHitSeeds"),
     mightGet = cms.untracked.vstring("")#'RegionsSeedingHitSets_pixelTracksHitQuadruplets__RECO')
 )
 

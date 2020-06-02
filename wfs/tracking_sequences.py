@@ -49,7 +49,7 @@ hltPhase2PixelTracksSequence = cms.Sequence(
     hltPhase2PixelTracksTrackingRegions +
     hltPhase2PixelTracksSeedLayers +
     hltPhase2PixelTracksHitDoublets +
-    hltPhase2PixelTracksHitQuadruplets +
+    hltPhase2PixelTracksHitSeeds +
     hltPhase2PixelTracks
 )
 

@@ -1,4 +1,5 @@
 import FWCore.ParameterSet.Config as cms
+from Configuration.ProcessModifiers.l1tracking_cff import *
 
 layerListForPhase2 = ['BPix1+BPix2+BPix3+BPix4',
                        'BPix1+BPix2+BPix3+FPix1_pos','BPix1+BPix2+BPix3+FPix1_neg',
@@ -78,6 +79,10 @@ def customizeGeneralTracksToInitialL1TracksStep(process):
 
     #process.hltPhase2L1TracksTaskSeed.add(process.hltPhase2L1TrackStepClusters)
 
+    process.schedule = cms.Schedule(*[ process.raw2digi_step,process.initial_l1tracks,
+                                      process.vertexing, process.prevalidation_l1initial,
+                                      process.validation_l1initial, process.dqm_l1initial, process.DQMoutput_step])
+
     process.trackAlgoPriorityOrder.algoOrder = cms.vstring('initialStep','ctf')
     process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2InitialStepTrackSelectionHighPurity","hltPhase2L1TracksSelectionHighPurity")
     process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0)
@@ -101,8 +106,12 @@ def customizeGeneralTracksToInitialL1TracksStep(process):
 
 def customizeGeneralTracksToInitialL1TracksStepMasking(process):
 
-    process.hltPhase2L1TracksTaskSeed.add(process.hltPhase2L1StepSeedClusterMask)
+    process.schedule = cms.Schedule(*[ process.raw2digi_step,process.initial_l1tracks,
+                                      process.vertexing, process.prevalidation_l1initial,
+                                      process.validation_l1initial, process.dqm_l1initial, process.DQMoutput_step])
 
+
+    process.hltPhase2L1TracksTaskSeed.add(process.hltPhase2L1StepSeedClusterMask)
     process.hltPhase2L1TracksCutClassifier.vertices = cms.InputTag("hltPhase2L1TracksStepPrimaryVertices")
 
     process.trackAlgoPriorityOrder.algoOrder = cms.vstring('initialStep','ctf')
@@ -129,7 +138,17 @@ def customizeGeneralTracksToInitialL1TracksStepMasking(process):
 
     return process
 
+def customizeOriginal(process):
+
+    process.schedule = cms.Schedule(*[ process.raw2digi_step,process.original_v7,
+                                       process.vertexing, process.prevalidation_original,
+                                       process.validation_original, process.dqm_original, process.DQMoutput_step ])
+
 def customizeGeneralTracksToPixelL1TracksStep(process):
+
+    process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
+                                      process.vertexing, process.prevalidation_purel1,
+                                      process.validation_l1initial, process.dqm_purel1, process.DQMoutput_step])
 
     process.trackAlgoPriorityOrder.algoOrder = cms.vstring('ctf','hltPixel')
     process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1CtfTracks","hltPhase2PixelTracks")
@@ -142,12 +161,68 @@ def customizeGeneralTracksToPixelL1TracksStep(process):
     process.hltPhase2FirstStepPrimaryVerticesUnsorted.TrackLabel = cms.InputTag("hltPhase2L1CtfTracks")
     process.hltPhase2InitialStepTrackRefsForJets.src = cms.InputTag("hltPhase2L1CtfTracks")
 
+    process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag("hltPhase2GeneralTracks")
+
+    return process
+
+def customizeGeneralTracksToPixelTripletL1TracksStep(process):
+
+    process.hltPhase2PixelTracksHitSeeds = cms.EDProducer( "CAHitTripletEDProducer",
+        CAHardPtCut = cms.double( 0.5 ),
+        SeedComparitorPSet = cms.PSet(
+          clusterShapeHitFilter = cms.string( "ClusterShapeHitFilter" ),
+          ComponentName = cms.string( "LowPtClusterShapeSeedComparitor" ),
+          clusterShapeCacheSrc = cms.InputTag( "siPixelClusterShapeCache") # pixelVertices
+        ),
+        extraHitRPhitolerance = cms.double( 0.032 ),
+        doublets = cms.InputTag( "hltPhase2PixelTracksHitDoublets" ),
+        # fitFastCircle = cms.bool( True ),
+        CAThetaCut = cms.double( 0.0012 ), # 0.002 ),
+        maxChi2 = cms.PSet(
+          value2 = cms.double( 50.0 ),
+          value1 = cms.double( 200.0 ),
+          pt1 = cms.double( 0.7 ),
+          enabled = cms.bool( True ),
+          pt2 = cms.double( 2.0 )
+        ),
+        CAPhiCut = cms.double( 0.18 ),
+        useBendingCorrection = cms.bool( True ),
+        # fitFastCircleChi2Cut = cms.bool( True )#,
+    )
+
+    process.hltPhase2PixelTracksHitDoublets.layerPairs = cms.vuint32( 0, 1 )
+    process.hltPhase2PixelTracksSeedLayers.layerList = cms.vstring(tripletsLayers)
+
+    process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
+                                      process.vertexing, process.prevalidation_purel1,
+                                      process.validation_l1initial, process.dqm_purel1, process.DQMoutput_step])
+
+
+    #l1tracking.toReplaceWith(process.hltPhase2PixelTracksHitQuadruplets,process.hltPhase2PixelTracksHitTriplets)
+
+    process.trackAlgoPriorityOrder.algoOrder = cms.vstring('ctf','hltPixel')
+    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1CtfTracks","hltPhase2PixelTracks")
+    process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0)
+    process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,1.0)
+    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2L1TracksSelectionHighPurity"),
+                                                                     cms.InputTag("hltPhase2PixelTracksSelectionHighPurity"))
+    process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1)
+
+    process.hltPhase2FirstStepPrimaryVerticesUnsorted.TrackLabel = cms.InputTag("hltPhase2L1CtfTracks")
+    process.hltPhase2InitialStepTrackRefsForJets.src = cms.InputTag("hltPhase2L1CtfTracks")
+
+    process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag("hltPhase2GeneralTracks")
+
     return process
 
 def customizeGeneralTracksToPureL1TracksStep(process):
 
+    process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
+                                      process.vertexing, process.prevalidation_purel1,
+                                      process.validation_purel1, process.dqm_purel1, process.DQMoutput_step])
+
     process.trackAlgoPriorityOrder.algoOrder = cms.vstring('ctf')
-    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1CtfTracks")
+    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1TracksSelectionHighPurity")
     process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0)
     process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0)
     process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2L1TracksSelectionHighPurity"))
