@@ -10,12 +10,12 @@ ecalUncalibRecHitSequence = cms.Sequence(
 )
 
 caloLocalReco = cms.Sequence(
+    ecalUncalibRecHitSequence +
+    ecalRecHit +
     hbhereco +
     hfprereco +
     hfreco + #uses hfprereco
-    horeco +
-    ecalUncalibRecHitSequence +
-    ecalRecHit
+    horeco 
 )
 
 itLocalReco = cms.Sequence(

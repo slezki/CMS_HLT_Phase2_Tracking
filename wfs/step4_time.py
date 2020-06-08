@@ -23,4 +23,3 @@ process.load('DQMServices.Components.DQMFileSaver_cfi')
 process.dqmSaver.workflow = "/HLT/FastTimerService/All"
 
 process.DQMFileSaverOutput = cms.EndPath( process.fastTimerServiceClient + process.dqmSaver )
-

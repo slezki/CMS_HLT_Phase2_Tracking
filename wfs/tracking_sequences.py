@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 from tracking_modules import *
 from generic_sequences import *
 from L1Trigger.TrackFindingTracklet.Tracklet_cfi import *
-
+from Configuration.StandardSequences.Reconstruction_cff import *
 
 ####################################################
 ########################## Commonssoriginal_v7
@@ -11,8 +11,9 @@ from L1Trigger.TrackFindingTracklet.Tracklet_cfi import *
 hltPhase2L1TTTracksEmulation = TTTracksFromTrackletEmulation.clone()
 
 hltPhase2StartUp = cms.Sequence(
+    offlineBeamSpot +
     itLocalReco +
-    offlineBeamSpot + #cmssw_10_6
+     #cmssw_10_6
     otLocalReco +
     #caloLocalReco +
     trackerClusterCheck
@@ -85,7 +86,7 @@ original_v7 = cms.Path(
     hltPhase2StartUp +
     hltPhase2PixelTracksSequence + # pixeltracks
     hltPhase2PixelVerticesSequence + # pixelvertices
-    hltPhase2InitialStepSequence +
+    hltPhase2InitialStepSequenceFromPixelTracks +
     hltPhase2HighPtTripletStepSequence +
     hltPhase2GeneralTracks
 )
@@ -135,14 +136,14 @@ hltPhase2L1TracksSequence = cms.Sequence(
     hltPhase2L1TracksSeqPattern
 )
 
-pure_l1tracks = cms.Path(
-    hltPhase2StartUp +
-    hltPhase2PixelTracksSequence + # pixeltracks
-    hltPhase2PixelVerticesSequence + # pixelvertices
-    TTTracksFromTrackletEmulation +
-    hltPhase2L1TracksSequence +
-    hltPhase2GeneralTracks
-)
+# pure_l1tracks = cms.Path(
+#     hltPhase2StartUp +
+#     hltPhase2PixelTracksSequence + # pixeltracks
+#     hltPhase2PixelVerticesSequence + # pixelvertices
+#     TTTracksFromTrackletEmulation +
+#     hltPhase2L1TracksSequence +
+#     hltPhase2GeneralTracks
+# )
 
 
 
@@ -175,25 +176,25 @@ vertexReco = cms.Sequence(
     hltPhase2InclusiveSecondaryVertices
 )
 
-initial_l1tracks = cms.Path(
-    hltPhase2StartUp +
-    hltPhase2PixelTracksSequence + # pixeltracks
-    hltPhase2PixelVerticesSequence + # pixelvertices
-    TTTracksFromTrackletEmulation +
-    hltPhase2InitialStepSequenceL1 +
-    hltPhase2L1TracksSequence +
-    hltPhase2GeneralTracks
-)
-
-initial_l1tracks_mask = cms.Path(
-    hltPhase2StartUp +
-    TTTracksFromTrackletEmulation +
-    hltPhase2InitialStepSequenceL1 +
-    hltPhase2PixelTracksSequence + # pixeltracks
-    hltPhase2PixelVerticesSequence + # pixelvertices
-    hltPhase2L1TracksSequence +
-    hltPhase2GeneralTracks
-)
+# initial_l1tracks = cms.Path(
+#     hltPhase2StartUp +
+#     hltPhase2PixelTracksSequence + # pixeltracks
+#     hltPhase2PixelVerticesSequence + # pixelvertices
+#     TTTracksFromTrackletEmulation +
+#     hltPhase2InitialStepSequenceL1 +
+#     hltPhase2L1TracksSequence +
+#     hltPhase2GeneralTracks
+# )
+#
+# initial_l1tracks_mask = cms.Path(
+#     hltPhase2StartUp +
+#     TTTracksFromTrackletEmulation +
+#     hltPhase2InitialStepSequenceL1 +
+#     hltPhase2PixelTracksSequence + # pixeltracks
+#     hltPhase2PixelVerticesSequence + # pixelvertices
+#     hltPhase2L1TracksSequence +
+#     hltPhase2GeneralTracks
+# )
 
 vertexing = cms.Path(
     caloLocalReco +
