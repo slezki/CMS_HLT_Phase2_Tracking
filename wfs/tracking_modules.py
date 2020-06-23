@@ -77,7 +77,8 @@ hltPhase2L1TrackSeedsFromL1Tracks = cms.EDProducer("SeedGeneratorFromTTracksEDPr
     maxEtaForTOB = cms.double(1.2),
     minEtaForTEC = cms.double(0.8),
     TrajectoryBuilder = cms.string('GroupedCkfTrajectoryBuilder'),
-    TrajectoryBuilderPSet = cms.PSet(refToPSet_ = cms.string('hltPhase2L1TrackStepTrajectoryBuilder'))
+    TrajectoryBuilderPSet = cms.PSet(refToPSet_ = cms.string('hltPhase2L1TrackStepTrajectoryBuilder')),
+    errorSFHitless = cms.double(1e-8)
     #TrajectoryBuilder = cms.string('GroupedCkfTrajectoryBuilder'),
     #TrajectoryBuilderPSet = cms.PSet( refToPSet_ = cms.string('L1TrackStepTrajectoryBuilder'))
 )
@@ -1034,12 +1035,12 @@ hltPhase2HighPtTripletStepSeedLayers = cms.EDProducer("SeedingLayersEDProducer",
     BPix = cms.PSet(
         HitProducer = cms.string('siPixelRecHits'),
         TTRHBuilder = cms.string('WithTrackAngle'),
-        skipClusters = cms.InputTag("hltPhase2HighPtTripletStepClusters")
+        # skipClusters = cms.InputTag("hltPhase2HigsshPtTripletStepClusters")
     ),
     FPix = cms.PSet(
         HitProducer = cms.string('siPixelRecHits'),
         TTRHBuilder = cms.string('WithTrackAngle'),
-        skipClusters = cms.InputTag("hltPhase2HighPtTripletStepClusters")
+        # skipClusters = cms.InputTag("hltPhase2HigsshPtTripletStepClusters")
     ),
     MTEC = cms.PSet(
 
@@ -1397,7 +1398,7 @@ hltPhase2HighPtTripletStepTrackCandidates = cms.EDProducer("CkfTrackCandidateMak
     ),
     cleanTrajectoryAfterInOut = cms.bool(True), #needs to stay True
     doSeedingRegionRebuilding = cms.bool(True), #needs to stay True
-    maxNSeeds = cms.uint32(100000), # previous 500000
+    maxNSeeds = cms.uint32(500000), # previous 500000
     maxSeedsBeforeCleaning = cms.uint32(1000), # previous 5000
     numHitsForSeedCleaner = cms.int32(50), #############
     onlyPixelHitsForSeedCleaner = cms.bool(True),  # previous ################
@@ -1911,7 +1912,7 @@ hltPhase2InitialStepTrackCandidates = cms.EDProducer("CkfTrackCandidateMaker",
     ),
     cleanTrajectoryAfterInOut = cms.bool(True), # previous True --> False
     doSeedingRegionRebuilding = cms.bool(True),# previous True --> False
-    maxNSeeds = cms.uint32(100000), # previous 500000
+    maxNSeeds = cms.uint32(500000), # previous 500000
     maxSeedsBeforeCleaning = cms.uint32(1000), # previous 5000
     numHitsForSeedCleaner = cms.int32(50), ##########
     onlyPixelHitsForSeedCleaner = cms.bool(True), ##########

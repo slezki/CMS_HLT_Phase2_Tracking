@@ -50,7 +50,7 @@ prevalidation_v0 = cms.Task(hltPhase2V0Validator)
 ########################## Pixel Tracks
 #############
 
-prevalidation_startup = cms.Task(prevalidation_commons,prevalidation_associators,prevalidation_vertex)
+prevalidation_startup = cms.Task(prevalidation_commons,prevalidation_associators)##,prevalidation_vertex)
 
 prevalidation_original = cms.Path(prevalidation_startup,
                                   prevalidation_v0,
@@ -66,4 +66,9 @@ prevalidation_l1initial = cms.Path(prevalidation_startup,
                                   prevalidation_v0,
                                   prevalidation_l1,
                                   prevalidation_initial,
+                                  prevalidation_general)
+
+prevalidation_l1trip= cms.Path(prevalidation_startup,
+                                  prevalidation_l1,
+                                  prevalidation_highpt,
                                   prevalidation_general)

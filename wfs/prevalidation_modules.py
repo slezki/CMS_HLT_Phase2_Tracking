@@ -74,7 +74,7 @@ hltPhase2CutsRecoTracksBtvLike = cms.EDProducer("RecoTrackViewRefSelector",
     src = cms.InputTag("hltPhase2GeneralTracks"),
     tip = cms.double(0.2),
     usePV = cms.bool(True),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -99,7 +99,7 @@ hltPhase2CutsRecoTracksFromPVHighPtTripletStep = cms.EDProducer("RecoTrackViewRe
     src = cms.InputTag("hltPhase2GeneralTracksFromPV"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -124,7 +124,7 @@ hltPhase2CutsRecoTracksFromPVHighPtTripletStepHp = cms.EDProducer("RecoTrackView
     src = cms.InputTag("hltPhase2GeneralTracksFromPV"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 hltPhase2CutsRecoTracksFromPVHp = cms.EDProducer("RecoTrackViewRefSelector",
@@ -148,7 +148,7 @@ hltPhase2CutsRecoTracksFromPVHp = cms.EDProducer("RecoTrackViewRefSelector",
     src = cms.InputTag("hltPhase2GeneralTracksFromPV"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -173,7 +173,7 @@ hltPhase2CutsRecoTracksFromPVInitialStep = cms.EDProducer("RecoTrackViewRefSelec
     src = cms.InputTag("hltPhase2GeneralTracksFromPV"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -198,7 +198,7 @@ hltPhase2CutsRecoTracksFromPVInitialStepHp = cms.EDProducer("RecoTrackViewRefSel
     src = cms.InputTag("hltPhase2GeneralTracksFromPV"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 hltPhase2CutsRecoTracksFromPVPt09HighPtTripletStep = cms.EDProducer("RecoTrackViewRefSelector",
@@ -222,7 +222,7 @@ hltPhase2CutsRecoTracksFromPVPt09HighPtTripletStep = cms.EDProducer("RecoTrackVi
     src = cms.InputTag("hltPhase2GeneralTracksFromPVPt09"),
     tip = cms.double(120.0),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -247,7 +247,7 @@ hltPhase2CutsRecoTracksFromPVPt09HighPtTripletStepHp = cms.EDProducer("RecoTrack
     src = cms.InputTag("hltPhase2GeneralTracksFromPVPt09"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 hltPhase2CutsRecoTracksFromPVPt09Hp = cms.EDProducer("RecoTrackViewRefSelector",
@@ -271,7 +271,7 @@ hltPhase2CutsRecoTracksFromPVPt09Hp = cms.EDProducer("RecoTrackViewRefSelector",
     src = cms.InputTag("hltPhase2GeneralTracksFromPVPt09"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 hltPhase2CutsRecoTracksFromPVPt09InitialStep = cms.EDProducer("RecoTrackViewRefSelector",
@@ -295,7 +295,7 @@ hltPhase2CutsRecoTracksFromPVPt09InitialStep = cms.EDProducer("RecoTrackViewRefS
     src = cms.InputTag("hltPhase2GeneralTracksFromPVPt09"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -320,7 +320,7 @@ hltPhase2CutsRecoTracksFromPVPt09InitialStepHp = cms.EDProducer("RecoTrackViewRe
     src = cms.InputTag("hltPhase2GeneralTracksFromPVPt09"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -345,7 +345,7 @@ hltPhase2CutsRecoTracksHighPtTripletStep = cms.EDProducer("RecoTrackViewRefSelec
     src = cms.InputTag("hltPhase2GeneralTracks"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -370,7 +370,7 @@ hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMask = cms.EDProducer("RecoTrackVi
     src = cms.InputTag("hltPhase2GeneralTracks"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -395,7 +395,7 @@ hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMaskHp = cms.EDProducer("RecoTrack
     src = cms.InputTag("hltPhase2GeneralTracks"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+        vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -420,7 +420,7 @@ hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgo = cms.EDProducer("RecoTra
     src = cms.InputTag("hltPhase2GeneralTracks"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -445,7 +445,7 @@ hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgoHp = cms.EDProducer("RecoT
     src = cms.InputTag("hltPhase2GeneralTracks"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -470,7 +470,7 @@ hltPhase2CutsRecoTracksHighPtTripletStepHp = cms.EDProducer("RecoTrackViewRefSel
     src = cms.InputTag("hltPhase2GeneralTracks"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 hltPhase2CutsRecoTracksHp = cms.EDProducer("RecoTrackViewRefSelector",
@@ -494,7 +494,7 @@ hltPhase2CutsRecoTracksHp = cms.EDProducer("RecoTrackViewRefSelector",
     src = cms.InputTag("hltPhase2GeneralTracks"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -519,7 +519,7 @@ hltPhase2CutsRecoTracksInitialStep = cms.EDProducer("RecoTrackViewRefSelector",
     src = cms.InputTag("hltPhase2GeneralTracks"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -544,7 +544,7 @@ hltPhase2CutsRecoTracksInitialStepByAlgoMask = cms.EDProducer("RecoTrackViewRefS
     src = cms.InputTag("hltPhase2GeneralTracks"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -569,7 +569,7 @@ hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp = cms.EDProducer("RecoTrackViewRe
     src = cms.InputTag("hltPhase2GeneralTracks"),
     tip = cms.double(120.0),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -594,7 +594,7 @@ hltPhase2CutsRecoTracksInitialStepByOriginalAlgo = cms.EDProducer("RecoTrackView
     src = cms.InputTag("hltPhase2GeneralTracks"),
     tip = cms.double(120.0),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -619,7 +619,7 @@ hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp = cms.EDProducer("RecoTrackVi
     src = cms.InputTag("hltPhase2GeneralTracks"),
     tip = cms.double(120.0),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -644,7 +644,7 @@ hltPhase2CutsRecoTracksInitialStepHp = cms.EDProducer("RecoTrackViewRefSelector"
     src = cms.InputTag("hltPhase2GeneralTracks"),
     tip = cms.double(120.0),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 hltPhase2L1CtfTracksPt09 = cms.EDProducer("RecoTrackViewRefSelector",
@@ -668,7 +668,7 @@ hltPhase2L1CtfTracksPt09 = cms.EDProducer("RecoTrackViewRefSelector",
     src = cms.InputTag("hltPhase2L1CtfTracks"),
     tip = cms.double(120.0),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 hltPhase2CutsRecoTracksL1Step = cms.EDProducer("RecoTrackViewRefSelector",
@@ -692,7 +692,7 @@ hltPhase2CutsRecoTracksL1Step = cms.EDProducer("RecoTrackViewRefSelector",
     src = cms.InputTag("hltPhase2L1CtfTracks"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 hltPhase2CutsRecoTracksL1StepHp = cms.EDProducer("RecoTrackViewRefSelector",
@@ -716,7 +716,7 @@ hltPhase2CutsRecoTracksL1StepHp = cms.EDProducer("RecoTrackViewRefSelector",
     src = cms.InputTag("hltPhase2L1CtfTracks"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 hltPhase2CutsRecoTracksPt09L1StepHp = cms.EDProducer("RecoTrackViewRefSelector",
@@ -740,7 +740,7 @@ hltPhase2CutsRecoTracksPt09L1StepHp = cms.EDProducer("RecoTrackViewRefSelector",
     src = cms.InputTag("hltPhase2L1CtfTracksPt09"),
     tip = cms.double(120.0),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 hltPhase2CutsRecoTracksPt09HighPtTripletStep = cms.EDProducer("RecoTrackViewRefSelector",
@@ -764,7 +764,7 @@ hltPhase2CutsRecoTracksPt09HighPtTripletStep = cms.EDProducer("RecoTrackViewRefS
     src = cms.InputTag("hltPhase2GeneralTracksPt09"),
     tip = cms.double(120.0),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -789,7 +789,7 @@ hltPhase2CutsRecoTracksPt09HighPtTripletStepHp = cms.EDProducer("RecoTrackViewRe
     src = cms.InputTag("hltPhase2GeneralTracksPt09"),
     tip = cms.double(120.0),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 hltPhase2CutsRecoTracksPt09Hp = cms.EDProducer("RecoTrackViewRefSelector",
@@ -813,7 +813,7 @@ hltPhase2CutsRecoTracksPt09Hp = cms.EDProducer("RecoTrackViewRefSelector",
     src = cms.InputTag("hltPhase2GeneralTracksPt09"),
     tip = cms.double(120.0),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -838,7 +838,7 @@ hltPhase2CutsRecoTracksPt09InitialStep = cms.EDProducer("RecoTrackViewRefSelecto
     src = cms.InputTag("hltPhase2GeneralTracksPt09"),
     tip = cms.double(120.0),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -863,7 +863,7 @@ hltPhase2CutsRecoTracksPt09InitialStepHp = cms.EDProducer("RecoTrackViewRefSelec
     src = cms.InputTag("hltPhase2GeneralTracksPt09"),
     tip = cms.double(120.0),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 hltPhase2GeneralTracksFromPV = cms.EDProducer("TrackWithVertexRefSelector",
@@ -888,7 +888,7 @@ hltPhase2GeneralTracksFromPV = cms.EDProducer("TrackWithVertexRefSelector",
     timeResosTag = cms.InputTag(""),
     timesTag = cms.InputTag(""),
     useVtx = cms.bool(True),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices"),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices"), #("hltPhase2OfflinePrimaryVertices"),
     vtxFallback = cms.bool(False),
     zetaVtx = cms.double(0.1)
 )
@@ -915,7 +915,7 @@ hltPhase2GeneralTracksFromPVPt09 = cms.EDProducer("RecoTrackViewRefSelector",
     src = cms.InputTag("hltPhase2GeneralTracksFromPV"),
     tip = cms.double(120.0),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
@@ -940,7 +940,7 @@ hltPhase2GeneralTracksPt09 = cms.EDProducer("RecoTrackViewRefSelector",
     src = cms.InputTag("hltPhase2GeneralTracks"),
     tip = cms.double(120.0),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 hltPhase2SeedTrackshighPtTripletStepSeeds = cms.EDProducer("TrackFromSeedProducer",
@@ -1009,13 +1009,13 @@ hltPhase2V0Validator = cms.EDProducer("V0Validator",
     lambdaCollection = cms.untracked.InputTag("generalV0Candidates","Lambda"),
     trackAssociatorMap = cms.untracked.InputTag("hltPhase2TrackingParticleRecoTrackAsssociation"),
     trackingVertexCollection = cms.untracked.InputTag("mix","MergedTrackTruth"),
-    vertexCollection = cms.untracked.InputTag("hltPhase2OfflinePrimaryVertices")
+    vertexCollection = cms.untracked.InputTag("hltPhase2SelectedPixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 hltPhase2SelectedOfflinePrimaryVertices = cms.EDFilter("VertexSelector",
     cut = cms.string('isValid & ndof > 4 & tracksSize > 0 & abs(z) <= 24 & abs(position.Rho) <= 2.'),
     filter = cms.bool(False),
-    src = cms.InputTag("hltPhase2OfflinePrimaryVertices")
+    src = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 hltPhase2SelectedOfflinePrimaryVerticesWithBS = cms.EDFilter("VertexSelector",

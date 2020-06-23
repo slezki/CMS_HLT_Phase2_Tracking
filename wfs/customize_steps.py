@@ -52,7 +52,7 @@ def customizePixelSeedsEta4(process):
 
     return process
 
-def customizeL1TracksStepToMkFit(process):
+def customizeL1TracksStepToMkFit(procaess):
 
     process.hltPhase2L1TracksCandidatesMkFitInput = mkFitInputConverter_cfi.mkFitInputConverter.clone(
             seeds = "hltPhase2L1TrackSeedsFromL1Tracks",
@@ -79,12 +79,7 @@ def customizeGeneralTracksToInitialL1TracksStep(process,timing):
 
     #process.hltPhase2L1TracksTaskSeed.add(process.hltPhase2L1TrackStepClusters)
 
-    if timing:
-        process.initial_l1tracks = 0
-        process.pure_l1tracks = 0
-        process.original_v7 = 0
-        # process.initial_l1tracks_mask = 0
-    else:
+    if not timing:
         process.schedule = cms.Schedule(*[ process.raw2digi_step,process.initial_l1tracks,
                                       process.vertexing, process.prevalidation_l1initial,
                                       process.validation_l1initial, process.dqm_l1initial])
@@ -112,12 +107,8 @@ def customizeGeneralTracksToInitialL1TracksStep(process,timing):
 
 def customizeGeneralTracksToInitialL1TracksStepMasking(process):
 
-    if timing:
-        process.initial_l1tracks = 0
-        process.pure_l1tracks = 0
-        process.original_v7 = 0
-        # process.initial_l1tracks_mask = 0
-    else:
+
+    if not timing:
         process.schedule = cms.Schedule(*[ process.raw2digi_step,process.initial_l1tracks,
                                       process.vertexing, process.prevalidation_l1initial,
                                       process.validation_l1initial, process.dqm_l1initial])
@@ -150,6 +141,37 @@ def customizeGeneralTracksToInitialL1TracksStepMasking(process):
 
     return process
 
+def customizeTripletL1(process,timing=False):
+
+
+    process.schedule = cms.Schedule(*[ process.raw2digi_step,process.triplet_l1tracks,
+                                            process.prevalidation_l1trip,
+                                            process.validation_l1initial, process.dqm_l1trip])
+
+
+    process.hltPhase2L1TracksTaskSeed.add(process.hltPhase2L1StepSeedClusterMask)
+    #process.hltPhase2L1TracksCutClassifier.vertices = cms.InputTag("hltPhase2L1TracksStepPrimaryVertices")
+    process.hltPhase2HighPtTripletStepClusters.trajectories = cms.InputTag("hltPhase2L1TracksSelectionHighPurity")
+    process.trackAlgoPriorityOrder.algoOrder = cms.vstring('highPtTripletStep','ctf')
+    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2HighPtTripletStepTrackSelectionHighPurity","hltPhase2L1TracksSelectionHighPurity")
+    process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0)
+    process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,1.0)
+    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2HighPtTripletStepTrackSelectionHighPurity"),
+                                                                     cms.InputTag("hltPhase2L1TracksSelectionHighPurity"))
+    process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1)
+
+    # process.hltPhase2FirstStepPrimaryVerticesUnsorted.TrackLabel = cms.InputTag("hltPhase2L1CtfTracks")
+    # process.hltPhase2InitialStepTrackRefsForJets.src = cms.InputTag("hltPhase2L1CtfTracks")
+
+    #process.hltPhase2InitialStepTracks.clusterRemovalInfo = cms.InputTag("hltPhase2L1TrackStepClusters")
+
+    process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag("hltPhase2GeneralTracks")
+
+    # process.hltPhase2HighPtTripletStepSeedLayers.FPix.skipClusters = cms.InputTag("hltPhase2L1StepSeedClusterMask")
+    # process.hltPhase2HighPtTripletStepSeedLayers.BPix.skipClusters = cms.InputTag("hltPhase2L1StepSeedClusterMask")
+
+    return process
+
 def customizeOriginal(process,timing):
 
     # process.siPixelClusters.vertices = "hltPhase2PixelVertices"
@@ -157,22 +179,10 @@ def customizeOriginal(process,timing):
         process.schedule = cms.Schedule(*[ process.raw2digi_step,process.original_v7,
                                            process.vertexing, process.prevalidation_original,
                                            process.validation_original, process.dqm_original])
-    else:
-        process.initial_l1tracks = 0
-        process.pure_l1tracks = 0
-        # process.original_v7 = 0
-        process.initial_l1tracks_mask = 0
 
 def customizeGeneralTracksToPixelL1TracksStep(process,timing):
 
-
-    if timing:
-        # process.initial_l1tracks = 0
-        process.pure_l1tracks = 0
-        process.original_v7 = 0
-        process.initial_l1tracks_mask = 0
-
-    else:
+    if not timing:
         process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
                                       process.vertexing, process.prevalidation_purel1,
                                       process.validation_l1initial, process.dqm_purel1])
