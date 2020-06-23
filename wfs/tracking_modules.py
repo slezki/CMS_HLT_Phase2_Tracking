@@ -1035,12 +1035,12 @@ hltPhase2HighPtTripletStepSeedLayers = cms.EDProducer("SeedingLayersEDProducer",
     BPix = cms.PSet(
         HitProducer = cms.string('siPixelRecHits'),
         TTRHBuilder = cms.string('WithTrackAngle'),
-        # skipClusters = cms.InputTag("hltPhase2HigsshPtTripletStepClusters")
+        skipClusters = cms.InputTag("hltPhase2HighPtTripletStepClusters")
     ),
     FPix = cms.PSet(
         HitProducer = cms.string('siPixelRecHits'),
         TTRHBuilder = cms.string('WithTrackAngle'),
-        # skipClusters = cms.InputTag("hltPhase2HigsshPtTripletStepClusters")
+        skipClusters = cms.InputTag("hltPhase2HighPtTripletStepClusters")
     ),
     MTEC = cms.PSet(
 

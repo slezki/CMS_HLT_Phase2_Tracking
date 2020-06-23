@@ -150,7 +150,7 @@ def customizeTripletL1(process,timing=False):
 
 
     process.hltPhase2L1TracksTaskSeed.add(process.hltPhase2L1StepSeedClusterMask)
-    #process.hltPhase2L1TracksCutClassifier.vertices = cms.InputTag("hltPhase2L1TracksStepPrimaryVertices")
+    # process.hltPhase2L1TracksCutClassifier.vertices = cms.InputTag("hltPhase2L1TracksStepPrimaryVertices")
     process.hltPhase2HighPtTripletStepClusters.trajectories = cms.InputTag("hltPhase2L1TracksSelectionHighPurity")
     process.trackAlgoPriorityOrder.algoOrder = cms.vstring('highPtTripletStep','ctf')
     process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2HighPtTripletStepTrackSelectionHighPurity","hltPhase2L1TracksSelectionHighPurity")
