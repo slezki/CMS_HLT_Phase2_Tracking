@@ -153,6 +153,7 @@ hltPhase2InitialStepSequenceL1 = cms.Sequence(
     #hltPhase2InitialStepTrackingRegions +
     #hltPhase2InitialStepHitDoublets +
     #hltPhase2InitialStepHitQuadruplets +
+    hltPhase2InitialStepClusters +
     hltPhase2InitialStepSeeds +
     hltPhase2InitialStepTrackCandidates +
     hltPhase2InitialStepTracks +
@@ -202,7 +203,18 @@ triplet_l1tracks = cms.Path(
     hltPhase2PixelVerticesSequence +
     TTTracksFromTrackletEmulation +
     hltPhase2L1TracksSequence +
-    hltPhase2HighPtTripletStepSequence + 
+    hltPhase2HighPtTripletStepSequence +
+    hltPhase2GeneralTracks
+
+)
+
+pixeltriplet_l1 = cms.Path(
+    hltPhase2StartUp +
+    hltPhase2PixelTracksSequence +
+    hltPhase2PixelVerticesSequence +
+    TTTracksFromTrackletEmulation +
+    hltPhase2L1TracksSequence +
+    hltPhase2InitialStepSequenceL1 +
     hltPhase2GeneralTracks
 
 )

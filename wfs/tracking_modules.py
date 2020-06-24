@@ -62,7 +62,7 @@ hltPhase2L1TrackStepClusters = cms.EDProducer("TrackClusterRemoverPhase2",
     phase2OTClusters = cms.InputTag("siPhase2Clusters"),
     phase2pixelClusters = cms.InputTag("siPixelClusters"),
     trackClassifier = cms.InputTag("","QualityMasks"),
-    trajectories = cms.InputTag("hltPhase2InitialStepTrackSelectionHighPurity")
+    trajectories = cms.InputTag("hltPhase2PixelTracks")
 )
 
 hltPhase2L1StepSeedClusterMask = seedClusterRemoverPhase2.clone(
@@ -1035,7 +1035,7 @@ hltPhase2HighPtTripletStepSeedLayers = cms.EDProducer("SeedingLayersEDProducer",
     BPix = cms.PSet(
         HitProducer = cms.string('siPixelRecHits'),
         TTRHBuilder = cms.string('WithTrackAngle'),
-        skipClusters = cms.InputTag("hltPhase2HighPtTripletStepClusters")
+        skipClusters = cms.InputTag("hltPhase2Hig   hPtTripletStepClusters")
     ),
     FPix = cms.PSet(
         HitProducer = cms.string('siPixelRecHits'),
@@ -1659,7 +1659,7 @@ hltPhase2InitialStepClusters = cms.EDProducer("TrackClusterRemoverPhase2",
     phase2OTClusters = cms.InputTag("siPhase2Clusters"),
     phase2pixelClusters = cms.InputTag("siPixelClusters"),
     trackClassifier = cms.InputTag("","QualityMasks"),
-    trajectories = cms.InputTag("hltPhase2L1TracksSelectionHighPurity")
+    trajectories = cms.InputTag("hltPhase2L1CtfTracks")
 )
 
 hltPhase2InitialStepSeeds = cms.EDProducer( "SeedGeneratorFromProtoTracksEDProducer",

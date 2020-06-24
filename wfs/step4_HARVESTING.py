@@ -28,7 +28,7 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("DQMRootSource",
-    fileNames = cms.untracked.vstring('file:step3_inDQM.root')
+    fileNames = cms.untracked.vstring('file:step3_inDQM_2.root')
 )
 
 process.options = cms.untracked.PSet(

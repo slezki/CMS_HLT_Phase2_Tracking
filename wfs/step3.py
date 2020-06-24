@@ -33,11 +33,13 @@ options.register ('wf',
                   VarParsing.VarParsing.multiplicity.singleton, # singleton or list
                   VarParsing.VarParsing.varType.int,          # string, int, or float
                   "Wf number")
+options.register('pixtrip',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Pixel Triplets")
+options.register ('n',1,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"max events")
 
 options.parseArguments()
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1),
+    input = cms.untracked.int32(options.n),
     output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
 
@@ -243,7 +245,11 @@ if options.wf == 3:
     customizeGeneralTracksToInitialL1TracksStep(process,timing)
 if options.wf == 4:
     customizeTripletL1(process,timing)
+if options.wf == 5:
+    pixel_L1_recovery(process)
 
+if options.pixtrip:
+    pixelTriplets(process)
 if not timing:
     process.DQMoutput_step = cms.EndPath( process.DQMoutput)
     process.schedule.extend([process.DQMoutput_step])
@@ -296,6 +302,9 @@ process.FastTimerService.dqmPathMemoryRange        = 1000000
 process.FastTimerService.dqmPathMemoryResolution   =    5000
 process.FastTimerService.dqmModuleMemoryRange      =  100000
 process.FastTimerService.dqmModuleMemoryResolution =     500
+
+process.FastTimerService.writeJSONSummary = cms.untracked.bool(True)
+process.FastTimerService.jsonFileName = cms.untracked.string('resources.json')
 
 if 'MessageLogger' in process.__dict__:
     process.MessageLogger.categories.append('TriggerSummaryProducerAOD')
