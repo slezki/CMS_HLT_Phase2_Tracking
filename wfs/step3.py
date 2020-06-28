@@ -233,10 +233,12 @@ process.PixelCPEGenericESProducer.Upgrade = cms.bool(True)
 
 timing = False
 
+suff = str(options.wf)
 if options.wf == -1:
-    customizeOriginal(process,timing)
+    suff = "original"
+    customizeOriginal_v6(process,timing)
 if options.wf == 0:
-    customizeGeneralTracksToPureL1TracksStep(process,timing)
+    customizeGeneralTracksToPureL1TracksStep(process)
 if options.wf == 1:
     customizeGeneralTracksToPixelL1TracksStep(process,timing)
 if options.wf == 2:
@@ -246,11 +248,14 @@ if options.wf == 3:
 if options.wf == 4:
     customizeTripletL1(process,timing)
 if options.wf == 5:
-    pixel_L1_recovery(process)
+    pixel_l1_recovery(process,timing)
+if options.wf == 6:
+    l1_pixel_recovery(process,timing)
 
 if options.pixtrip:
     pixelTriplets(process)
 if not timing:
+
     process.DQMoutput_step = cms.EndPath( process.DQMoutput)
     process.schedule.extend([process.DQMoutput_step])
 

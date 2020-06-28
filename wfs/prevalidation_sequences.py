@@ -42,7 +42,7 @@ prevalidation_vertex = cms.Task(hltPhase2SelectedOfflinePrimaryVertices,
                                 hltPhase2SelectedPixelVertices,
                                 hltPhase2PixelVertexAnalysisTrackingOnly)
 
-prevalidation_l1 = cms.Task(hltPhase2TrackingParticleL1TrackAsssociation,hltPhase2CutsRecoTracksL1Step)
+prevalidation_l1 = cms.Task(hltPhase2TrackingParticleL1TrackAsssociation,hltPhase2CutsRecoTracksL1Step,hltPhase2CutsRecoTracksL1,hltPhase2CutsRecoTracksL1StepByOriginalAlgo,hltPhase2CutsRecoTracksL1StepByOriginalAlgoHp)
 
 prevalidation_v0 = cms.Task(hltPhase2V0Validator)
 

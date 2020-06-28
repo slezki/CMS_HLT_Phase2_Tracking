@@ -16,24 +16,34 @@ layerListForPhase2Eta4 = layerListForPhase2 + ['FPix5_pos+FPix6_pos+FPix7_pos+FP
 'FPix8_pos+FPix9_pos+FPix10_pos+FPix11_pos', 'FPix8_neg+FPix9_neg+FPix10_neg+FPix11_neg',
  'FPix11_pos+FPix9_pos+FPix10_pos+FPix12_pos', 'FPix9_neg+FPix10_neg+FPix11_neg+FPix12_neg']
 
-tripletsLayers = ['BPix1+BPix2+BPix3', 'BPix2+BPix3+BPix4',
-                 'BPix1+BPix3+BPix4', 'BPix1+BPix2+BPix4',
-                 'BPix2+BPix3+FPix1_pos', 'BPix2+BPix3+FPix1_neg',
-                 'BPix1+BPix2+FPix1_pos', 'BPix1+BPix2+FPix1_neg',
-                 'BPix2+FPix1_pos+FPix2_pos', 'BPix2+FPix1_neg+FPix2_neg',
-                 'BPix1+FPix1_pos+FPix2_pos', 'BPix1+FPix1_neg+FPix2_neg',
-#
-                 'FPix1_pos+FPix2_pos+FPix3_pos', 'FPix1_neg+FPix2_neg+FPix3_neg',
-                 'BPix1+FPix2_pos+FPix3_pos', 'BPix1+FPix2_neg+FPix3_neg',
-#
-                 'FPix2_pos+FPix3_pos+FPix4_pos', 'FPix2_neg+FPix3_neg+FPix4_neg',
-                 'FPix3_pos+FPix4_pos+FPix5_pos', 'FPix3_neg+FPix4_neg+FPix5_neg',
-                 'FPix4_pos+FPix5_pos+FPix6_pos', 'FPix4_neg+FPix5_neg+FPix6_neg',
-                 'FPix5_pos+FPix6_pos+FPix7_pos', 'FPix5_neg+FPix6_neg+FPix7_neg',
-                 'FPix6_pos+FPix7_pos+FPix8_pos', 'FPix6_neg+FPix7_neg+FPix8_neg',
-#  removed as redunant and covering effectively only eta>4   (here for documentation, to be optimized after TDR)
-#                 ]
+tripletsLayers = ['BPix1+BPix2+BPix3',
+        'BPix2+BPix3+BPix4',
+        'BPix1+BPix3+BPix4',
+        'BPix1+BPix2+BPix4',
+        'BPix2+BPix3+FPix1_pos',
+        'BPix2+BPix3+FPix1_neg',
+        'BPix1+BPix2+FPix1_pos',
+        'BPix1+BPix2+FPix1_neg',
+        'BPix2+FPix1_pos+FPix2_pos',
+        'BPix2+FPix1_neg+FPix2_neg',
+        'BPix1+FPix1_pos+FPix2_pos',
+        'BPix1+FPix1_neg+FPix2_neg',
+        'FPix1_pos+FPix2_pos+FPix3_pos',
+        'FPix1_neg+FPix2_neg+FPix3_neg',
+        'BPix1+FPix2_pos+FPix3_pos',
+        'BPix1+FPix2_neg+FPix3_neg',
+        'FPix2_pos+FPix3_pos+FPix4_pos',
+        'FPix2_neg+FPix3_neg+FPix4_neg',
+        'FPix3_pos+FPix4_pos+FPix5_pos',
+        'FPix3_neg+FPix4_neg+FPix5_neg',
+        'FPix4_pos+FPix5_pos+FPix6_pos',
+        'FPix4_neg+FPix5_neg+FPix6_neg',
+        'FPix5_pos+FPix6_pos+FPix7_pos',
+        'FPix5_neg+FPix6_neg+FPix7_neg',
+        'FPix6_pos+FPix7_pos+FPix8_pos',
+        'FPix6_neg+FPix7_neg+FPix8_neg'
      ]
+
 
 tripletsLayersEta4 = tripletsLayers +  ['BPix1+BPix2+FPix2_pos', 'BPix1+BPix2+FPix2_neg','BPix1+FPix1_pos+FPix3_pos',
                             'BPix1+FPix1_neg+FPix3_neg','FPix6_pos+FPix7_pos+FPix9_pos', 'FPix6_neg+FPix7_neg+FPix9_neg']
@@ -66,15 +76,15 @@ def pixelTriplets(process):
         extraHitRPhitolerance = cms.double( 0.032 ),
         doublets = cms.InputTag( "hltPhase2PixelTracksHitDoublets" ),
         # fitFastCircle = cms.bool( True ),
-        CAThetaCut = cms.double( 0.0012 ), # 0.002 ),
+        CAThetaCut = cms.double( 0.003 ), # 0.002 ),
         maxChi2 = cms.PSet(
-          value2 = cms.double( 50.0 ),
-          value1 = cms.double( 200.0 ),
-          pt1 = cms.double( 0.7 ),
-          enabled = cms.bool( True ),
-          pt2 = cms.double( 2.0 )
+            enabled = cms.bool(True),
+            pt1 = cms.double(0.8),
+            pt2 = cms.double(8),
+            value1 = cms.double(100),
+            value2 = cms.double(6)
         ),
-        CAPhiCut = cms.double( 0.18 ),
+        CAPhiCut = cms.double( 0.06 ),
         useBendingCorrection = cms.bool( True ),
         # fitFastCircleChi2Cut = cms.bool( True )#,
     )
@@ -207,7 +217,8 @@ def customizeGeneralTracksToInitialL1TracksStepMasking(process):
 
     return process
 
-def pixel_L1_recovery(process):
+##PixelTracks + Masking + L1 Tracks + Masking + Recovery Seeded by L1
+def pixel_l1_recovery(process,timing):
 
 
     process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pixeltriplet_l1, process.prevalidation_l1initial,
@@ -227,24 +238,69 @@ def pixel_L1_recovery(process):
     process.hltPhase2InitialStepTrackCandidates.phase2clustersToSkip = cms.InputTag("hltPhase2InitialStepClusters")
 
     ##general tracks - recovery + l1
-    process.trackAlgoPriorityOrder.algoOrder = cms.vstring('initialStep','ctf')
-    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2InitialStepTrackSelectionHighPurity","hltPhase2L1TracksSelectionHighPurity")
+    process.trackAlgoPriorityOrder.algoOrder = cms.vstring('hltIter0','initialStep')
+    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1CtfTracks","hltPhase2InitialStepTrackSelectionHighPurity")
     process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0)
-    process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,1.0)
-    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2InitialStepTrackSelectionHighPurity"),
-                                                                     cms.InputTag("hltPhase2L1TracksSelectionHighPurity"))
+    process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,0.9)
+    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("loose"),
+                                                                     cms.InputTag("hltPhase2InitialStepTrackSelectionHighPurity"))
     process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1)
 
     #process.hltPhase2InitialStepTracks.clusterRemovalInfo = cms.InputTag("hltPhase2L1TrackStepClusters")
 
     process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag(
-    "hltPhase2GeneralTracks", "hltPhase2CutsRecoTracksHp", "hltPhase2CutsRecoTracksInitialStep", "hltPhase2CutsRecoTracksInitialStepHp",
+    "hltPhase2GeneralTracks","hltPhase2CutsRecoTracksL1",
+    "hltPhase2CutsRecoTracksInitialStep", "hltPhase2CutsRecoTracksInitialStepHp",
     "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo", "hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
     "hltPhase2GeneralTracksPt09", "hltPhase2CutsRecoTracksPt09Hp", "hltPhase2CutsRecoTracksBtvLike", "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
-    "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp", "hltPhase2CutsRecoTracksPt09InitialStep", "hltPhase2CutsRecoTracksPt09InitialStepHp")
+    "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp", "hltPhase2CutsRecoTracksPt09InitialStep", "hltPhase2CutsRecoTracksPt09InitialStepHp",
+    "hltPhase2CutsRecoTracksL1StepByOriginalAlgo","hltPhase2CutsRecoTracksL1StepByOriginalAlgoHp")
 
     # process.hltPhase2PixelTracksSeedLayers.FPix.skipClusters = cms.InputTag("hltPhase2L1StepSeedClusterMask")
     # process.hltPhase2PixelTracksSeedLayers.BPix.skipClusters = cms.InputTag("hltPhase2L1StepSeedClusterMask")
+
+    return process
+
+def l1_pixel_recovery(process,timing):
+
+
+    process.schedule = cms.Schedule(*[ process.raw2digi_step,process.l1_pixel_reco, process.prevalidation_l1initial,
+                                      process.validation_l1initial, process.dqm_l1initial])
+
+    process.hltPhase2PixelTracksSeedLayers.FPix.skipClusters = cms.InputTag("hltPhase2PixelTrackClusters")
+    process.hltPhase2PixelTracksSeedLayers.BPix.skipClusters = cms.InputTag("hltPhase2PixelTrackClusters")
+
+    process.hltPhase2PixelTrackClusters.trajectories = cms.InputTag("hltPhase2L1CtfTracks")
+    ##masking with pixel tracks
+    # process.hltPhase2L1TracksTaskSeed.add(process.hltPhase2L1TrackStepClusters)
+    # process.hltPhase2L1TrackStepClusters.trajectories = cms.InputTag("hltPhase2PixelTracks")
+    # process.hltPhase2L1TrackCandidates.phase2clustersToSkip = cms.InputTag("hltPhase2L1TrackStepClusters")
+
+    ##pixel vertices for classification
+    process.hltPhase2L1TracksCutClassifier.vertices = cms.InputTag("hltPhase2PixelVertices")
+
+    ##masking with l1 tracks
+    process.hltPhase2InitialStepClusters.trajectories = cms.InputTag("hltPhase2L1TracksSelectionHighPurity")
+    process.hltPhase2InitialStepTrackCandidates.phase2clustersToSkip = cms.InputTag("hltPhase2InitialStepClusters")
+
+    ##general tracks - recovery + l1
+    process.trackAlgoPriorityOrder.algoOrder = cms.vstring('hltIter0','initialStep')
+    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1TracksSelectionHighPurity","hltPhase2InitialStepTrackSelectionHighPurity")
+    process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0)
+    process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,0.9)
+    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2L1TracksSelectionHighPurity"),
+                                                                     cms.InputTag("hltPhase2InitialStepTrackSelectionHighPurity"))
+    process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1)
+
+    #process.hltPhase2InitialStepTracks.clusterRemovalInfo = cms.InputTag("hltPhase2L1TrackStepClusters")
+
+    process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag(
+    "hltPhase2GeneralTracks","hltPhase2CutsRecoTracksL1",
+    "hltPhase2CutsRecoTracksInitialStep", "hltPhase2CutsRecoTracksInitialStepHp",
+    "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo", "hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
+    "hltPhase2GeneralTracksPt09", "hltPhase2CutsRecoTracksPt09Hp", "hltPhase2CutsRecoTracksBtvLike", "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
+    "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp", "hltPhase2CutsRecoTracksPt09InitialStep", "hltPhase2CutsRecoTracksPt09InitialStepHp",
+    "hltPhase2CutsRecoTracksL1StepByOriginalAlgo","hltPhase2CutsRecoTracksL1StepByOriginalAlgoHp")
 
     return process
 
@@ -272,7 +328,7 @@ def customizeTripletL1(process,timing=False):
 
     #process.hltPhase2InitialStepTracks.clusterRemovalInfo = cms.InputTag("hltPhase2L1TrackStepClusters")
 
-    process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag("hltPhase2GeneralTracks","hltPhase2CutsRecoTracksL1Step   "
+    process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag("hltPhase2GeneralTracks","hltPhase2CutsRecoTracksL1Step",
     "hltPhase2CutsRecoTracksHighPtTripletStep" ,
     "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMask",
     "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMaskHp")
@@ -282,14 +338,23 @@ def customizeTripletL1(process,timing=False):
 
     return process
 
-
-def customizeOriginal(process,timing):
+def customizeOriginal_v7(process,timing):
 
     # process.siPixelClusters.vertices = "hltPhase2PixelVertices"
+    process.schedule = cms.Schedule(*[ process.raw2digi_step,process.original_v7])
+
     if not timing:
-        process.schedule = cms.Schedule(*[ process.raw2digi_step,process.original_v7,
-                                           process.vertexing, process.prevalidation_original,
-                                           process.validation_original, process.dqm_original])
+        process.schedule.extend([process.vertexing, process.prevalidation_original,
+            process.validation_original, process.dqm_original])
+
+
+def customizeOriginal_v6(process,timing):
+
+        process.schedule = cms.Schedule(*[process.raw2digi_step,process.original_v6])
+
+        if not timing:
+            process.schedule.extend([process.vertexing, process.prevalidation_original,
+                process.validation_original, process.dqm_original])
 
 def customizeGeneralTracksToPixelL1TracksStep(process,timing):
 
@@ -346,9 +411,8 @@ def customizeGeneralTracksToPixelTripletL1TracksStep(process,timing):
 
     if timing:
         # process.initial_l1tracks = 0
-        process.pure_l1tracks = 0
-        process.original_v7 = 0
-        process.initial_l1tracks_mask = 0
+        process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
+                                          process.vertexing])
     else:
         process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
                                           process.vertexing, process.prevalidation_purel1,
@@ -374,13 +438,7 @@ def customizeGeneralTracksToPixelTripletL1TracksStep(process,timing):
 
 def customizeGeneralTracksToPureL1TracksStep(process):
 
-    if timing:
-        process.initial_l1tracks = 0
-        # process.pure_l1tracks = 0
-        process.original_v7 = 0
-        process.initial_l1tracks_mask = 0
-    else:
-        process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
+    process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
                                           process.vertexing, process.prevalidation_purel1,
                                           process.validation_purel1, process.dqm_purel1])
 
