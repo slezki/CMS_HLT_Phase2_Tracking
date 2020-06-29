@@ -259,7 +259,7 @@ l1_pixel_reco = cms.Path(
     hltPhase2PixelTracksSequenceL1 +
     hltPhase2PixelVerticesSequence +
     hltPhase2L1TracksSequenceClassifiation +
-    hltPhase2InitialStepSequenceL1 +
+    hltPhase2InitialStepSequence +
 
     hltPhase2GeneralTracks
 

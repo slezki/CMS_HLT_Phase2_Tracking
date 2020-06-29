@@ -34,7 +34,8 @@ options.register ('wf',
                   VarParsing.VarParsing.varType.int,          # string, int, or float
                   "Wf number")
 options.register('pixtrip',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Pixel Triplets")
-options.register ('n',1,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"max events")
+options.register('timing',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Only timing")
+options.register('n',1,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"max events")
 
 options.parseArguments()
 
@@ -151,70 +152,6 @@ process.PixelCPEGenericESProducer.DoCosmics = False
 process.PixelCPEGenericESProducer.Upgrade = cms.bool(True)
 ######
 
-
-# ### For timing
-# ### Tracking @ HLT: set up FastTimerService; analogous setting can be obtained with option --timing in hltGetConfiguration
-# # configure the FastTimerService
-# process.load( "HLTrigger.Timer.FastTimerService_cfi" )
-# # print a text summary at the end of the job
-# process.FastTimerService.printEventSummary         = False
-# process.FastTimerService.printRunSummary           = False
-# process.FastTimerService.printJobSummary           = True
-#
-#
-# # enable DQM plots
-# process.FastTimerService.enableDQM                 = True
-#
-# # enable per-path DQM plots (starting with CMSSW 9.2.3-patch2)
-# process.FastTimerService.enableDQMbyPath           = True
-#
-# # enable per-module DQM plots
-# process.FastTimerService.enableDQMbyModule         = True
-#
-# # enable per-event DQM plots vs lumisection
-# process.FastTimerService.enableDQMbyLumiSection    = True
-# process.FastTimerService.dqmLumiSectionsRange      = 2500
-#
-# # set the time resolution of the DQM plots
-# process.FastTimerService.dqmTimeRange              = 80000.
-# process.FastTimerService.dqmTimeResolution         =    10.0
-# process.FastTimerService.dqmPathTimeRange          = 80000.
-# process.FastTimerService.dqmPathTimeResolution     =    10.0
-# process.FastTimerService.dqmModuleTimeRange        = 80000.
-# process.FastTimerService.dqmModuleTimeResolution   =    10.0
-#
-# # set the base DQM folder for the plots
-# process.FastTimerService.dqmPath                   = 'HLT/TimerService'
-# process.FastTimerService.enableDQMbyProcesses      = True
-
-#process.FastTimerOutput = cms.EndPath( process.dqmOutput )
-
-
-# Schedule definition
-#process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
-#                                   process.vertexing, process.prevalidation_purel1,
-#                                   process.validation_purel1, process.dqm_purel1, process.DQMoutput_step])
-
-# process.schedule = cms.Schedule(*[ process.raw2digi_step,process.initial_l1tracks,
-#                                    process.vertexing, process.prevalidation_l1initial,
-#                                    process.validation_purel1, process.dqm_l1initial, process.DQMoutput_step])
-
-# process.schedule = cms.Schedule(*[ process.raw2digi_step,process.initial_l1tracks_mask,
-#                                    process.vertexing, process.prevalidation_l1initial,
-#                                    process.validation_l1initial, process.dqm_l1initial, process.DQMoutput_step])
-
-
-# FastTimerService client
-# process.load('HLTrigger.Timer.fastTimerServiceClient_cfi')
-# process.fastTimerServiceClient.dqmPath = "HLT/TimerService"
-#
-# # DQM file saver
-# process.load('DQMServices.Components.DQMFileSaver_cfi')
-# process.dqmSaver.workflow = "/HLT/FastTimerService/All"
-#
-# process.DQMFileSaverOutput = cms.EndPath( process.fastTimerServiceClient + process.dqmSaver )
-
-
 #######
 # -1 - original v7
 # 0 - l1tracks only
@@ -231,13 +168,14 @@ process.PixelCPEGenericESProducer.Upgrade = cms.bool(True)
 # customizeGeneralTracksToInitialL1TracksStepMasking(process)
 # customizeL1TracksStepToMkFit(process)
 
-timing = False
+timing = options.timing
 
 suff = str(options.wf)
 if options.wf == -1:
     suff = "original"
     customizeOriginal_v6(process,timing)
 if options.wf == 0:
+    suff = "purel1"
     customizeGeneralTracksToPureL1TracksStep(process)
 if options.wf == 1:
     customizeGeneralTracksToPixelL1TracksStep(process,timing)
@@ -309,7 +247,7 @@ process.FastTimerService.dqmModuleMemoryRange      =  100000
 process.FastTimerService.dqmModuleMemoryResolution =     500
 
 process.FastTimerService.writeJSONSummary = cms.untracked.bool(True)
-process.FastTimerService.jsonFileName = cms.untracked.string('resources.json')
+process.FastTimerService.jsonFileName = cms.untracked.string('wf_' + suff + 'timing.json')
 
 if 'MessageLogger' in process.__dict__:
     process.MessageLogger.categories.append('TriggerSummaryProducerAOD')
@@ -348,9 +286,6 @@ process = customiseLogErrorHarvesterUsingOutputCommands(process)
 # Add early deletion of temporary data products to reduce peak memory need
 from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete
 process = customiseEarlyDelete(process)
-# End adding early deletion
-_customInfo = {}
-_customInfo['globalTag' ]= "106X_mcRun3_2023_realistic_v3"
-_customInfo['realData'  ]=  False
+
 # from HLTrigger.Configuration.customizeHLTforALL import customizeHLTforAll
 # process = customizeHLTforAll(process,"Fake",_customInfo)
