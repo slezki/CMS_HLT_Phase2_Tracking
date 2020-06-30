@@ -627,7 +627,7 @@ hltPhase2TrackValidatorL1 = cms.EDProducer("MultiTrackValidator", #cmssw_11_1 pr
         minMVA = cms.double(-1),
         minPVz = cms.double(-60),
         minPhi = cms.double(-3.1416),
-        minPt = cms.double(0.0),
+        minPt = cms.double(0.1),
         minPu = cms.double(-0.5),
         minTracks = cms.double(0),
         minVertcount = cms.double(-0.5),
@@ -2646,7 +2646,8 @@ hltPhase2TrackValidatorBHadronTrackingOnly = cms.EDProducer("MultiTrackValidator
     label = cms.VInputTag(
         "hltPhase2GeneralTracks", "hltPhase2CutsRecoTracksHp", "hltPhase2CutsRecoTracksInitialStep", "hltPhase2CutsRecoTracksHighPtTripletStep",
         "hltPhase2CutsRecoTracksInitialStepHp", "hltPhase2CutsRecoTracksHighPtTripletStepHp",
-        "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo", "hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgo",  "hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp", "hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgoHp",
+        "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo", "hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgo",  "hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
+        "hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgoHp",
         "hltPhase2CutsRecoTracksBtvLike", "hltPhase2CutsRecoTracksInitialStepByAlgoMask", "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMask",
         "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp", "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMaskHp"
     ),

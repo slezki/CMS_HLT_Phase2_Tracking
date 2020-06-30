@@ -55,7 +55,7 @@ process.MessageLogger = cms.Service("MessageLogger",
 
 
 LOCAL = True
-RECAS = False
+RECAS = True
 if not RECAS:
     if LOCAL:
         process.load("local_files")
@@ -177,7 +177,7 @@ if options.wf == -1:
     customizeOriginal_v6(process,timing)
 if options.wf == 0:
     suff = "purel1"
-    customizeGeneralTracksToPureL1TracksStep(process,timing)
+    customizeGeneralTracksToPureL1TracksStep(process)
 if options.wf == 1:
     customizeGeneralTracksToPixelL1TracksStep(process,timing)
 if options.wf == 2:
@@ -190,7 +190,8 @@ if options.wf == 5:
     pixel_l1_recovery(process,timing)
 if options.wf == 6:
     l1_pixel_recovery(process,timing)
-
+if options.wf == 7:
+    l1_pixel_recovery_triplets(process,timing)
 
 if options.pixtrip:
     pixelTriplets(process)

@@ -249,8 +249,6 @@ pixeltriplet_l1 = cms.Path(
 
 
 
-
-
 l1_pixel_reco = cms.Path(
     hltPhase2StartUp +
     TTTracksFromTrackletEmulation +
@@ -260,7 +258,20 @@ l1_pixel_reco = cms.Path(
     hltPhase2PixelVerticesSequence +
     hltPhase2L1TracksSequenceClassifiation +
     hltPhase2InitialStepSequence +
+    hltPhase2GeneralTracks
 
+)
+
+l1_pixel_reco_triplets = cms.Path(
+    hltPhase2StartUp +
+    TTTracksFromTrackletEmulation +
+    hltPhase2L1TracksSeqSeed +
+    hltPhase2L1TracksSeqPattern +
+    hltPhase2PixelTracksSequenceL1 +
+    hltPhase2PixelVerticesSequence +
+    hltPhase2L1TracksSequenceClassifiation +
+    hltPhase2InitialStepSequence +
+    hltPhase2HighPtTripletStepSequence +
     hltPhase2GeneralTracks
 
 )

@@ -21,3 +21,5 @@ validation_l1trip = cms.Path(hltPhase2TrackValidatorPixelTrackingOnly + hltPhase
 validation_base = cms.EndPath(
     hltMultiTrackValidation
     + hltTrackAssociatorByHits)
+
+validation_all = cms.Path(hltPhase2TrackValidatorPixelTrackingOnly + hltPhase2TrackValidatorTrackingOnly + hltPhase2TrackValidatorL1)

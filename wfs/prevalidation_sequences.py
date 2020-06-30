@@ -71,3 +71,9 @@ prevalidation_l1trip= cms.Path(prevalidation_startup,
                                   prevalidation_l1,
                                   prevalidation_highpt,
                                   prevalidation_general)
+
+prevalidation_all= cms.Path(prevalidation_startup,
+                                  prevalidation_l1,
+                                  prevalidation_initial,
+                                  prevalidation_highpt,
+                                  prevalidation_general)

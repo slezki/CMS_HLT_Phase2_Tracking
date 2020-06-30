@@ -1,8 +1,5 @@
 import FWCore.ParameterSet.Config as cms
-#from Configuration.ProcessModifiers.l1tracking_cff import *
-
-
-
+# from Configuration.ProcessModifiers.l1tracking_cff import *
 
 layerListForPhase2 = ['BPix1+BPix2+BPix3+BPix4',
                        'BPix1+BPix2+BPix3+FPix1_pos','BPix1+BPix2+BPix3+FPix1_neg',
@@ -288,20 +285,15 @@ def l1_pixel_recovery(process,timing):
     process.hltPhase2L1TracksCutClassifier.vertices = cms.InputTag("hltPhase2PixelVertices")
 
     ##masking with l1 tracks
-<<<<<<< HEAD
-    #process.hltPhase2InitialStepClusters.trajectories = cms.InputTag("hltPhase2L1CtfTracks")
-    #process.hltPhase2InitialStepTrackCandidates.phase2clustersToSkip = cms.InputTag("hltPhase2InitialStepClusters")
-=======
     # process.hltPhase2InitialStepClusters.trajectories = cms.InputTag("hltPhase2L1CtfTracks")
     # process.hltPhase2InitialStepTrackCandidates.phase2clustersToSkip = cms.InputTag("hltPhase2InitialStepClusters")
->>>>>>> ca8f44a1aba60ca96d8b21a26ed3fd76ea5f83f3
 
     ##general tracks - recovery + l1
     process.trackAlgoPriorityOrder.algoOrder = cms.vstring('hltIter0','initialStep')
-    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1TracksSelectionHighPurity","hltPhase2InitialStepTrackSelectionHighPurity")
+    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1CtfTracks","hltPhase2InitialStepTrackSelectionHighPurity")
     process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0)
-    process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,0.9)
-    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2L1TracksSelectionHighPurity"),
+    process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,1.0)
+    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag(""),
                                                                      cms.InputTag("hltPhase2InitialStepTrackSelectionHighPurity"))
     process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1)
 
@@ -311,6 +303,56 @@ def l1_pixel_recovery(process,timing):
     "hltPhase2GeneralTracks","hltPhase2CutsRecoTracksL1",
     "hltPhase2CutsRecoTracksInitialStep", "hltPhase2CutsRecoTracksInitialStepHp",
     "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo", "hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
+    "hltPhase2GeneralTracksPt09", "hltPhase2CutsRecoTracksPt09Hp", "hltPhase2CutsRecoTracksBtvLike", "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
+    "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp", "hltPhase2CutsRecoTracksPt09InitialStep", "hltPhase2CutsRecoTracksPt09InitialStepHp",
+    "hltPhase2CutsRecoTracksL1StepByOriginalAlgo","hltPhase2CutsRecoTracksL1StepByOriginalAlgoHp")
+
+    return process
+
+def l1_pixel_recovery_triplets(process,timing):
+
+
+    process.schedule = cms.Schedule(*[ process.raw2digi_step,process.l1_pixel_reco_triplets])
+
+    if not timing:
+        process.schedule.extend([process.prevalidation_all,
+                                      process.validation_all, process.dqm_all])
+
+    process.hltPhase2PixelTrackClusters.trajectories = cms.InputTag("hltPhase2L1CtfTracks")
+
+    process.hltPhase2PixelTracksSeedLayers.FPix.skipClusters = cms.InputTag("hltPhase2PixelTrackClusters")
+    process.hltPhase2PixelTracksSeedLayers.BPix.skipClusters = cms.InputTag("hltPhase2PixelTrackClusters")
+
+    ##masking with pixel tracks
+    # process.hltPhase2L1TracksTaskSeed.add(process.hltPhase2L1TrackStepClusters)
+    # process.hltPhase2L1TrackStepClusters.trajectories = cms.InputTag("hltPhase2PixelTracks")
+    # process.hltPhase2L1TrackCandidates.phase2clustersToSkip = cms.InputTag("hltPhase2L1TrackStepClusters")
+
+    ##pixel vertices for classification
+    process.hltPhase2L1TracksCutClassifier.vertices = cms.InputTag("hltPhase2PixelVertices")
+
+    ##masking with l1 tracks
+    # process.hltPhase2InitialStepClusters.trajectories = cms.InputTag("hltPhase2L1CtfTracks")
+    # process.hltPhase2InitialStepTrackCandidates.phase2clustersToSkip = cms.InputTag("hltPhase2InitialStepClusters")
+
+    ##general tracks - recovery + l1
+    process.trackAlgoPriorityOrder.algoOrder = cms.vstring('hltIter0','initialStep','highPtTripletStep')
+    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1CtfTracks","hltPhase2InitialStepTrackSelectionHighPurity","hltPhase2HighPtTripletStepTrackSelectionHighPurity")
+    process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0,0)
+    process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,1.0,1.0)
+    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag(""),
+                                                                     cms.InputTag("hltPhase2InitialStepTrackSelectionHighPurity"),
+                                                                     cms.InputTag("hltPhase2HighPtTripletStepTrackSelectionHighPurity"))
+    process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1,2)
+
+    #process.hltPhase2InitialStepTracks.clusterRemovalInfo = cms.InputTag("hltPhase2L1TrackStepClusters")
+
+    process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag(
+    "hltPhase2GeneralTracks","hltPhase2CutsRecoTracksL1","hltPhase2CutsRecoTracksHighPtTripletStepHp",
+    "hltPhase2CutsRecoTracksInitialStep", "hltPhase2CutsRecoTracksInitialStepHp","hltPhase2CutsRecoTracksHighPtTripletStep",
+    "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo", "hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
+    "hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgo","hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMask",
+    "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMaskHp",
     "hltPhase2GeneralTracksPt09", "hltPhase2CutsRecoTracksPt09Hp", "hltPhase2CutsRecoTracksBtvLike", "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
     "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp", "hltPhase2CutsRecoTracksPt09InitialStep", "hltPhase2CutsRecoTracksPt09InitialStepHp",
     "hltPhase2CutsRecoTracksL1StepByOriginalAlgo","hltPhase2CutsRecoTracksL1StepByOriginalAlgoHp")
@@ -343,7 +385,7 @@ def customizeTripletL1(process,timing=False):
 
     process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag("hltPhase2GeneralTracks","hltPhase2CutsRecoTracksL1Step",
     "hltPhase2CutsRecoTracksHighPtTripletStep" ,
-    "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMask","hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgo    ",
+    "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMask","hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgo",
     "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMaskHp","hltPhase2CutsRecoTracksL1StepByOriginalAlgo")
 
     # process.hltPhase2HighPtTripletStepSeedLayers.FPix.skipClusters = cms.InputTag("hltPhase2L1StepSeedClusterMask")
