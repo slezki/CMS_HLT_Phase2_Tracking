@@ -223,7 +223,7 @@ def pixel_l1_recovery(process,timing):
     process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pixeltriplet_l1])
 
     if not timing:
-        procecss.schedule.extend([process.prevalidation_l1initial,
+        process.schedule.extend([process.prevalidation_l1initial,
                                           process.validation_l1initial, process.dqm_l1initial])
 
     ##masking with pixel tracks
@@ -444,7 +444,7 @@ def customizeGeneralTracksToPixelTripletL1TracksStep(process,timing):
 def customizeGeneralTracksToPureL1TracksStep(process,timing):
 
     process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
-                                          process.vertexing,
+                                          process.vertexing])
     if not timing:
                 process.schedule.extend([process.prevalidation_purel1,
                                           process.validation_purel1, process.dqm_purel1])

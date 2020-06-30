@@ -177,7 +177,7 @@ if options.wf == -1:
     customizeOriginal_v6(process,timing)
 if options.wf == 0:
     suff = "purel1"
-    customizeGeneralTracksToPureL1TracksStep(process)
+    customizeGeneralTracksToPureL1TracksStep(process,timing)
 if options.wf == 1:
     customizeGeneralTracksToPixelL1TracksStep(process,timing)
 if options.wf == 2:

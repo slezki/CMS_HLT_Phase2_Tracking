@@ -75,7 +75,7 @@ hltPhase2L1TrackSeedsFromL1Tracks = cms.EDProducer("SeedGeneratorFromTTracksEDPr
     propagator = cms.string('PropagatorWithMaterial'),
     MeasurementTrackerEvent = cms.InputTag("MeasurementTrackerEvent"),
     maxEtaForTOB = cms.double(1.2),
-    minEtaForTEC = cms.double(0.8),
+    minEtaForTEC = cms.double(0.9),
     TrajectoryBuilder = cms.string('GroupedCkfTrajectoryBuilder'),
     TrajectoryBuilderPSet = cms.PSet(refToPSet_ = cms.string('hltPhase2L1TrackStepTrajectoryBuilder')),
     errorSFHitless = cms.double(1e-9)
@@ -158,7 +158,7 @@ hltPhase2L1TrackStepTrajectoryBuilder =  cms.PSet(
     useSameTrajFilter = cms.bool(True),
     # Maximum number of track candidates followed at each step of
     # track building
-    maxCand = cms.int32(1000),
+    maxCand = cms.int32(20),
     intermediateCleaning = cms.bool(True),
     # Chi2 added to track candidate if no hit found in layer
     lostHitPenalty = cms.double(30.0),
@@ -210,7 +210,7 @@ hltPhase2L1TrackCandidates= cms.EDProducer("CkfTrackCandidateMaker",
     useHitsSplitting = cms.bool(True),
     # After in-out tracking, do out-in tracking through the seeding
     # region and then further in.
-    doSeedingRegionRebuilding = cms.bool(False),
+    doSeedingRegionRebuilding = cms.bool(True),
     # Seed Producer
     maxNSeeds = cms.uint32(500000),
     maxSeedsBeforeCleaning = cms.uint32(10000),
@@ -391,7 +391,7 @@ hltPhase2L1TracksCutClassifier = cms.EDProducer( "TrackCutClassifier",
 ############## pixelTracks/Vertices
 
 hltPhase2PixelTrackClusters = cms.EDProducer("TrackClusterRemoverPhase2",
-        TrackQuality = cms.string('highPurity'),
+        TrackQuality = cms.string(' '),
         maxChi2 = cms.double(9.0),
         mightGet = cms.optional.untracked.vstring, # cmssw_11_1
         minNumberOfLayersWithMeasBeforeFiltering = cms.int32(0),
@@ -401,7 +401,7 @@ hltPhase2PixelTrackClusters = cms.EDProducer("TrackClusterRemoverPhase2",
         phase2OTClusters = cms.InputTag("siPhase2Clusters"),
         phase2pixelClusters = cms.InputTag("siPixelClusters"),
         trackClassifier = cms.InputTag("","QualityMasks"),
-        trajectories = cms.InputTag("hltPhase2L1TracksSelectionHighPurity")
+        trajectories = cms.InputTag("hltPhase2L1CtfTracks")
     )
 
 hltPhase2PSetPvClusterComparerForIT = cms.PSet(
