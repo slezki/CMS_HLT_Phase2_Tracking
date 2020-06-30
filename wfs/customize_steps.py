@@ -1,6 +1,9 @@
 import FWCore.ParameterSet.Config as cms
 #from Configuration.ProcessModifiers.l1tracking_cff import *
 
+
+
+
 layerListForPhase2 = ['BPix1+BPix2+BPix3+BPix4',
                        'BPix1+BPix2+BPix3+FPix1_pos','BPix1+BPix2+BPix3+FPix1_neg',
                        'BPix1+BPix2+FPix1_pos+FPix2_pos', 'BPix1+BPix2+FPix1_neg+FPix2_neg',
@@ -223,7 +226,7 @@ def pixel_l1_recovery(process,timing):
     process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pixeltriplet_l1])
 
     if not timing:
-        procecss.schedule.extend([process.prevalidation_l1initial,
+        process.schedule.extend([process.prevalidation_l1initial,
                                           process.validation_l1initial, process.dqm_l1initial])
 
     ##masking with pixel tracks
@@ -285,8 +288,13 @@ def l1_pixel_recovery(process,timing):
     process.hltPhase2L1TracksCutClassifier.vertices = cms.InputTag("hltPhase2PixelVertices")
 
     ##masking with l1 tracks
+<<<<<<< HEAD
     #process.hltPhase2InitialStepClusters.trajectories = cms.InputTag("hltPhase2L1CtfTracks")
     #process.hltPhase2InitialStepTrackCandidates.phase2clustersToSkip = cms.InputTag("hltPhase2InitialStepClusters")
+=======
+    # process.hltPhase2InitialStepClusters.trajectories = cms.InputTag("hltPhase2L1CtfTracks")
+    # process.hltPhase2InitialStepTrackCandidates.phase2clustersToSkip = cms.InputTag("hltPhase2InitialStepClusters")
+>>>>>>> ca8f44a1aba60ca96d8b21a26ed3fd76ea5f83f3
 
     ##general tracks - recovery + l1
     process.trackAlgoPriorityOrder.algoOrder = cms.vstring('hltIter0','initialStep')
@@ -335,8 +343,8 @@ def customizeTripletL1(process,timing=False):
 
     process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag("hltPhase2GeneralTracks","hltPhase2CutsRecoTracksL1Step",
     "hltPhase2CutsRecoTracksHighPtTripletStep" ,
-    "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMask",
-    "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMaskHp")
+    "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMask","hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgo    ",
+    "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMaskHp","hltPhase2CutsRecoTracksL1StepByOriginalAlgo")
 
     # process.hltPhase2HighPtTripletStepSeedLayers.FPix.skipClusters = cms.InputTag("hltPhase2L1StepSeedClusterMask")
     # process.hltPhase2HighPtTripletStepSeedLayers.BPix.skipClusters = cms.InputTag("hltPhase2L1StepSeedClusterMask")
@@ -441,10 +449,12 @@ def customizeGeneralTracksToPixelTripletL1TracksStep(process,timing):
 
     return process
 
-def customizeGeneralTracksToPureL1TracksStep(process):
+def customizeGeneralTracksToPureL1TracksStep(process,timing):
 
     process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
-                                          process.vertexing, process.prevalidation_purel1,
+                                          process.vertexing])
+    if not timing:
+                process.schedule.extend([process.prevalidation_purel1,
                                           process.validation_purel1, process.dqm_purel1])
 
 
@@ -460,5 +470,43 @@ def customizeGeneralTracksToPureL1TracksStep(process):
     process.hltPhase2InitialStepTrackRefsForJets.src = cms.InputTag("hltPhase2L1CtfTracks")
 
     process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag("hltPhase2GeneralTracks")
+
+    return process
+
+def customize_pre7(process):
+
+    gooppvtx_60 = cms.PSet(GoodPVtxBin = cms.int32(60),GoodPVtxMax = cms.double(60.0),GoodPVtxMin = cms.double(0.0))
+    gooppvtx_200 = cms.PSet(GoodPVtxBin = cms.int32(200),GoodPVtxMax = cms.double(200.0),GoodPVtxMin = cms.double(0.0))
+    npvtx = cms.PSet(NTrkPVtxBin = cms.int32(200), NTrkPVtxMin = cms.double( 0.), NTrkPVtxMax = cms.double(200.))
+    sumptvtx = cms.PSet(SumPtPVtxBin = cms.int32(200), SumPtPVtxMin = cms.double( 0.), SumPtPVtxMax = cms.double(1000.))
+
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPtRange0to1.GoodPVtx = gooppvtx_60
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPt1.GoodPVtx = gooppvtx_200
+    process.hltPhase2TrackSeedMonhighPtTripletStep.GoodPVtx = gooppvtx_200
+    process.hltPhase2TrackSeedMoninitialStep.GoodPVtx = gooppvtx_200
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPV0p1.GoodPVtx = gooppvtx_60
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks.GoodPVtx = gooppvtx_60
+
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPtRange0to1.SumPtPVtx = sumptvtx
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPt1.v = sumptvtx
+    process.hltPhase2TrackSeedMonhighPtTripletStep.SumPtPVtx = sumptvtx
+    process.hltPhase2TrackSeedMoninitialStep.SumPtPVtx = sumptvtx
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPV0p1.SumPtPVtx = sumptvtx
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks.SumPtPVtx = sumptvtx
+
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPtRange0to1.NTrkPVtx = npvtx
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPt1.NTrkPVtx = npvtx
+    process.hltPhase2TrackSeedMonhighPtTripletStep.NTrkPVtx = npvtx
+    process.hltPhase2TrackSeedMoninitialStep.NTrkPVtx = npvtx
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPV0p1.NTrkPVtx = npvtx
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks.NTrkPVtx = npvtx
+
+
+
+    return process
+
+def customize_pre8(process):
+
+    customize_pre7(process)
 
     return process
