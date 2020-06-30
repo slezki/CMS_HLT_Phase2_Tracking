@@ -425,7 +425,7 @@ hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgo = cms.EDProducer("RecoTra
 
 
 hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgoHp = cms.EDProducer("RecoTrackViewRefSelector",
-    algorithm = cms.vstring(),
+    algorithm = cms.vstring(''),
     algorithmMaskContains = cms.vstring(),
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
