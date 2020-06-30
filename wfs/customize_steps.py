@@ -1,5 +1,5 @@
 import FWCore.ParameterSet.Config as cms
-from Configuration.ProcessModifiers.l1tracking_cff import *
+#from Configuration.ProcessModifiers.l1tracking_cff import *
 
 layerListForPhase2 = ['BPix1+BPix2+BPix3+BPix4',
                        'BPix1+BPix2+BPix3+FPix1_pos','BPix1+BPix2+BPix3+FPix1_neg',
@@ -285,8 +285,8 @@ def l1_pixel_recovery(process,timing):
     process.hltPhase2L1TracksCutClassifier.vertices = cms.InputTag("hltPhase2PixelVertices")
 
     ##masking with l1 tracks
-    process.hltPhase2InitialStepClusters.trajectories = cms.InputTag("hltPhase2L1CtfTracks")
-    process.hltPhase2InitialStepTrackCandidates.phase2clustersToSkip = cms.InputTag("hltPhase2InitialStepClusters")
+    #process.hltPhase2InitialStepClusters.trajectories = cms.InputTag("hltPhase2L1CtfTracks")
+    #process.hltPhase2InitialStepTrackCandidates.phase2clustersToSkip = cms.InputTag("hltPhase2InitialStepClusters")
 
     ##general tracks - recovery + l1
     process.trackAlgoPriorityOrder.algoOrder = cms.vstring('hltIter0','initialStep')

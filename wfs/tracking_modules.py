@@ -74,11 +74,11 @@ hltPhase2L1TrackSeedsFromL1Tracks = cms.EDProducer("SeedGeneratorFromTTracksEDPr
     estimator = cms.string('hltPhase2L1TrackStepChi2Est'),
     propagator = cms.string('PropagatorWithMaterial'),
     MeasurementTrackerEvent = cms.InputTag("MeasurementTrackerEvent"),
-    maxEtaForTOB = cms.double(2.4),
-    minEtaForTEC = cms.double(0.1),
+    maxEtaForTOB = cms.double(1.2),
+    minEtaForTEC = cms.double(0.9),
     TrajectoryBuilder = cms.string('GroupedCkfTrajectoryBuilder'),
     TrajectoryBuilderPSet = cms.PSet(refToPSet_ = cms.string('hltPhase2L1TrackStepTrajectoryBuilder')),
-    errorSFHitless = cms.double(1e-6)
+    errorSFHitless = cms.double(1e-9)
     #TrajectoryBuilder = cms.string('GroupedCkfTrajectoryBuilder'),
     #TrajectoryBuilderPSet = cms.PSet( refToPSet_ = cms.string('L1TrackStepTrajectoryBuilder'))
 )
