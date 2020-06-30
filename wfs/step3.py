@@ -168,6 +168,7 @@ process.PixelCPEGenericESProducer.Upgrade = cms.bool(True)
 # customizeGeneralTracksToInitialL1TracksStepMasking(process)
 # customizeL1TracksStepToMkFit(process)
 
+
 timing = options.timing
 
 suff = str(options.wf)
@@ -190,12 +191,16 @@ if options.wf == 5:
 if options.wf == 6:
     l1_pixel_recovery(process,timing)
 
+
 if options.pixtrip:
     pixelTriplets(process)
 if not timing:
 
     process.DQMoutput_step = cms.EndPath( process.DQMoutput)
     process.schedule.extend([process.DQMoutput_step])
+
+
+customize_pre7(process)
 
 if 'PrescaleService' in process.__dict__:
     for pset in reversed(process.PrescaleService.prescaleTable):
