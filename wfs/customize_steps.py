@@ -322,6 +322,41 @@ def l1_pixel_recovery_triplets(process,timing):
     process.hltPhase2PixelTracksSeedLayers.FPix.skipClusters = cms.InputTag("hltPhase2PixelTrackClusters")
     process.hltPhase2PixelTracksSeedLayers.BPix.skipClusters = cms.InputTag("hltPhase2PixelTrackClusters")
 
+
+    #process.hltPhase2HighPtTripletStepSeedLayers.layerList = cms.vstring(layerListForPhase2)
+    #process.hltPhase2HighPtTripletStepHitDoublets.layerPairs = cms.vuint32(0, 1, 2)
+    # process.hltPhase2HighPtTripletStepHitTriplets = cms.EDProducer( "CAHitQuadrupletEDProducer",
+    #     CAHardPtCut = cms.double( 0.8 ),
+    #     SeedComparitorPSet = cms.PSet(
+    #       clusterShapeHitFilter = cms.string( "ClusterShapeHitFilter" ),
+    #       ComponentName = cms.string( "LowPtClusterShapeSeedComparitor" ),
+    #       clusterShapeCacheSrc = cms.InputTag( "siPixelClusterShapeCache") # pixelVertices
+    #     ),
+    #     extraHitRPhitolerance = cms.double( 0.032 ),
+    #     doublets = cms.InputTag( "hltPhase2HighPtTripletStepHitDoublets" ),
+    #     fitFastCircle = cms.bool( True ),
+    #     CAThetaCut = cms.double( 0.0012 ), # 0.002 ),
+    #     maxChi2 = cms.PSet(
+    #       value2 = cms.double( 50.0 ),
+    #       value1 = cms.double( 200.0 ),
+    #       pt1 = cms.double( 0.7 ),
+    #       enabled = cms.bool( True ),
+    #       pt2 = cms.double( 2.0 )
+    #     ),
+    #     CAPhiCut = cms.double( 0.2 ),
+    #     useBendingCorrection = cms.bool( True ),
+    #     fitFastCircleChi2Cut = cms.bool( True )#,
+    # )
+
+    process.hltPhase2HighPtTripletStepTrackingRegions = cms.EDProducer( "GlobalTrackingRegionFromBeamSpotEDProducer",
+        RegionPSet = cms.PSet(
+          nSigmaZ = cms.double( 5.0 ),
+          beamSpot = cms.InputTag( "offlineBeamSpot"),
+          ptMin = cms.double( 0.9 ), # previous 0.8
+          originRadius = cms.double( 0.1 ),
+          precise = cms.bool( True )
+        )
+    )
     process.hltPhase2HighPtTripletStepClusters.TrackQuality  = cms.string('')
     process.hltPhase2HighPtTripletStepClusters.trajectories = cms.InputTag("hltPhase2InitialStepTracks")
     process.hltPhase2HighPtTripletStepClusters.oldClusterRemovalInfo = cms.InputTag("hltPhase2PixelTrackClusters")
