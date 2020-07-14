@@ -276,6 +276,10 @@ l1_pixel_reco_triplets = cms.Path(
 
 )
 
+l1emulation = cms.Path
+(
+TTTracksFromTrackletEmulation
+)
 vertexing = cms.Path(
     caloLocalReco +
     vertexReco

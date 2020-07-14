@@ -10,7 +10,7 @@ import FWCore.ParameterSet.VarParsing as VarParsing
 from customize_steps import *
 #from Configuration.StandardSequences.Reconstruction_cff import *
 
-process = cms.Process('RECO',Phase2C9)#,l1tracking)
+process = cms.Process('RECO2',Phase2C9)#,l1tracking)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -55,8 +55,8 @@ process.MessageLogger = cms.Service("MessageLogger",
 
 
 LOCAL = True
-RECAS = True
-if not RECAS:
+T2 = True
+if not T2:
     if LOCAL:
         process.load("local_files")
     else:
@@ -168,12 +168,20 @@ process.PixelCPEGenericESProducer.Upgrade = cms.bool(True)
 # customizeGeneralTracksToInitialL1TracksStepMasking(process)
 # customizeL1TracksStepToMkFit(process)
 
+process.FEVTDEBUGHLToutput = cms.OutputModule("PoolOutputModule",
+    dataset = cms.untracked.PSet(
+        dataTier = cms.untracked.string('GEN-SIM-DIGI-RAW-RECO-HLTDEBUG'),
+        filterName = cms.untracked.string('')
+    ),
+    fileName = cms.untracked.string('file:step3_full.root'),
+    outputCommands = process.FEVTDEBUGHLTEventContent.outputCommands,
+    splitLevel = cms.untracked.int32(0)
+)
 
 timing = options.timing
 
 suff = str(options.wf)
 if options.wf == -1:
-    print("original")
     suff = "original"
     customizeOriginal_v6(process,timing)
 if options.wf == 0:
@@ -201,6 +209,14 @@ if not timing:
     process.DQMoutput_step = cms.EndPath( process.DQMoutput)
     process.schedule.extend([process.DQMoutput_step])
 
+process.output_step = cms.EndPath(process.FEVTDEBUGHLToutput)
+# process.FEVTDEBUGHLToutput.outputCommands.append('keep *')
+process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2GeneralTracks_*_*')
+process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2PixelVertices_*_*')
+process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2PixelTracks_*_*')
+process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2HighPtTripletStepTracks_*_*')
+process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2InitialStepTracks_*_*')
+process.schedule.extend([process.output_step])
 
 customize_pre7(process)
 
