@@ -1,28 +1,37 @@
 # CMS_HLT_Phase2_Tracking with L1 Tracks
 
-### CMSSW_11_1_0_pre6
+### CMSSW_11_1_0 or CMSSW_11_2_0_pre2
 
-You would need to add L1Tracking either thourgh merging the dedicated PR (https://github.com/cms-sw/cmssw/pull/30342) or following instructions here
+##### L1 Hitless Seeding Tracking 
+You would need to add L1Tracking either thourgh merging the dedicated PR (
+
+- 11_2_X : https://github.com/cms-sw/cmssw/pull/30342 
+- 11_1_X : https://github.com/cms-sw/cmssw/pull/30574
+
+or following instructions here
 
 https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1TrackSoftware
 
-############
-step3.py shows the different configurations
+##### Running the Tracking Reco
 
-needs:
-- step2.root
-- raw2digi_step_cff.py
-- tracking_sequences.py
-- prevalidation_sequences.py
-- validation_sequences.py
-- dqm_sequencese.py
+In step3.py the different configurations are listed. Running as
 
-Once these modules are loaded. One of the customization functions may be used. The latest version (l1Tracking + v6.1) is turned on with 
+```cmsRun step3.py n=N```
 
-process = l1_pixel_recovery_triplets(process)
+will run the baseline configuration (v6.1) which includes the following steps:
+
+- Pixel Tracks ( Quadruplets Seeding)
+- Initial Step Tracks Seeded by Pixel Tracks
+- HighPt Triplet Tracks (running from pixel triplet seeds to full tracks) with cluster & trajectory masking from InitialStep tracks
+
+different customisation are listed in step3.py. Running as
+
+```cmsRun step3.py n=N wf=7```
+
+will run the l1 traking before the baseline configuration (v6.1).
 
 If you with to test the usage of pixelTriplets for initial step seeding:
 
-process = pixelTriplets(process)
+```cmsRun step3.py n=N wf=W pixtrip=True```
 
 
