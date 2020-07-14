@@ -54,8 +54,8 @@ process.MessageLogger = cms.Service("MessageLogger",
 )                                                                       #8
 
 
-LOCAL = True
-T2 = True
+LOCAL = False
+T2 = False
 if not T2:
     if LOCAL:
         process.load("local_files")
@@ -153,7 +153,7 @@ process.PixelCPEGenericESProducer.Upgrade = cms.bool(True)
 ######
 
 #######
-# -1 - original v7
+# -1 - original v6
 # 0 - l1tracks only
 # 1 - pixeltracks + l1tracks
 # 2 - pixelTracks + initial step + l1tracks
