@@ -2,7 +2,7 @@
 
 ### CMSSW_11_1_0_pre6
 
-You would need to add L1Tracking either thourgh merging the dedicated PR or following instructions here
+You would need to add L1Tracking either thourgh merging the dedicated PR (https://github.com/cms-sw/cmssw/pull/30342) or following instructions here
 
 https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1TrackSoftware
 
