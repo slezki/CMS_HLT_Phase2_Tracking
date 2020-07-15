@@ -1661,6 +1661,7 @@ hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPt1 = cms.EDProducer("T
     )
 )
 
+
 hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPtRange0to1 = cms.EDProducer("TrackingMonitor",
 **dict(
     [
@@ -2069,3 +2070,60 @@ hltPhase2TrackingDQMgoodOfflinePrimaryVertices = cms.EDFilter("VertexSelector",
     filter = cms.bool(False),
     src = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
+
+#############################################
+##### Release updates from 11_1_0_pre6
+
+##11_1_0_pre7
+
+gooppvtx_60 = cms.PSet(GoodPVtxBin = cms.int32(60),GoodPVtxMax = cms.double(60.0),GoodPVtxMin = cms.double(0.0))
+gooppvtx_200 = cms.PSet(GoodPVtxBin = cms.int32(200),GoodPVtxMax = cms.double(200.0),GoodPVtxMin = cms.double(0.0))
+npvtx = cms.PSet(NTrkPVtxBin = cms.int32(200), NTrkPVtxMin = cms.double( 0.), NTrkPVtxMax = cms.double(200.))
+sumptvtx = cms.PSet(SumPtPVtxBin = cms.int32(200), SumPtPVtxMin = cms.double( 0.), SumPtPVtxMax = cms.double(1000.))
+
+hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPtRange0to1.GoodPVtx = gooppvtx_60
+hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPt1.GoodPVtx = gooppvtx_200
+hltPhase2TrackSeedMonhighPtTripletStep.GoodPVtx = gooppvtx_200
+hltPhase2TrackSeedMoninitialStep.GoodPVtx = gooppvtx_200
+hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPV0p1.GoodPVtx = gooppvtx_60
+hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks.GoodPVtx = gooppvtx_60
+
+hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPtRange0to1.SumPtPVtx = sumptvtx
+hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPt1.SumPtPVtx = sumptvtx
+hltPhase2TrackSeedMonhighPtTripletStep.SumPtPVtx = sumptvtx
+hltPhase2TrackSeedMoninitialStep.SumPtPVtx = sumptvtx
+hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPV0p1.SumPtPVtx = sumptvtx
+hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks.SumPtPVtx = sumptvtx
+
+hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPtRange0to1.NTrkPVtx = npvtx
+hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPt1.NTrkPVtx = npvtx
+hltPhase2TrackSeedMonhighPtTripletStep.NTrkPVtx = npvtx
+hltPhase2TrackSeedMoninitialStep.NTrkPVtx = npvtx
+hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPV0p1.NTrkPVtx = npvtx
+hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks.NTrkPVtx = npvtx
+
+
+##11_1_0
+
+ntrk2d = cms.PSet(NTrk2DBin = cms.int32(50), NTrk2DMax = cms.double(1999.5), NTrk2DMin = cms.double(-0.5))
+
+hltPhase2TrackSeedMonhighPtTripletStep.NTrk2D = ntrk2d
+hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks.NTrk2D = ntrk2d
+hltPhase2TrackSeedMoninitialStep.NTrk2D = ntrk2d
+hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPV0p1.NTrk2D = ntrk2d
+hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPt1.NTrk2D = ntrk2d
+hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPtRange0to1.NTrk2D = ntrk2d
+
+hltPhase2TrackSeedMonhighPtTripletStep.forceSCAL = cms.bool(True)
+hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks.forceSCAL = cms.bool(True)
+hltPhase2TrackSeedMoninitialStep.forceSCAL = cms.bool(True)
+hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPV0p1.forceSCAL = cms.bool(True)
+hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPt1.forceSCAL = cms.bool(True)
+hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPtRange0to1.forceSCAL = cms.bool(True)
+
+hltPhase2TrackSeedMonhighPtTripletStep.metadata = cms.InputTag('onlineMetaDataDigis')
+hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks.metadata = cms.InputTag('onlineMetaDataDigis')
+hltPhase2TrackSeedMoninitialStep.metadata = cms.InputTag('onlineMetaDataDigis')
+hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPV0p1.metadata = cms.InputTag('onlineMetaDataDigis')
+hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPt1.metadata = cms.InputTag('onlineMetaDataDigis')
+hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPtRange0to1.metadata = cms.InputTag('onlineMetaDataDigis')

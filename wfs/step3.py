@@ -36,7 +36,6 @@ options.register ('wf',
 options.register('pixtrip',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Pixel Triplets")
 options.register('timing',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Only timing")
 options.register('n',1,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"max events")
-options.register('elvenone',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"11_1_0 Updates")
 options.register('patatrack',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Patatrack Pixel Tracks")
 options.register('T2',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Running on T2_Bari")
 options.register('local',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Running with files copied locally (stored in local_files.py)")
@@ -192,6 +191,7 @@ if not timing:
 
 if options.patatrack:
     customizePixelTracksSoAonCPU(process)
+
 process.output_step = cms.EndPath(process.FEVTDEBUGHLToutput)
 # process.FEVTDEBUGHLToutput.outputCommands.append('keep *')
 process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2GeneralTracks_*_*')
@@ -201,10 +201,6 @@ process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2HighPtTripletS
 process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2InitialStepTracks_*_*')
 process.schedule.extend([process.output_step])
 
-customize_pre7(process)
-
-if options.elvenone:
-    customize_11_1_0(process)
 
 if 'PrescaleService' in process.__dict__:
     for pset in reversed(process.PrescaleService.prescaleTable):
