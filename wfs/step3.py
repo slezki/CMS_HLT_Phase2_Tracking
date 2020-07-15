@@ -38,6 +38,8 @@ options.register('timing',False,VarParsing.VarParsing.multiplicity.singleton,Var
 options.register('n',1,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"max events")
 options.register('elvenone',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"11_1_0 Updates")
 options.register('patatrack',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Patatrack Pixel Tracks")
+options.register('T2',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Running on T2_Bari")
+options.register('local',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Running with files copied locally (stored in local_files.py)")
 options.parseArguments()
 
 process.maxEvents = cms.untracked.PSet(
@@ -55,10 +57,8 @@ process.MessageLogger = cms.Service("MessageLogger",
 )                                                                       #8
 
 
-LOCAL = False
-T2 = True
-if not T2:
-    if LOCAL:
+if not options.T2:
+    if options.local:
         process.load("local_files")
     else:
         process.load("input_TTbar_Phase2HLTTDRWinter20-PU200_110X_upgrade2026D49_realistic_v3-v2_cff")
