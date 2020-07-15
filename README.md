@@ -1,9 +1,9 @@
-# CMS_HLT_Phase2_Tracking with L1 Tracks
+## CMS_HLT_Phase2_Tracking 
 
-### CMSSW_11_1_0 or CMSSW_11_2_0_pre2
+### CMSSW_11_1_0, CMSSW_11_1_0_patch2 CMSSW_11_2_0_pre2
 
 ##### L1 Hitless Seeding Tracking 
-You would need to add L1Tracking either thourgh merging the dedicated PR
+In case you are working on a release wich has not included the L1 Hitless Seeding you would need to add L1Tracking thourgh merging the dedicated PR:
 
 - 11_2_X : https://github.com/cms-sw/cmssw/pull/30342 
 - 11_1_X : https://github.com/cms-sw/cmssw/pull/30574
@@ -17,7 +17,7 @@ git cms-merge-topic 30342
 scram b -j 8
 ```
 
-and eventyally following instructions here (depending if L1 Tracking PR has already been integrated)
+and eventyally following instructions here (depending if L1 Tracking PR has already been integrated, who knows)
 
 https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1TrackSoftware
 
@@ -29,7 +29,7 @@ In step3.py the different configurations are listed. Running as
 
 will run the baseline configuration (v6.1) which includes the following steps:
 
-- Pixel Tracks ( Quadruplets Seeding)
+- Pixel Tracks (Quadruplets Seeding)
 - Initial Step Tracks Seeded by Pixel Tracks
 - HighPt Triplet Tracks (running from pixel triplet seeds to full tracks) with cluster & trajectory masking from InitialStep tracks
 
