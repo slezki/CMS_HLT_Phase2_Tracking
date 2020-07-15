@@ -36,6 +36,7 @@ options.register ('wf',
 options.register('pixtrip',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Pixel Triplets")
 options.register('timing',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Only timing")
 options.register('n',1,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"max events")
+options.register('elvenone',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"11_1_0 Updates")
 
 options.parseArguments()
 
@@ -55,7 +56,7 @@ process.MessageLogger = cms.Service("MessageLogger",
 
 
 LOCAL = False
-T2 = False
+T2 = True
 if not T2:
     if LOCAL:
         process.load("local_files")
@@ -108,27 +109,14 @@ process.RandomNumberGeneratorService.restoreStateLabel=cms.untracked.string("ran
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic_T15', '')
 
-# Path and EndPath definitions
-"""
-process.raw2digi_step = cms.Path(process.RawToDigi)
-process.reconstruction_step = cms.Path(process.reconstruction_trackingOnly)
-process.prevalidation_step = cms.Path(process.globalPrevalidationTrackingOnly)
-process.validation_step = cms.EndPath(process.globalValidationTrackingOnly)
-process.dqmoffline_step = cms.EndPath(process.DQMOfflineTracking)
-process.dqmofflineOnPAT_step = cms.EndPath(process.PostDQMOffline)
-process.RECOSIMoutput_step = cms.EndPath(process.RECOSIMoutput)
-"""
 process.load('raw2digi_step_cff')
-process.load("tracking_sequences")
-# process.load('timing')
+if options.wf==-1:
+    process.load("tracking_sequences_nol1")
+else:
+    process.load("tracking_sequences")
 process.load('validation_sequences')
 process.load('prevalidation_sequences')
 process.load('dqm_sequences')
-# process.load("tracking_modules")
-# process.load('validation_modules')
-# process.load('prevalidation_modules')
-# process.load('dqm_modules')
-
 
 # load the DQMStore and DQMRootOutputModule
 # enable multithreading
@@ -160,13 +148,6 @@ process.PixelCPEGenericESProducer.Upgrade = cms.bool(True)
 # 3 - initialstep + l1tracks
 # 4 - pixelTracksTriplets + l1tracks
 #
-
-# customizeGeneralTracksToPureL1TracksStep(process)
-# customizePixelSeedsEta4(process)
-# customizeGeneralTracksToPixelL1TracksStep(process)
-# customizeGeneralTracksToInitialL1TracksStep(process)
-# customizeGeneralTracksToInitialL1TracksStepMasking(process)
-# customizeL1TracksStepToMkFit(process)
 
 process.FEVTDEBUGHLToutput = cms.OutputModule("PoolOutputModule",
     dataset = cms.untracked.PSet(
@@ -219,6 +200,9 @@ process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2InitialStepTra
 process.schedule.extend([process.output_step])
 
 customize_pre7(process)
+
+if options.elvenone:
+    customize_11_1_0(process)
 
 if 'PrescaleService' in process.__dict__:
     for pset in reversed(process.PrescaleService.prescaleTable):

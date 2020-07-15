@@ -348,15 +348,15 @@ def l1_pixel_recovery_triplets(process,timing):
     #     fitFastCircleChi2Cut = cms.bool( True )#,
     # )
 
-    process.hltPhase2HighPtTripletStepTrackingRegions = cms.EDProducer( "GlobalTrackingRegionFromBeamSpotEDProducer",
-        RegionPSet = cms.PSet(
-          nSigmaZ = cms.double( 5.0 ),
-          beamSpot = cms.InputTag( "offlineBeamSpot"),
-          ptMin = cms.double( 0.9 ), # previous 0.8
-          originRadius = cms.double( 0.1 ),
-          precise = cms.bool( True )
-        )
-    )
+    # process.hltPhase2HighPtTripletStepTrackingRegions = cms.EDProducer( "GlobalTrackingRegionFromBeamSpotEDProducer",
+    #     RegionPSet = cms.PSet(
+    #       nSigmaZ = cms.double( 5.0 ),
+    #       beamSpot = cms.InputTag( "offlineBeamSpot"),
+    #       ptMin = cms.double( 0.9 ), # previous 0.8
+    #       originRadius = cms.double( 0.1 ),
+    #       precise = cms.bool( True )
+    #     )
+    # )
     process.hltPhase2HighPtTripletStepClusters.TrackQuality  = cms.string('')
     process.hltPhase2HighPtTripletStepClusters.trajectories = cms.InputTag("hltPhase2InitialStepTracks")
     process.hltPhase2HighPtTripletStepClusters.oldClusterRemovalInfo = cms.InputTag("hltPhase2PixelTrackClusters")
@@ -587,8 +587,23 @@ def customize_pre7(process):
 
     return process
 
-def customize_pre8(process):
+def customize_11_1_0(process):
 
     customize_pre7(process)
+
+    ntrk2d = cms.PSet(NTrk2DBin = cms.int32(50), NTrk2DMax = cms.double(1999.5), NTrk2DMin = cms.double(-0.5))
+
+    process.hltPhase2TrackSeedMonhighPtTripletStep.NTrk2D = ntrk2d
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks.NTrk2D = ntrk2d
+    process.hltPhase2TrackSeedMoninitialStep.NTrk2D = ntrk2d
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPV0p1.NTrk2D = ntrk2d
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPt1.NTrk2D = ntrk2d
+
+    process.hltPhase2TrackSeedMonhighPtTripletStep.forceSCAL = cms.bool(True)
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks.forceSCAL = cms.bool(True)
+    process.hltPhase2TrackSeedMoninitialStep.forceSCAL = cms.bool(True)
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPV0p1.forceSCAL = cms.bool(True)
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPt1.forceSCAL = cms.bool(True)
+
 
     return process

@@ -32,4 +32,3 @@ source = cms.Source("PoolSource",
     ),
     secondaryFileNames = cms.untracked.vstring()
 )
-
