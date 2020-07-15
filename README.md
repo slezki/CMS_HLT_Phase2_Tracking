@@ -43,4 +43,9 @@ If you with to test the usage of pixelTriplets for initial step seeding:
 
 ```cmsRun step3.py n=N wf=W pixtrip=True```
 
+##### Patatrack Pixel Tracks Customizer
+
+To run Patatrack pixel Tracks inplace of legacy PixelTracks
+
+```cmsRun step3.py n=N patatrack=True```
 
