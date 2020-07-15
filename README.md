@@ -1,96 +1,51 @@
-# CMS_HLT_Phase2_Tracking
+# CMS_HLT_Phase2_Tracking with L1 Tracks
 
-### CMSSW_11_1_0_pre3
+### CMSSW_11_1_0 or CMSSW_11_2_0_pre2
 
-Release generated script with new paths plugged in
-############
-step3_RAW2DIGI_RECO_VALIDATION_DQM.py 
+##### L1 Hitless Seeding Tracking 
+You would need to add L1Tracking either thourgh merging the dedicated PR
 
-needs:
-- step2.root
-- raw2digi_step_cff.py
-- MC_Tracking_v2_cff.py / MC_Tracking_v4_cff.py / MC_Tracking_v6_cff.py
-- MC_prevalidation_cff.py / MC_prevalidation_v6_cff.py
-- MC_Dqmoffline_cff.py
+- 11_2_X : https://github.com/cms-sw/cmssw/pull/30342 
+- 11_1_X : https://github.com/cms-sw/cmssw/pull/30574
 
+e.g.
+```
+cmsrel CMSSW_11_1_0
+cd CMSSW_11_1_0/src/
+git cms-init
+git cms-merge-topic 30342
+scram b -j 8
+```
 
-### CMSSW_11_0_0_pre6
+and eventyally following instructions here (depending if L1 Tracking PR has already been integrated)
 
-Release generated script with new paths plugged in
-############
+https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1TrackSoftware
 
-step3_RAW2DIGI_RECO_VALIDATION_DQM.py 
+##### Running the Tracking Reco
 
-needs:
-- step2.root
-- extras_cmssw_11_0_cff.py (extra modules needed)
-- raw2digi_step_cff.py
-- MC_Tracking_v0_cmssw_11_0_cff.py / MC_Tracking_v1_cmssw_11_0_cff.py / MC_Tracking_v2_cmssw_11_0_cff.py
-- MC_prevalidation_v0_cff.py / MC_prevalidation_v1_cff.py / MC_prevalidation_v2_cff.py
-- MC_Dqmoffline_step_v0_cff.py / MC_Dqmoffline_step_v1_cff.py / MC_Dqmoffline_step_v2_cff.py
+In step3.py the different configurations are listed. Running as
 
+```cmsRun step3.py n=N```
 
+will run the baseline configuration (v6.1) which includes the following steps:
 
-### CMSSW_10_6_0_patch2
+- Pixel Tracks ( Quadruplets Seeding)
+- Initial Step Tracks Seeded by Pixel Tracks
+- HighPt Triplet Tracks (running from pixel triplet seeds to full tracks) with cluster & trajectory masking from InitialStep tracks
 
-Version 2) Release generated script with new paths plugged in
-############
+different customisation are listed in step3.py. Running as
 
-step3_RAW2DIGI_RECO_VALIDATION_DQM_MC.py 
+```cmsRun step3.py n=N wf=7```
 
-needs:
-- input_TTbar_PhaseIITDRSpring19DR-NoPU_106X_upgrade2023_realistic_v3_cff.py
-- input_TTbar_PhaseIITDRSpring19DR-PU200_106X_upgrade2023_realistic_v3_cff.py
-- extras.py (extra modules needed)
-- raw2digi_step_cff.py
-- MC_Tracking_v0_cmssw_10_6_cff.py / MC_Tracking_v1_cmssw_10_6_cff.py / MC_Tracking_v2_cmssw_10_6_cff.py
-- MC_prevalidation_v0_cmssw_10_6_cff.py / MC_prevalidation_v1_cmssw_10_6_cff.py / MC_prevalidation_v2_cmssw_10_6_cff.py (all cleaned)
-- MC_Dqmoffline_step_v0_cff.py / MC_Dqmoffline_step_v1_cff.py / MC_Dqmoffline_step_v2_cff.py
+will run the l1 traking before the baseline configuration (v6.1).
 
+If you with to test the usage of pixelTriplets for initial step seeding:
 
+```cmsRun step3.py n=N wf=W pixtrip=True```
 
+##### Patatrack Pixel Tracks Customizer
 
+To run Patatrack pixel Tracks inplace of legacy PixelTracks
 
+```cmsRun step3.py n=N patatrack=True```
 
-### CMSSW_10_4_0_mtd5
-
-Cleaned up from the release generated script
-###########
-
-step3_performance_modular.py 			#performance studies
-needs:
-
-- input_TTbar_PhaseIIMTDTDRAutumn18DR-noPU_103X_upgrade2023_realistic_v2-v1_cff.py
-- input_TTbar_PhaseIIMTDTDRAutumn18DR-PU200_103X_upgrade2023_realistic_v2-v1_cff.py
-- raw2digi_step_cff.py
-- MC_Tracking_v0_cff.py / MC_Tracking_v1_cff.py / MC_Tracking_v2_cff.py
-- MC_prevalidation_v0_cff.py / MC_prevalidation_v1_cff.py / MC_prevalidation_v2_cff.py (all cleaned)
-- MC_Dqmoffline_step_v0_cff.py / MC_Dqmoffline_step_v1_cff.py / MC_Dqmoffline_step_v2_cff.py
-
-############
-
-step3_timing_modular.py 			#timing studies
-
-needs:
-- input_TTbar_PhaseIIMTDTDRAutumn18DR-noPU_103X_upgrade2023_realistic_v2-v1_cff.py (input sample list)
-- input_TTbar_PhaseIIMTDTDRAutumn18DR-PU200_103X_upgrade2023_realistic_v2-v1_cff.py
-- raw2digi_step_cff.py
-- MC_Tracking_v0_cff.py / MC_Tracking_v1_cff.py / MC_Tracking_v2_cff.py
-
-
-
-
-
-Version 2) Release generated script with new paths plugged in
-############
-
-step3_RAW2DIGI_RECO_VALIDATION_DQM.py
-
-needs:
-- input_TTbar_PhaseIIMTDTDRAutumn18DR-noPU_103X_upgrade2023_realistic_v2-v1_cff.py (input sample list) or step2.root
-- input_TTbar_PhaseIIMTDTDRAutumn18DR-PU200_103X_upgrade2023_realistic_v2-v1_cff.py
-- extras.py (extra modules from step3_performance_modular.py)
-- raw2digi_step_cff.py
-- MC_Tracking_v0_cff.py / MC_Tracking_v1_cff.py / MC_Tracking_v2_cff.py
-- MC_prevalidation_v0_cff.py / MC_prevalidation_v1_cff.py / MC_prevalidation_v2_cff.py (all cleaned)
-- MC_Dqmoffline_step_v0_cff.py / MC_Dqmoffline_step_v1_cff.py / MC_Dqmoffline_step_v2_cff.py
