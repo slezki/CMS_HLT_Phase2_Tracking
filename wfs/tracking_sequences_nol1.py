@@ -93,11 +93,7 @@ vertexReco = cms.Sequence(
 )
 
 original_v6 = cms.Path(
-    itLocalReco +
-    offlineBeamSpot + #cmssw_10_6
-    otLocalReco +
-    #caloLocalReco +
-    trackerClusterCheck +
+    hltPhase2StartUp +
     hltPhase2PixelTracksSequence + # pixeltracks
     hltPhase2PixelVerticesSequence + # pixelvertices
 ##############################################

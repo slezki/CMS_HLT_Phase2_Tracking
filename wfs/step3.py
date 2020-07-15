@@ -37,7 +37,7 @@ options.register('pixtrip',False,VarParsing.VarParsing.multiplicity.singleton,Va
 options.register('timing',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Only timing")
 options.register('n',1,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"max events")
 options.register('elvenone',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"11_1_0 Updates")
-
+options.register('patatrack',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Patatrack Pixel Tracks")
 options.parseArguments()
 
 process.maxEvents = cms.untracked.PSet(
@@ -185,11 +185,13 @@ if options.wf == 7:
 
 if options.pixtrip:
     pixelTriplets(process)
-if not timing:
 
+if not timing:
     process.DQMoutput_step = cms.EndPath( process.DQMoutput)
     process.schedule.extend([process.DQMoutput_step])
 
+if options.patatrack:
+    customizePixelTracksSoAonCPU(process)
 process.output_step = cms.EndPath(process.FEVTDEBUGHLToutput)
 # process.FEVTDEBUGHLToutput.outputCommands.append('keep *')
 process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2GeneralTracks_*_*')

@@ -56,6 +56,58 @@ import RecoTracker.MkFit.mkFitInputConverter_cfi as mkFitInputConverter_cfi
 import RecoTracker.MkFit.mkFitProducer_cfi as mkFitProducer_cfi
 import RecoTracker.MkFit.mkFitOutputConverter_cfi as mkFitOutputConverter_cfi
 
+
+def customizePixelTracksSoAonCPU(process) :
+
+  from RecoLocalTracker.SiPixelRecHits.siPixelRecHitHostSoA_cfi import siPixelRecHitHostSoA as _siPixelRecHitFromSOA
+
+  process.load("HeterogeneousCore.CUDAServices.CUDAService_cfi")
+  process.load('RecoLocalTracker.SiPixelRecHits.siPixelRecHitHostSoA_cfi')
+  process.load('RecoPixelVertexing.PixelTriplets.caHitNtupletCUDA_cfi')
+  process.load('RecoPixelVertexing.PixelVertexFinding.pixelVertexCUDA_cfi')
+  process.load('RecoPixelVertexing.PixelTrackFitting.pixelTrackProducerFromSoA_cfi')
+  process.load('RecoPixelVertexing.PixelVertexFinding.pixelVertexFromSoA_cfi')
+
+  process.siPixelRecHits = _siPixelRecHitFromSOA.clone()
+  process.siPixelRecHits.src = 'siPixelClusters'
+  process.siPixelRecHits.Upgrade = True
+  process.siPixelRecHitsTask = cms.Task(process.siPixelRecHits)
+  process.siPixelRecHits.convertToLegacy = True
+  process.PixelCPEFastESProducer.Upgrade = True
+
+  process.pixelTrackSoA = process.caHitNtupletCUDA.clone()
+  process.pixelTrackSoA.onGPU = False
+  process.pixelTrackSoA.pixelRecHitSrc = 'siPixelRecHits'#'siPixelRecHitHostSoA'
+  process.pixelTrackSoA.isUpgrade = True
+
+  process.hltPhase2PixelTracks = process.pixelTrackProducerFromSoA.clone()
+  process.hltPhase2PixelTracksSeedLayers.BPix.HitProducer = 'siPixelRecHits'#"siPixelRecHitHostSoA"
+  process.hltPhase2PixelTracksSeedLayers.FPix.HitProducer = 'siPixelRecHits'#"siPixelRecHitHostSoA"
+
+  process.pixelVertexSoA = process.pixelVertexCUDA.clone()
+  process.pixelVertexSoA.onGPU = False
+  process.pixelVertexSoA.pixelTrackSrc = 'pixelTrackSoA'
+
+  process.hltPhase2PixelVertices = process.pixelVertexFromSoA.clone()
+  process.hltPhase2PixelTracks.pixelRecHitLegacySrc = 'siPixelRecHits'#'siPixelRecHitHostSoA'
+  process.hltPhase2PixelVertices.TrackCollection = 'hltPhase2PixelTracks'
+
+
+
+
+  process.hltPhase2PixelTracksSequence = cms.Sequence(
+      process.pixelTrackSoA +
+      process.hltPhase2PixelTracks
+  )
+
+  process.hltPhase2PixelVerticesSequence = cms.Sequence(
+      process.pixelVertexSoA +
+      process.hltPhase2PixelVertices +
+      process.hltPhase2TrimmedPixelVertices
+  )
+
+  return process
+
 def pixelQuadrupletsEta4(process):
 
     process.hltPhase2PixelTracksSeedLayers.layerList = cms.vstring(layerListForPhase2Eta4)
