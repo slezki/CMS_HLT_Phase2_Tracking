@@ -96,15 +96,15 @@ hltPhase2L1StepSeedClusterMask = seedClusterRemoverPhase2.clone(
     trajectories = cms.InputTag("hltPhase2L1TrackSeedsFromL1Tracks")
 )
 
-hltPhase2L1TrackSeedsFromL1Tracks = cms.EDProducer("SeedGeneratorFromTTracksEDProducer",
+hltPhase2L1TrackSeedsFromL1Tracks = cms.EDProducer("SeedGeneratorFromL1TTracksEDProducer",
     InputCollection = cms.InputTag("TTTracksFromTrackletEmulation","Level1TTTracks"),
     estimator = cms.string('hltPhase2L1TrackStepChi2Est'),
     propagator = cms.string('PropagatorWithMaterial'),
     MeasurementTrackerEvent = cms.InputTag("MeasurementTrackerEvent"),
     maxEtaForTOB = cms.double(1.2),
     minEtaForTEC = cms.double(0.9),
-    TrajectoryBuilder = cms.string('GroupedCkfTrajectoryBuilder'),
-    TrajectoryBuilderPSet = cms.PSet(refToPSet_ = cms.string('hltPhase2L1TrackStepTrajectoryBuilder')),
+    #TrajectoryBuilder = cms.string('GroupedCkfTrajectoryBuilder'),
+    #TrajectoryBuilderPSet = cms.PSet(refToPSet_ = cms.string('hltPhase2L1TrackStepTrajectoryBuilder')),
     errorSFHitless = cms.double(1e-9)
     #TrajectoryBuilder = cms.string('GroupedCkfTrajectoryBuilder'),
     #TrajectoryBuilderPSet = cms.PSet( refToPSet_ = cms.string('L1TrackStepTrajectoryBuilder'))

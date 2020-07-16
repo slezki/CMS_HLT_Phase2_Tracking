@@ -3,10 +3,13 @@ from tracking_modules import *
 from generic_sequences import *
 from L1Trigger.TrackFindingTracklet.Tracklet_cfi import *
 from Configuration.StandardSequences.Reconstruction_cff import *
+from RecoTracker.GeometryESProducer.TrackerRecoGeometryESProducer_cfi import *
+from RecoTracker.MeasurementDet.MeasurementTrackerESProducer_cfi import *
 
 ####################################################
 ########################## Commonssoriginal_v7
 #############
+
 
 hltPhase2L1TTTracksEmulation = TTTracksFromTrackletEmulation.clone()
 
