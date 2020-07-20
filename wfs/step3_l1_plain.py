@@ -7,7 +7,7 @@ import FWCore.ParameterSet.Config as cms
 from Configuration.Eras.Era_Phase2C9_cff import Phase2C9
 from ttbar_14_D49PU200 import *
 import FWCore.ParameterSet.VarParsing as VarParsing
-from customize_steps import *
+from customize_plain import *
 #from Configuration.StandardSequences.Reconstruction_cff import *
 
 process = cms.Process('RECO2',Phase2C9)#,l1tracking)
@@ -23,19 +23,20 @@ process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.RawToDigi_cff')
 process.load('Configuration.StandardSequences.Reconstruction_cff')
 process.load('Configuration.StandardSequences.Validation_cff')
-process.load('DQMServices.Core.DQMStoreNonLegacy_cff')
-process.load('DQMOffline.Configuration.DQMOfflineMC_cff')
+#process.load('DQMServices.Core.DQMStoreNonLegacy_cff')
+#process.load('DQMOffline.Configuration.DQMOfflineMC_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+process.load("RecoTracker.GeometryESProducer.TrackerRecoGeometryESProducer_cfi")
 
 options = VarParsing.VarParsing('analysis')
 options.register ('wf',
-                  -1, # default value
+                  7, # default value
                   VarParsing.VarParsing.multiplicity.singleton, # singleton or list
                   VarParsing.VarParsing.varType.int,          # string, int, or float
                   "Wf number")
 options.register('pixtrip',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Pixel Triplets")
 options.register('timing',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Only timing")
-options.register('n',1,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"max events")
+options.register('n',32,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"max events")
 options.register('patatrack',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Patatrack Pixel Tracks")
 options.register('T2',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Running on T2_Bari")
 options.register('local',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Running with files copied locally (stored in local_files.py)")
@@ -88,16 +89,6 @@ process.RECOSIMoutput = cms.OutputModule("PoolOutputModule",
     splitLevel = cms.untracked.int32(0)
 )
 
-process.DQMoutput = cms.OutputModule("DQMRootOutputModule",
-    dataset = cms.untracked.PSet(
-        dataTier = cms.untracked.string('DQMIO'),
-        filterName = cms.untracked.string('')
-    ),
-    fileName = cms.untracked.string('file:step3_inDQM.root'),
-    outputCommands = process.DQMEventContent.outputCommands,
-    splitLevel = cms.untracked.int32(0)
-)
-
 # Additional output definition
 
 # Other statements
@@ -113,14 +104,14 @@ if options.wf==-1:
     process.load("tracking_sequences_nol1")
 else:
     process.load("tracking_sequences")
-process.load('validation_sequences')
-process.load('prevalidation_sequences')
-process.load('dqm_sequences')
+#process.load('validation_sequences')
+#process.load('prevalidation_sequences')
+#process.load('dqm_sequences')
 
 # load the DQMStore and DQMRootOutputModule
 # enable multithreading
-process.load( "DQMServices.Core.DQMStore_cfi" )
-process.DQMStore.enableMultiThread = True
+#process.load( "DQMServices.Core.DQMStore_cfi" )
+#process.DQMStore.enableMultiThread = True
 
 process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool( True ),
@@ -129,15 +120,6 @@ process.options = cms.untracked.PSet(
 process.options.numberOfStreams = cms.untracked.uint32(8)
 process.options.numberOfThreads = cms.untracked.uint32(8)
 
-###### PixelCPE issue
-process.TrackProducer.TTRHBuilder = "WithTrackAngle"
-process.PixelCPEGenericESProducer.UseErrorsFromTemplates = True
-process.PixelCPEGenericESProducer.LoadTemplatesFromDB = True
-process.PixelCPEGenericESProducer.TruncatePixelCharge = False
-process.PixelCPEGenericESProducer.IrradiationBiasCorrection = False
-process.PixelCPEGenericESProducer.DoCosmics = False
-process.PixelCPEGenericESProducer.Upgrade = cms.bool(True)
-######
 
 #######
 # -1 - original v6
@@ -185,10 +167,6 @@ if options.wf == 7:
 if options.pixtrip:
     pixelTriplets(process)
 
-if not timing:
-    process.DQMoutput_step = cms.EndPath( process.DQMoutput)
-    process.schedule.extend([process.DQMoutput_step])
-
 if options.patatrack:
     customizePixelTracksSoAonCPU(process)
 
@@ -206,53 +184,6 @@ if 'PrescaleService' in process.__dict__:
     for pset in reversed(process.PrescaleService.prescaleTable):
         if not hasattr(process,pset.pathName.value()):
             process.PrescaleService.prescaleTable.remove(pset)
-
-### Tracking @ HLT: set up FastTimerService; analogous setting can be obtained with option --timing in hltGetConfiguration
-# configure the FastTimerService
-process.load( "HLTrigger.Timer.FastTimerService_cfi" )
-# print a text summary at the end of the job
-process.FastTimerService.printEventSummary         = False
-process.FastTimerService.printRunSummary           = False
-process.FastTimerService.printJobSummary           = True
-
-# enable DQM plots
-process.FastTimerService.enableDQM                 = True
-
-# enable per-path DQM plots (starting with CMSSW 9.2.3-patch2)
-process.FastTimerService.enableDQMbyPath           = True
-
-# enable per-module DQM plots
-process.FastTimerService.enableDQMbyModule         = True
-
-# enable per-event DQM plots vs lumisection
-process.FastTimerService.enableDQMbyLumiSection    = True
-process.FastTimerService.dqmLumiSectionsRange      = 2500
-
-# set the time resolution of the DQM plots
-tr = 10000000000.
-tp = 10000000000.
-tm = 2000000000.
-process.FastTimerService.dqmTimeRange              = tr
-process.FastTimerService.dqmTimeResolution         = tr/100.0
-process.FastTimerService.dqmPathTimeRange          = tp
-process.FastTimerService.dqmPathTimeResolution     = tp/100.0
-process.FastTimerService.dqmModuleTimeRange        = tm
-process.FastTimerService.dqmModuleTimeResolution   = tm/100.0
-
-# set the base DQM folder for the plots
-process.FastTimerService.dqmPath                   = 'HLT/TimerService'
-process.FastTimerService.enableDQMbyProcesses      = True
-
-
-process.FastTimerService.dqmMemoryRange            = 1000000
-process.FastTimerService.dqmMemoryResolution       =    5000
-process.FastTimerService.dqmPathMemoryRange        = 1000000
-process.FastTimerService.dqmPathMemoryResolution   =    5000
-process.FastTimerService.dqmModuleMemoryRange      =  100000
-process.FastTimerService.dqmModuleMemoryResolution =     500
-
-process.FastTimerService.writeJSONSummary = cms.untracked.bool(True)
-process.FastTimerService.jsonFileName = cms.untracked.string('wf_' + suff + 'timing.json')
 
 if 'MessageLogger' in process.__dict__:
     process.MessageLogger.categories.append('TriggerSummaryProducerAOD')
@@ -281,7 +212,7 @@ process = setCrossingFrameOn(process)
 from FWCore.ParameterSet.Utilities import convertToUnscheduled
 # process=convertToUnschedule   d(process)
 
-
+print(process.PixelCPEGenericESProducer.UseErrorsFromTemplates)
 # Customisation from command line
 
 #Have logErrorHarvester wait for the same EDProducers to finish as those providing data for the OutputModule
@@ -294,3 +225,27 @@ process = customiseEarlyDelete(process)
 
 # from HLTrigger.Configuration.customizeHLTforALL import customizeHLTforAll
 # process = customizeHLTforAll(process,"Fake",_customInfo)
+
+#process.DependencyGraph = cms.Service("DependencyGraph")
+#process.source = cms.Source("EmptySource")
+#process.maxEvents = cms.untracked.PSet(input=cms.untracked.int32(0))
+
+process.source.fileNames = ["file:local.root",]
+
+#cms.Schedule(*[ process.raw2digi_step, process.l1_pixel_reco_triplets, process.output_step ]
+
+process.thiago = cms.Path(
+     process.offlineBeamSpot
+    +process.siPhase2Clusters
+    +process.siPixelClusters
+    +process.siPixelClusterShapeCache
+    +process.siPixelRecHits
+    +process.otLocalReco
+    +process.trackerClusterCheck
+    +process.TTTracksFromTrackletEmulation
+    +process.hltPhase2L1TrackSeedsFromL1Tracks
+    +process.hltPhase2L1TrackCandidates
+    +process.hltPhase2L1CtfTracks
+)
+
+process.schedule = cms.Schedule(*[process.thiago])
