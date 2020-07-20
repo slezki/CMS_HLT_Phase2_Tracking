@@ -1,13 +1,14 @@
 # Auto generated configuration file
-# using: 
-# Revision: 1.19 
-# Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: step3 --conditions auto:phase2_realistic_T15 -n 10 --era Phase2C9 --eventcontent RECOSIM,DQM --runUnscheduled -s RAW2DIGI,RECO,VALIDATION,DQM --datatier GEN-SIM-RECO,DQMIO --geometry Extended2026D49 --filein file:step2.root --fileout file:step3.root --no_exec
+# using:
+# Revision: 1.19
+# Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v
+# with command line options: step3 --conditions auto:phase2_realistic_T15 -n 10 --era Phase2C9 --eventcontent RECOSIM,DQM --runUnscheduled -s RAW2DIGI,RECO --datatier GEN-SIM-RECO,DQMIO --geometry Extended2026D49 --filein file:C1485BE1-0EDC-1448-9C59-9F1102535604.root --fileout file:step3.root
 import FWCore.ParameterSet.Config as cms
-from offline_v6_1_customizer import *
-from Configuration.Eras.Era_Phase2C9_cff import Phase2C9
 
-process = cms.Process('RECO2',Phase2C9)
+from Configuration.Eras.Era_Phase2C9_cff import Phase2C9
+from offline_v6_1_customizer import *
+
+process = cms.Process('RECO',Phase2C9)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -19,9 +20,6 @@ process.load('Configuration.Geometry.GeometryExtended2026D49Reco_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.RawToDigi_cff')
 process.load('Configuration.StandardSequences.Reconstruction_cff')
-process.load('Configuration.StandardSequences.Validation_cff')
-process.load('DQMServices.Core.DQMStoreNonLegacy_cff')
-process.load('DQMOffline.Configuration.DQMOfflineMC_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.maxEvents = cms.untracked.PSet(
@@ -81,6 +79,7 @@ process.RECOSIMoutput = cms.OutputModule("PoolOutputModule",
     splitLevel = cms.untracked.int32(0)
 )
 
+
 process.DQMoutput = cms.OutputModule("DQMRootOutputModule",
     dataset = cms.untracked.PSet(
         dataTier = cms.untracked.string('DQMIO'),
@@ -94,52 +93,76 @@ process.DQMoutput = cms.OutputModule("DQMRootOutputModule",
 # Additional output definition
 
 # Other statements
-process.mix.playback = True
-process.mix.digitizers = cms.PSet()
-for a in process.aliases: delattr(process, a)
-process.RandomNumberGeneratorService.restoreStateLabel=cms.untracked.string("randomEngineStateProducer")
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic_T15', '')
 
 # Path and EndPath definitions
 process.raw2digi_step = cms.Path(process.RawToDigi)
 process.reconstruction_step = cms.Path(process.reconstruction)
-process.prevalidation_step = cms.Path(process.prevalidation)
-process.pL1TkElectronsEllipticMatchHGC = cms.Path(process.L1TkElectronsEllipticMatchHGC)
-process.pL1TkMuon = cms.Path(process.L1TkMuons+process.L1TkMuonsTP)
-process.pL1TkIsoElectronsHGC = cms.Path(process.L1TkIsoElectronsHGC)
-process.pL1TkIsoElectronsCrystal = cms.Path(process.L1TkIsoElectronsCrystal)
-process.pL1TkPrimaryVertex = cms.Path(process.L1TkPrimaryVertex)
-process.pL1TkElectronsLooseHGC = cms.Path(process.L1TkElectronsLooseHGC)
-process.pL1TkPhotonsCrystal = cms.Path(process.L1TkPhotonsCrystal)
-process.pL1TkElectronsEllipticMatchCrystal = cms.Path(process.L1TkElectronsEllipticMatchCrystal)
-process.pL1TkElectronsHGC = cms.Path(process.L1TkElectronsHGC)
-process.pL1TkPhotonsHGC = cms.Path(process.L1TkPhotonsHGC)
-process.pL1TkElectronsCrystal = cms.Path(process.L1TkElectronsCrystal)
-process.pL1TkElectronsLooseCrystal = cms.Path(process.L1TkElectronsLooseCrystal)
-process.validation_step = cms.EndPath(process.validation)
-process.dqmoffline_step = cms.EndPath(process.DQMOffline)
 process.RECOSIMoutput_step = cms.EndPath(process.RECOSIMoutput)
 process.DQMoutput_step = cms.EndPath(process.DQMoutput)
 
+#process.dump =cms.EDAnalyzer('EventContentAnalyzer')
+#process.dumper = cms.EndPath(process.dump)
+
+process=customize_TRK_v6_1(process)
+
+process.FEVTDEBUGHLToutput = cms.OutputModule("PoolOutputModule",
+    dataset = cms.untracked.PSet(
+        dataTier = cms.untracked.string('GEN-SIM-DIGI-RAW-RECO-HLTDEBUG'),
+        filterName = cms.untracked.string('')
+    ),
+    fileName = cms.untracked.string('file:step3_full.root'),
+    outputCommands = process.FEVTDEBUGHLTEventContent.outputCommands,
+    splitLevel = cms.untracked.int32(0)
+)
+
+process.load( "HLTrigger.Timer.FastTimerService_cfi" )
+# print a text summary at the end of the job
+process.FastTimerService.printEventSummary         = False
+process.FastTimerService.printRunSummary           = False
+process.FastTimerService.printJobSummary           = True
+
+
+# enable DQM plots
+process.FastTimerService.enableDQM                 = True
+
+# enable per-path DQM plots (starting with CMSSW 9.2.3-patch2)
+process.FastTimerService.enableDQMbyPath           = True
+
+# enable per-module DQM plots
+process.FastTimerService.enableDQMbyModule         = True
+
+# enable per-event DQM plots vs lumisection
+process.FastTimerService.enableDQMbyLumiSection    = True
+process.FastTimerService.dqmLumiSectionsRange      = 2500
+
+# set the time resolution of the DQM plots
+process.FastTimerService.dqmTimeRange              = 5000.
+process.FastTimerService.dqmTimeResolution         =    5.
+process.FastTimerService.dqmPathTimeRange          = 5000.
+process.FastTimerService.dqmPathTimeResolution     =    5.
+process.FastTimerService.dqmModuleTimeRange        = 5000.
+process.FastTimerService.dqmModuleTimeResolution   =    5.
+
+# set the base DQM folder for the plots
+process.FastTimerService.dqmPath                   = 'HLT/TimerService'
+process.FastTimerService.enableDQMbyProcesses      = True
+
+process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2GeneralTracks_*_*')
+process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2PixelVertices_*_*')
+process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2PixelTracks_*_*')
+process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2HighPtTripletStepTracks_*_*')
+process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2InitialStepTracks_*_*')
+process.FEVTDEBUGHLToutput_step = cms.EndPath(process.DQMoutput)
 # Schedule definition
-process.schedule = cms.Schedule(process.raw2digi_step,process.reconstruction_step,process.prevalidation_step,process.validation_step,process.dqmoffline_step,process.RECOSIMoutput_step,process.DQMoutput_step)
+process.schedule = cms.Schedule(process.raw2digi_step,process.reconstruction_step,process.DQMoutput_step,process.RECOSIMoutput_step)#)#process.FEVTDEBUGHLToutput_step)#,process.DQMoutput_step)
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 
-# customisation of the process.
-#customize_TRK_v6_1(process)
-# Automatic addition of the customisation function from SimGeneral.MixingModule.fullMixCustomize_cff
-from SimGeneral.MixingModule.fullMixCustomize_cff import setCrossingFrameOn 
-
-#call to customisation function setCrossingFrameOn imported from SimGeneral.MixingModule.fullMixCustomize_cff
-process = setCrossingFrameOn(process)
-
-# End of customisation functions
 #do not add changes to your config after this point (unless you know what you are doing)
 from FWCore.ParameterSet.Utilities import convertToUnscheduled
-process=convertToUnscheduled(process)
-
+#process=convertToUnscheduled(process)
 
 # Customisation from command line
 

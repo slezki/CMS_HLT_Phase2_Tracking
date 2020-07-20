@@ -2,7 +2,7 @@
 ##############
 import FWCore.ParameterSet.Config as cms
 
-from Configuration.StandardSequences.Reconstruction_cff import *
+# from Configuration.StandardSequences.Reconstruction_cff import *
 
 
 #########
@@ -257,7 +257,7 @@ def customize_TRK_v6_1(process):
 	########################  initial step
 
 	#hltIter0PFLowPixelSeedsFromPixelTracks
-	hltPhase2InitialStepSeeds = cms.EDProducer( "SeedGeneratorFromProtoTracksEDProducer",
+	process.hltPhase2InitialStepSeeds = cms.EDProducer( "SeedGeneratorFromProtoTracksEDProducer",
 	    useEventsWithNoVertex = cms.bool( True ),
 	    originHalfLength = cms.double(0.3),
 	    useProtoTrackKinematics = cms.bool( False ),
@@ -265,7 +265,7 @@ def customize_TRK_v6_1(process):
 	    SeedCreatorPSet = cms.PSet(  refToPSet_ = cms.string( "hltPhase2SeedFromProtoTracks" ) ),
 	    InputVertexCollection = cms.InputTag(""),
 	    TTRHBuilder = cms.string( "WithTrackAngle"), #hltESPTTRHBuilderPixelOnly" ),
-	    InputCollection = cms.InputTag( "hltPhase2PixelTracks" ),
+	    InputCollection = cms.InputTag( "pixelTracks" ),
 	    originRadius = cms.double( 0.1 )
 	)
 
@@ -341,11 +341,12 @@ def customize_TRK_v6_1(process):
 	process.initialStepTrackCandidates.maxNSeeds = cms.uint32(100000) # previous 500000
 	process.initialStepTrackCandidates.maxSeedsBeforeCleaning = cms.uint32(1000) # previous 5000
 	process.initialStepTrackCandidates.useHitsSplitting = cms.bool(False) # previous True
-
+	process.initialStepTrackCandidates.src = cms.InputTag("hltPhase2InitialStepSeeds")
 
 
 	process.initialStepTrackingRegions.RegionPSet.ptMin = cms.double(0.9) # ptcut previous 0.6
 
+	process.pixelTracksHitQuadruplets.SeedComparitorPSet.clusterShapeCacheSrc = "siPixelClusterShapeCache"
 
 	############# ordered setup
 
@@ -389,7 +390,7 @@ def customize_TRK_v6_1(process):
 	    #process.initialStepTrackingRegions +
 	    #process.initialStepHitDoublets +
 	    #process.initialStepHitQuadruplets +
-	    process.initialStepSeeds +
+	    process.hltPhase2InitialStepSeeds +
 	    process.initialStepTrackCandidates +
 	    process.initialStepTracks +
 	    #hltPhase2InitialStepPVSequence + # use pixelVertices
@@ -439,7 +440,7 @@ def customize_TRK_v6_1(process):
 	    process.inclusiveSecondaryVertices
 	)
 
-	process.MC_Tracking_v6 = cms.Path(
+	process.MC_Tracking_v6 = cms.Sequence(
 	    process.itLocalReco +
 	    process.offlineBeamSpot + #cmssw_10_6
 	    process.otLocalReco +
@@ -454,9 +455,20 @@ def customize_TRK_v6_1(process):
 	    process.generalTracks
 	)
 
-	process.MC_Vertexing_v6 = cms.Path(
-	    process.caloLocalReco +
+	process.MC_Vertexing_v6 = cms.Sequence(
+	    #process.caloLocalReco +
 	    process.vertexReco
 	)
+
+	process.clusterSummaryProducer.pixelClusters=cms.InputTag("siPixelClusters")
+	# process.siPixelClustersPressSplitting = cms.Input"siPixelClusters"
+	# process.RECOSIMoutput.outputCommands.append('drop *_ak5CastorJets_*_*')
+	# process.RECOSIMoutput.outputCommands.append('drop *_castor*_*_*')
+	# process.RECOSIMoutput.outputCommands.append('drop *_ak7CastorJets_*_*')
+	# process.RECOSIMoutput.outputCommands.append('drop *_logErrorHarvester_*_*')
+	# process.RECOSIMoutput.outputCommands.append('drop *_*Castor*_*_*')
+
+	# process.siPixelClustersPreSplitting
+	process.reconstruction_step = cms.Path(process.MC_Tracking_v6)# + process.MC_Vertexing_v6)
 
 	return process
