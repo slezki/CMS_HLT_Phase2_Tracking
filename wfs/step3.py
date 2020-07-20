@@ -129,16 +129,6 @@ process.options = cms.untracked.PSet(
 process.options.numberOfStreams = cms.untracked.uint32(8)
 process.options.numberOfThreads = cms.untracked.uint32(8)
 
-###### PixelCPE issue
-process.TrackProducer.TTRHBuilder = "WithTrackAngle"
-process.PixelCPEGenericESProducer.UseErrorsFromTemplates = True
-process.PixelCPEGenericESProducer.LoadTemplatesFromDB = True
-process.PixelCPEGenericESProducer.TruncatePixelCharge = False
-process.PixelCPEGenericESProducer.IrradiationBiasCorrection = False
-process.PixelCPEGenericESProducer.DoCosmics = False
-process.PixelCPEGenericESProducer.Upgrade = cms.bool(True)
-######
-
 #######
 # -1 - original v6
 # 0 - l1tracks only

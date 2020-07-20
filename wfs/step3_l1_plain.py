@@ -107,7 +107,7 @@ else:
 #process.load('validation_sequences')
 #process.load('prevalidation_sequences')
 #process.load('dqm_sequences')
-
+print(process.PixelCPEGenericESProducer.LoadTemplatesFromDB)
 # load the DQMStore and DQMRootOutputModule
 # enable multithreading
 #process.load( "DQMServices.Core.DQMStore_cfi" )
@@ -212,7 +212,6 @@ process = setCrossingFrameOn(process)
 from FWCore.ParameterSet.Utilities import convertToUnscheduled
 # process=convertToUnschedule   d(process)
 
-print(process.PixelCPEGenericESProducer.UseErrorsFromTemplates)
 # Customisation from command line
 
 #Have logErrorHarvester wait for the same EDProducers to finish as those providing data for the OutputModule
