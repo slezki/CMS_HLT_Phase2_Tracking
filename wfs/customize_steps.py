@@ -531,7 +531,7 @@ def customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.3,numVertex=30
 
         process.hltPhase2TrimmedPixelVertices.fractionSumPt2 = cms.double(fraction)
         process.hltPhase2TrimmedPixelVertices.maxVtx = cms.uint32(numVertex)
-        process.hltPhase2TrimmedPixelVertices.minSumPt2 = cms.uint32(minSumPt2)
+        process.hltPhase2TrimmedPixelVertices.minSumPt2 = cms.double(minSumPt2)
 
         process.hltPhase2InitialStepSeeds.usePV = cms.bool(True)
         process.hltPhase2InitialStepSeeds.InputVertexCollection = cms.InputTag("hltPhase2TrimmedPixelVertices")
