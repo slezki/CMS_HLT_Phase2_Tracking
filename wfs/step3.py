@@ -71,6 +71,8 @@ process.MessageLogger = cms.Service("MessageLogger",
        debugModules      = cms.untracked.vstring('*')                               #7
 )                                                                       #8
 
+from MCs.ttbar import ttbar
+filelist = ttbar
 
 if options.ztt:
     from MCs.b0kstarmumu import b0kstarmumu
@@ -85,10 +87,10 @@ if options.b0ksmm:
     from MCs.dstaumumumu import dstaumumumu
     filelist = dstaumumumu
 if options.bskkkk:
-    from MCs.ttbarl1 import ttbarl1
-    filelist = ttbarl1
+    from MCs.bskkkk import bskkkk
+    filelist = bskkkk
 if options.withl1:
-    from MCs.ttbar import ttbar
+    from MCs.ttbarl1 import ttbarl1
     filelist = ttbar
 
 if not options.T2:
@@ -152,6 +154,7 @@ process.options.numberOfThreads = cms.untracked.uint32(options.threads)
 timing = options.timing
 
 suff = str(options.wf)
+#TRIMMING OPTIONS
 if options.wf == -4:
     suff = "m4_%.2f_%d"%(options.frac/100.,options.nvtx)
     customizeOriginal_v6(process,timing)
@@ -165,9 +168,13 @@ if options.wf == -2:
     customizeOriginal_v6(process,timing)
     suff = "m2_%.2f_%d"%(options.frac/100.,options.nvtx)
     customizeOriginalTrimmingInitial_v6(process,timing,fraction=options.frac,numVertex=options.nvtx)
+
+##ORIGINAL v6_1
 if options.wf == -1:
     suff = "m1"
     customizeOriginal_v6(process,timing)
+
+#L1 Customizing
 if options.wf == 0:
     suff = "purel1"
     customizeGeneralTracksToPureL1TracksStep(process,timing)

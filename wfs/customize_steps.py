@@ -527,18 +527,20 @@ def customizeOriginal_v6(process,timing):
             process.schedule.extend([process.vertexing, process.prevalidation_original,
                 process.validation_original, process.dqm_original])
 
-def customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.3,numVertex=30):
+def customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.3,numVertex=30,minSumPt2=50):
 
         process.hltPhase2TrimmedPixelVertices.fractionSumPt2 = cms.double(fraction)
         process.hltPhase2TrimmedPixelVertices.maxVtx = cms.uint32(numVertex)
+        process.hltPhase2TrimmedPixelVertices.minSumPt2 = cms.uint32(minSumPt2)
 
         process.hltPhase2InitialStepSeeds.usePV = cms.bool(True)
         process.hltPhase2InitialStepSeeds.InputVertexCollection = cms.InputTag("hltPhase2TrimmedPixelVertices")
 
-def customizeOriginalTrimmingTriplet_v6(process,timing,fraction=0.3,numVertex=30):
+def customizeOriginalTrimmingTriplet_v6(process,timing,fraction=0.3,numVertex=30,minSumPt2=50):
 
         process.hltPhase2TrimmedPixelVertices.fractionSumPt2 = cms.double(fraction)
         process.hltPhase2TrimmedPixelVertices.maxVtx = cms.uint32(numVertex)
+        process.hltPhase2TrimmedPixelVertices.minSumPt2 = cms.double(minSumPt2)
 
         process.hltPhase2HighPtTripletStepTrackingRegions = process.hltPhase2TrimmedVertexTrackingRegions.clone()
 

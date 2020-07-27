@@ -20,16 +20,16 @@ hltPhase2SeedFromProtoTracks = cms.PSet(
 
 hltPhase2PSetPvClusterComparerForIT = cms.PSet(
   track_chi2_max = cms.double( 20.0 ),
-  track_pt_max = cms.double( 20.0 ),
+  track_pt_max = cms.double( 30.0 ),
   track_prob_min = cms.double( -1.0 ),
   track_pt_min = cms.double( 1.0 )
 )
 
 hltPhase2PSetPvClusterComparerForITTrimming = cms.PSet(
   track_chi2_max = cms.double( 20.0 ),
-  track_pt_max = cms.double( 2.5 ),
+  track_pt_max = cms.double( 30.0 ),
   track_prob_min = cms.double( -1.0 ),
-  track_pt_min = cms.double( 0.0 )
+  track_pt_min = cms.double( 0.9 )
 )
 
 layerListForPhase2 = ['BPix1+BPix2+BPix3+BPix4',
@@ -654,8 +654,8 @@ hltPhase2PixelVertices = cms.EDProducer( "PixelVertexProducer",
 hltPhase2TrimmedPixelVertices = cms.EDProducer( "PixelVertexCollectionTrimmer",
     src = cms.InputTag( "hltPhase2PixelVertices" ),
     fractionSumPt2 = cms.double( 0.3 ),
-    minSumPt2 = cms.double( 0.0 ),
-    PVcomparer = cms.PSet(  refToPSet_ = cms.string( "hltPhase2PSetPvClusterComparerForIT" ) ),
+    minSumPt2 = cms.double( 10.0 ),
+    PVcomparer = cms.PSet(  refToPSet_ = cms.string( "hltPhase2PSetPvClusterComparerForITTrimming" ) ),
     maxVtx = cms.uint32( 100 ) # > 200 # previous 100
 )
 
