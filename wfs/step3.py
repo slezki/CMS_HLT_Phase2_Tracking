@@ -35,8 +35,7 @@ options.register ('wf',-1, VarParsing.VarParsing.multiplicity.singleton,VarParsi
 options.register('pixtrip',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"pixel Triplets")
 options.register('timing',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"only timing")
 options.register('n',1,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"max events")
-options.register('frac',30,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx sum pt fraction (in %)")
-options.register('nvtx',30,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"n trimmed vtx")
+
 options.register('patatrack',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"patatrack Pixel Tracks")
 options.register('T2',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"running on T2_Bari")
 options.register('mkfit',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"running mkfit")
@@ -44,8 +43,14 @@ options.register('debug',False,VarParsing.VarParsing.multiplicity.singleton,VarP
 options.register('threads',16,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"num of threads")
 options.register('skip',0,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"events to skip")
 
+#EventContent
 options.register('fullcontent',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"full content")
 options.register('recosim',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"recosim content")
+
+#Trimming
+options.register('frac',30,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx sum pt fraction (in %)")
+options.register('nvtx',30,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"n trimmed vtx")
+options.register('sumpt',50,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"minsumpt2 vtx")
 
 #MCs
 options.register('ztt',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"ZTT MC")
@@ -156,18 +161,18 @@ timing = options.timing
 suff = str(options.wf)
 #TRIMMING OPTIONS
 if options.wf == -4:
-    suff = "m4_%.2f_%d"%(options.frac/100.,options.nvtx)
+    suff = "m4_0p%d_%d_%d"%(options.frac,options.nvtx,options.sumpt)
     customizeOriginal_v6(process,timing)
-    customizeOriginalTrimmingInitial_v6(process,timing,fraction=options.frac,numVertex=options.nvtx)
-    customizeOriginalTrimmingTriplet_v6(process,timing,fraction=options.frac,numVertex=options.nvtx)
+    customizeOriginalTrimmingInitial_v6(process,timing,fraction=options.frac/100.,numVertex=options.nvtx,minSumPt2=options.sumpt)
+    customizeOriginalTrimmingTriplet_v6(process,timing,fraction=options.frac/100.,numVertex=options.nvtx,minSumPt2=options.sumpt)
 if options.wf == -3:
     customizeOriginal_v6(process,timing)
-    suff = "m3_%.2f_%d"%(options.frac/100.,options.nvtx)
-    customizeOriginalTrimmingTriplet_v6(process,timing,fraction=options.frac,numVertex=options.nvtx)
+    suff = "m3_0p%d_%d_%d"%(options.frac,options.nvtx,options.sumpt)
+    customizeOriginalTrimmingTriplet_v6(process,timing,fraction=options.frac/100.,numVertex=options.nvtx,minSumPt2=options.sumpt)
 if options.wf == -2:
     customizeOriginal_v6(process,timing)
-    suff = "m2_%.2f_%d"%(options.frac/100.,options.nvtx)
-    customizeOriginalTrimmingInitial_v6(process,timing,fraction=options.frac,numVertex=options.nvtx)
+    suff = "m2_0p%d_%d_%d"%(options.frac,options.nvtx,options.sumpt)
+    customizeOriginalTrimmingInitial_v6(process,timing,fraction=options.frac/100.,numVertex=options.nvtx,minSumPt2=options.sumpt)
 
 ##ORIGINAL v6_1
 if options.wf == -1:
