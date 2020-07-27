@@ -1,4 +1,4 @@
-filelist=["file:/lustre/cms/store/user/adiflori/TTbar_14TeV_PU200_11X/007BECB7-1A0D-3640-BD98-7A4089340690.root",
+ttbar=["file:/lustre/cms/store/user/adiflori/TTbar_14TeV_PU200_11X/007BECB7-1A0D-3640-BD98-7A4089340690.root",
 "file:/lustre/cms/store/user/adiflori/TTbar_14TeV_PU200_11X/01F54CE2-2BFB-AB46-BF9A-DA9E2892A37D.root",
 "file:/lustre/cms/store/user/adiflori/TTbar_14TeV_PU200_11X/05222FA7-1FC2-E84D-A1E5-7ABF202FF1A9.root",
 "file:/lustre/cms/store/user/adiflori/TTbar_14TeV_PU200_11X/0E2A5C5E-2BD7-8741-BB31-81500B102C03.root",

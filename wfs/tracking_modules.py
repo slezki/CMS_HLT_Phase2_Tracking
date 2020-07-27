@@ -596,6 +596,25 @@ hltPhase2PixelTracksTrackingRegions = cms.EDProducer( "GlobalTrackingRegionFromB
     )
 )
 
+hltPhase2TrimmedVertexTrackingRegions = cms.EDProducer( "GlobalTrackingRegionWithVerticesEDProducer",
+    RegionPSet = cms.PSet(
+      useFixedError = cms.bool( True ),
+      nSigmaZ = cms.double( 4.0 ),
+      VertexCollection = cms.InputTag( "hltPhase2TrimmedPixelVertices" ), # hltPhase2TrimmedPixelVertices
+      beamSpot = cms.InputTag( "offlineBeamSpot" ),
+      useFoundVertices = cms.bool( True ),
+      fixedError = cms.double( 0.2 ),
+      sigmaZVertex = cms.double( 3.0 ),
+      useFakeVertices = cms.bool( False ),
+      ptMin = cms.double( 0.9 ), # previous 0.4
+      originRadius = cms.double( 0.02 ), # previous 0.05
+      precise = cms.bool( True ),
+      useMultipleScattering = cms.bool( False )
+    ),
+    mightGet = cms.optional.untracked.vstring  # cmssw_11_1
+)
+
+
 hltPhase2PixelTracksHitDoublets = cms.EDProducer( "HitPairEDProducer",
     trackingRegions = cms.InputTag( "hltPhase2PixelTracksTrackingRegions" ),
     layerPairs = cms.vuint32( 0, 1, 2 ),

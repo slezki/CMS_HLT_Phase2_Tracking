@@ -38,7 +38,9 @@ prevalidation_general = cms.Task(hltPhase2CutsRecoTracksFromPVHp,hltPhase2Genera
 
 prevalidation_vertex = cms.Task(hltPhase2SelectedOfflinePrimaryVertices,
                                 hltPhase2SelectedOfflinePrimaryVerticesWithBS,
-                                hltPhase2VertexAnalysisTrackingOnly,
+                                hltPhase2VertexAnalysisTrackingOnly)
+
+prevalidation_pixelvertex = cms.Task(
                                 hltPhase2SelectedPixelVertices,
                                 hltPhase2PixelVertexAnalysisTrackingOnly)
 
@@ -50,7 +52,7 @@ prevalidation_v0 = cms.Task(hltPhase2V0Validator)
 ########################## Pixel Tracks
 #############
 
-prevalidation_startup = cms.Task(prevalidation_commons,prevalidation_associators)##,prevalidation_vertex)
+prevalidation_startup = cms.Task(prevalidation_commons,prevalidation_associators,prevalidation_pixelvertex)
 
 prevalidation_original = cms.Path(prevalidation_startup,
                                   prevalidation_v0,

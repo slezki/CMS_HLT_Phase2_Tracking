@@ -5,7 +5,10 @@
 # with command line options: step3 --conditions auto:phase2_realistic_T15 -n 10 --era Phase2C9 --eventcontent RECOSIM,DQM --runUnscheduled -s RAW2DIGI,RECO:reconstruction_trackingOnly,VALIDATION:@trackingOnlyValidation,DQM:@trackingOnlyDQM --datatier GEN-SIM-RECO,DQMIO --geometry Extended2026D49 --filein file:step2.root --fileout file:step3.root
 import FWCore.ParameterSet.Config as cms
 from Configuration.Eras.Era_Phase2C9_cff import Phase2C9
-from ttbar_14_D49PU200 import *
+
+# import sys
+# sys.path.insert(1, './MCs/')
+
 import FWCore.ParameterSet.VarParsing as VarParsing
 from customize_steps import *
 #from Configuration.StandardSequences.Reconstruction_cff import *
@@ -28,17 +31,30 @@ process.load('DQMOffline.Configuration.DQMOfflineMC_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 options = VarParsing.VarParsing('analysis')
-options.register ('wf',
-                  -1, # default value
-                  VarParsing.VarParsing.multiplicity.singleton, # singleton or list
-                  VarParsing.VarParsing.varType.int,          # string, int, or float
-                  "Wf number")
-options.register('pixtrip',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Pixel Triplets")
-options.register('timing',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Only timing")
+options.register ('wf',-1, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"wf number")
+options.register('pixtrip',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"pixel Triplets")
+options.register('timing',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"only timing")
 options.register('n',1,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"max events")
-options.register('patatrack',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Patatrack Pixel Tracks")
-options.register('T2',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Running on T2_Bari")
-options.register('local',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Running with files copied locally (stored in local_files.py)")
+options.register('frac',30,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx sum pt fraction (in %)")
+options.register('nvtx',30,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"n trimmed vtx")
+options.register('patatrack',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"patatrack Pixel Tracks")
+options.register('T2',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"running on T2_Bari")
+options.register('mkfit',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"running mkfit")
+options.register('debug',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"debug")
+options.register('threads',16,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"num of threads")
+options.register('skip',0,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"events to skip")
+
+options.register('fullcontent',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"full content")
+options.register('recosim',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"recosim content")
+
+#MCs
+options.register('ztt',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"ZTT MC")
+options.register('dstmmm',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"DsTau3M MC")
+options.register('bdksmm',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"BdToKstarMuMu MC")
+options.register('b0ksmm',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"B0ToKstarMuMu")
+options.register('bskkkk',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"BsToPhiPhi_KKKK MC")
+options.register('withl1',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"loading files with l1 tracks already produced")
+
 options.parseArguments()
 
 process.maxEvents = cms.untracked.PSet(
@@ -56,18 +72,37 @@ process.MessageLogger = cms.Service("MessageLogger",
 )                                                                       #8
 
 
+if options.ztt:
+    from MCs.b0kstarmumu import b0kstarmumu
+    filelist = b0kstarmumu
+if options.dstmmm:
+    from MCs.bdksmm import bdksmm
+    filelist = bdksmm
+if options.bdksmm:
+    from MCs.bsphikkkk import bsphikkkk
+    filelist = bsphikkkk
+if options.b0ksmm:
+    from MCs.dstaumumumu import dstaumumumu
+    filelist = dstaumumumu
+if options.bskkkk:
+    from MCs.ttbarl1 import ttbarl1
+    filelist = ttbarl1
+if options.withl1:
+    from MCs.ttbar import ttbar
+    filelist = ttbar
+
 if not options.T2:
-    if options.local:
-        process.load("local_files")
-    else:
-        process.load("input_TTbar_Phase2HLTTDRWinter20-PU200_110X_upgrade2026D49_realistic_v3-v2_cff")
-else:
-    process.source = cms.Source("PoolSource",
-        fileNames = cms.untracked.vstring(filelist),
-        secondaryFileNames = cms.untracked.vstring()
-        )
+    filelist = [f[5:] for f in filelist]
+
+print(filelist)
+
+process.source = cms.Source("PoolSource",
+    fileNames = cms.untracked.vstring(filelist),
+    secondaryFileNames = cms.untracked.vstring()
+    )
 
 process.options = cms.untracked.PSet()
+process.source.skipEvents=cms.untracked.uint32(options.skip)
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
@@ -75,30 +110,6 @@ process.configurationMetadata = cms.untracked.PSet(
     name = cms.untracked.string('Applications'),
     version = cms.untracked.string('$Revision: 1.19 $')
 )
-
-# Output definition
-
-process.RECOSIMoutput = cms.OutputModule("PoolOutputModule",
-    dataset = cms.untracked.PSet(
-        dataTier = cms.untracked.string('GEN-SIM-RECO'),
-        filterName = cms.untracked.string('')
-    ),
-    fileName = cms.untracked.string('file:step3.root'),
-    outputCommands = process.RECOSIMEventContent.outputCommands,
-    splitLevel = cms.untracked.int32(0)
-)
-
-process.DQMoutput = cms.OutputModule("DQMRootOutputModule",
-    dataset = cms.untracked.PSet(
-        dataTier = cms.untracked.string('DQMIO'),
-        filterName = cms.untracked.string('')
-    ),
-    fileName = cms.untracked.string('file:step3_inDQM.root'),
-    outputCommands = process.DQMEventContent.outputCommands,
-    splitLevel = cms.untracked.int32(0)
-)
-
-# Additional output definition
 
 # Other statements
 process.mix.playback = True
@@ -109,7 +120,7 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic_T15', '')
 
 process.load('raw2digi_step_cff')
-if options.wf==-1:
+if options.wf<=-1:
     process.load("tracking_sequences_nol1")
 else:
     process.load("tracking_sequences")
@@ -126,8 +137,8 @@ process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool( True ),
     sizeOfStackForThreadsInKB = cms.untracked.uint32( 10*1024 )
 )
-process.options.numberOfStreams = cms.untracked.uint32(8)
-process.options.numberOfThreads = cms.untracked.uint32(8)
+process.options.numberOfStreams = cms.untracked.uint32(options.threads)
+process.options.numberOfThreads = cms.untracked.uint32(options.threads)
 
 #######
 # -1 - original v6
@@ -138,25 +149,28 @@ process.options.numberOfThreads = cms.untracked.uint32(8)
 # 4 - pixelTracksTriplets + l1tracks
 #
 
-process.FEVTDEBUGHLToutput = cms.OutputModule("PoolOutputModule",
-    dataset = cms.untracked.PSet(
-        dataTier = cms.untracked.string('GEN-SIM-DIGI-RAW-RECO-HLTDEBUG'),
-        filterName = cms.untracked.string('')
-    ),
-    fileName = cms.untracked.string('file:step3_full.root'),
-    outputCommands = process.FEVTDEBUGHLTEventContent.outputCommands,
-    splitLevel = cms.untracked.int32(0)
-)
-
 timing = options.timing
 
 suff = str(options.wf)
+if options.wf == -4:
+    suff = "m4_%.2f_%d"%(options.frac/100.,options.nvtx)
+    customizeOriginal_v6(process,timing)
+    customizeOriginalTrimmingInitial_v6(process,timing,fraction=options.frac,numVertex=options.nvtx)
+    customizeOriginalTrimmingTriplet_v6(process,timing,fraction=options.frac,numVertex=options.nvtx)
+if options.wf == -3:
+    customizeOriginal_v6(process,timing)
+    suff = "m3_%.2f_%d"%(options.frac/100.,options.nvtx)
+    customizeOriginalTrimmingTriplet_v6(process,timing,fraction=options.frac,numVertex=options.nvtx)
+if options.wf == -2:
+    customizeOriginal_v6(process,timing)
+    suff = "m2_%.2f_%d"%(options.frac/100.,options.nvtx)
+    customizeOriginalTrimmingInitial_v6(process,timing,fraction=options.frac,numVertex=options.nvtx)
 if options.wf == -1:
-    suff = "original"
+    suff = "m1"
     customizeOriginal_v6(process,timing)
 if options.wf == 0:
     suff = "purel1"
-    customizeGeneralTracksToPureL1TracksStep(process)
+    customizeGeneralTracksToPureL1TracksStep(process,timing)
 if options.wf == 1:
     customizeGeneralTracksToPixelL1TracksStep(process,timing)
 if options.wf == 2:
@@ -172,25 +186,102 @@ if options.wf == 6:
 if options.wf == 7:
     l1_pixel_recovery_triplets(process,timing)
 
+if options.mkfit:
+    customizeHighPtTripletForMkFit(process)
 if options.pixtrip:
     pixelTriplets(process)
+
+if options.debug:
+    suff = suff + "_debug"
+if options.ztt:
+    suff = suff + "_ztt"
+else:
+    suff = suff + "_ttb"
+
+if options.skip > 0:
+    suff = suff + "_skip_" + str(options.skip)
+
+process.RECOSIMoutput = cms.OutputModule("PoolOutputModule",
+    dataset = cms.untracked.PSet(
+        dataTier = cms.untracked.string('GEN-SIM-RECO'),
+        filterName = cms.untracked.string('')
+    ),
+    fileName = cms.untracked.string('file:step3_' + suff + '.root'),
+    outputCommands = process.RECOSIMEventContent.outputCommands,
+    splitLevel = cms.untracked.int32(0)
+)
+
+process.DQMoutput = cms.OutputModule("DQMRootOutputModule",
+    dataset = cms.untracked.PSet(
+        dataTier = cms.untracked.string('DQMIO'),
+        filterName = cms.untracked.string('')
+    ),
+    fileName = cms.untracked.string('file:step3_inDQM_' + suff + '.root'),
+    outputCommands = process.DQMEventContent.outputCommands,
+    splitLevel = cms.untracked.int32(0)
+)
+
+
+process.FEVTDEBUGHLToutput = cms.OutputModule("PoolOutputModule",
+    dataset = cms.untracked.PSet(
+        dataTier = cms.untracked.string('GEN-SIM-DIGI-RAW-RECO-HLTDEBUG'),
+        filterName = cms.untracked.string('')
+    ),
+    fileName = cms.untracked.string('file:step3_full_' + suff + '.root'),
+    outputCommands = process.FEVTDEBUGHLTEventContent.outputCommands,
+    splitLevel = cms.untracked.int32(0)
+)
+
+if options.patatrack:
+    customizePixelTracksSoAonCPU(process)
 
 if not timing:
     process.DQMoutput_step = cms.EndPath( process.DQMoutput)
     process.schedule.extend([process.DQMoutput_step])
 
-if options.patatrack:
-    customizePixelTracksSoAonCPU(process)
+if options.fullcontent:
 
-process.output_step = cms.EndPath(process.FEVTDEBUGHLToutput)
-# process.FEVTDEBUGHLToutput.outputCommands.append('keep *')
-process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2GeneralTracks_*_*')
-process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2PixelVertices_*_*')
-process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2PixelTracks_*_*')
-process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2HighPtTripletStepTracks_*_*')
-process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2InitialStepTracks_*_*')
-process.schedule.extend([process.output_step])
 
+    process.FEVTDEBUGHLToutput = cms.OutputModule("PoolOutputModule",
+        dataset = cms.untracked.PSet(
+            dataTier = cms.untracked.string('GEN-SIM-DIGI-RAW-RECO-HLTDEBUG'),
+            filterName = cms.untracked.string('')
+        ),
+        fileName = cms.untracked.string('file:step3_full_' + suff + '.root'),
+        outputCommands = process.FEVTDEBUGHLTEventContent.outputCommands,
+        splitLevel = cms.untracked.int32(0)
+    )
+
+    # process.FEVTDEBUGHLToutput.outputCommands.append('keep *')
+    process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2GeneralTracks_*_*')
+    process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2*PixelVertices_*_*')
+    process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2PixelTracks_*_*')
+    process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2HighPtTripletStepTracks_*_*')
+    process.FEVTDEBUGHLToutput.outputCommands.append('keep *_hltPhase2InitialStepTracks_*_*')
+    process.full_output_step = cms.EndPath(process.FEVTDEBUGHLToutput)
+    process.schedule.extend([process.full_output_step])
+
+elif options.recosim:
+
+    process.RECOSIMoutput = cms.OutputModule("PoolOutputModule",
+        dataset = cms.untracked.PSet(
+            dataTier = cms.untracked.string('GEN-SIM-RECO'),
+            filterName = cms.untracked.string('')
+        ),
+        fileName = cms.untracked.string('file:step3_reco_' + suff + '.root'),
+        outputCommands = process.RECOSIMoutput.outputCommands,
+        splitLevel = cms.untracked.int32(0)
+    )
+
+    # process.FEVTDEBUGHLToutput.outputCommands.append('keep *')
+    process.RECOSIMoutput.outputCommands.append('keep *_hltPhase2GeneralTracks_*_*')
+    process.RECOSIMoutput.outputCommands.append('keep *_hltPhase2*PixelVertices_*_*')
+    process.RECOSIMoutput.outputCommands.append('keep *_hltPhase2PixelTracks_*_*')
+    process.RECOSIMoutput.outputCommands.append('keep *_hltPhase2HighPtTripletStepTracks_*_*')
+    process.RECOSIMoutput.outputCommands.append('keep *_hltPhase2InitialStepTracks_*_*')
+
+    process.full_output_step = cms.EndPath(process.RECOSIMoutput)
+    process.schedule.extend([process.full_output_step])
 
 if 'PrescaleService' in process.__dict__:
     for pset in reversed(process.PrescaleService.prescaleTable):

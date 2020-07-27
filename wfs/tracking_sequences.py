@@ -190,7 +190,7 @@ hltPhase2L1TracksSeqPattern = cms.Sequence(
             hltPhase2L1CtfTracks
 )
 
-hltPhase2L1TracksSequenceClassifiation = cms.Sequence(
+hltPhase2L1TracksSequenceClassification = cms.Sequence(
             # hltPhase2L1PVSequence +
             hltPhase2L1TracksCutClassifier +#+
             hltPhase2L1TracksSelectionHighPurity)
@@ -198,14 +198,14 @@ hltPhase2L1TracksSequenceClassifiation = cms.Sequence(
 hltPhase2L1TracksSequence = cms.Sequence(
     hltPhase2L1TracksSeqSeed +
     hltPhase2L1TracksSeqPattern +
-    hltPhase2L1TracksSequenceClassifiation
+    hltPhase2L1TracksSequenceClassification
 )
 
 pure_l1tracks = cms.Path(
     hltPhase2StartUp +
     hltPhase2PixelTracksSequence + # pixeltracks
     hltPhase2PixelVerticesSequence + # pixelvertices
-    TTTracksFromTrackletEmulation +
+    #TTTracksFromTrackletEmulation +
     hltPhase2L1TracksSequence +
     hltPhase2GeneralTracks
 )
@@ -293,7 +293,7 @@ l1_pixel_reco = cms.Path(
     hltPhase2L1TracksSeqPattern +
     hltPhase2PixelTracksSequenceL1 +
     hltPhase2PixelVerticesSequence +
-    hltPhase2L1TracksSequenceClassifiation +
+    hltPhase2L1TracksSequenceClassification +
     hltPhase2InitialStepSequence +
     hltPhase2GeneralTracks
 
@@ -306,7 +306,7 @@ l1_pixel_reco_triplets = cms.Path(
     hltPhase2L1TracksSeqPattern +
     hltPhase2PixelTracksSequenceL1 +
     hltPhase2PixelVerticesSequence +
-    hltPhase2L1TracksSequenceClassifiation +
+    hltPhase2L1TracksSequenceClassification +
     hltPhase2InitialStepSequence +
     hltPhase2HighPtTripletStepSequence +
     hltPhase2GeneralTracks

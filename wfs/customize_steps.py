@@ -142,7 +142,31 @@ def pixelTriplets(process):
     )
     return process
 
-def customizeL1TracksStepToMkFit(procaess):
+
+def customizeHighPtTripletForMkFit(process):
+
+    process.hltPhase2HTripletTracksCandidatesMkFitInput = mkFitInputConverter_cfi.mkFitInputConverter.clone(
+            seeds = "hltPhase2HighPtTripletStepSeeds",
+        )
+
+    process.hltPhase2HTripletTracksCandidatesMkFit = mkFitProducer_cfi.mkFitProducer.clone(
+            hitsSeeds = "hltPhase2HTripletTracksCandidatesMkFitInput",
+        )
+
+    process.hltPhase2HighPtTripletStepTrackCandidates = mkFitOutputConverter_cfi.mkFitOutputConverter.clone(
+        seeds = "hltPhase2HighPtTripletStepSeeds",
+        hitsSeeds = "hltPhase2HTripletTracksCandidatesMkFitInput",
+        tracks = "hltPhase2HTripletTracksCandidatesMkFit",
+    )
+
+
+    # proccess.siPixelClusters =
+    process.hltPhase2HighPtTripletStepSeedTask.add(process.hltPhase2HTripletTracksCandidatesMkFitInput,
+                              process.hltPhase2HTripletTracksCandidatesMkFit)
+
+    return process
+
+def customizeL1TracksStepToMkFit(process):
 
     process.hltPhase2L1TracksCandidatesMkFitInput = mkFitInputConverter_cfi.mkFitInputConverter.clone(
             seeds = "hltPhase2L1TrackSeedsFromL1Tracks",
@@ -155,7 +179,7 @@ def customizeL1TracksStepToMkFit(procaess):
     process.hltPhase2L1TracksCandidates = mkFitOutputConverter_cfi.mkFitOutputConverter.clone(
         seeds = "hltPhase2L1TrackSeedsFromL1Tracks",
         hitsSeeds = "hltPhase2L1TracksCandidatesMkFitInput",
-        tracks = "initialStepTrackCandidatesMkFit",
+        tracks = "hltPhase2L1TracksCandidatesMkFitInput",
     )
 
 
@@ -502,6 +526,21 @@ def customizeOriginal_v6(process,timing):
         if not timing:
             process.schedule.extend([process.vertexing, process.prevalidation_original,
                 process.validation_original, process.dqm_original])
+
+def customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.3,numVertex=30):
+
+        process.hltPhase2TrimmedPixelVertices.fractionSumPt2 = cms.double(fraction)
+        process.hltPhase2TrimmedPixelVertices.maxVtx = cms.uint32(numVertex)
+
+        process.hltPhase2InitialStepSeeds.usePV = cms.bool(True)
+        process.hltPhase2InitialStepSeeds.InputVertexCollection = cms.InputTag("hltPhase2TrimmedPixelVertices")
+
+def customizeOriginalTrimmingTriplet_v6(process,timing,fraction=0.3,numVertex=30):
+
+        process.hltPhase2TrimmedPixelVertices.fractionSumPt2 = cms.double(fraction)
+        process.hltPhase2TrimmedPixelVertices.maxVtx = cms.uint32(numVertex)
+
+        process.hltPhase2HighPtTripletStepTrackingRegions = process.hltPhase2TrimmedVertexTrackingRegions.clone()
 
 def customizeGeneralTracksToPixelL1TracksStep(process,timing):
 

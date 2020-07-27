@@ -100,13 +100,18 @@ hltPhase2InitialStepSequenceFromPixelTracks = cms.Sequence(
     hltPhase2InitialStepTrackSelectionHighPurity
 )
 
+hltPhase2HighPtTripletStepSeeding = cms.Sequence(
+            hltPhase2HighPtTripletStepClusters +
+            hltPhase2HighPtTripletStepSeedLayers +
+            hltPhase2HighPtTripletStepTrackingRegions +
+            hltPhase2HighPtTripletStepHitDoublets +
+            hltPhase2HighPtTripletStepHitTriplets +
+            hltPhase2HighPtTripletStepSeeds
+)
+
+
 hltPhase2HighPtTripletStepSequence = cms.Sequence(
-    hltPhase2HighPtTripletStepClusters +
-    hltPhase2HighPtTripletStepSeedLayers +
-    hltPhase2HighPtTripletStepTrackingRegions +
-    hltPhase2HighPtTripletStepHitDoublets +
-    hltPhase2HighPtTripletStepHitTriplets +
-    hltPhase2HighPtTripletStepSeeds +
+    hltPhase2HighPtTripletStepSeeding +
     hltPhase2HighPtTripletStepTrackCandidates +
     hltPhase2HighPtTripletStepTracks +
     hltPhase2HighPtTripletStepTrackCutClassifier +
