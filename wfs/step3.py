@@ -50,7 +50,7 @@ options.register('recosim',False,VarParsing.VarParsing.multiplicity.singleton,Va
 #Trimming
 options.register('frac',20,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx sum pt fraction (in %)")
 options.register('nvtx',10,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"n trimmed vtx")
-options.register('sumpt',20,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"minsumpt2 vtx")
+options.register('sumpt',20 ,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"minsumpt2 vtx")
 
 #MCs
 options.register('ztt',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"ZTT MC")
@@ -83,14 +83,14 @@ if options.ztt:
     from MCs.b0kstarmumu import b0kstarmumu
     filelist = b0kstarmumu
 if options.dstmmm:
-    from MCs.bdksmm import bdksmm
-    filelist = bdksmm
+    from MCs.dstmmm #bdksmm import bdksmm
+    filelist = dstmmm
 if options.bdksmm:
-    from MCs.bsphikkkk import bsphikkkk
-    filelist = bsphikkkk
+    from MCs.bdksmm import bdksmm #bsphikkkk import bsphikkkk
+    filelist = bdksmm
 if options.b0ksmm:
-    from MCs.dstaumumumu import dstaumumumu
-    filelist = dstaumumumu
+    from MCs.b0ksmm #dstaumumumu import dstaumumumu
+    filelist = b0ksmm
 if options.bskkkk:
     from MCs.bskkkk import bskkkk
     filelist = bskkkk
@@ -207,6 +207,14 @@ if options.debug:
     suff = suff + "_debug"
 if options.ztt:
     suff = suff + "_ztt"
+elif options.dstmmm:
+    suff = suff + "_dstmmm"
+elif options.bdksmm:
+    suff = suff + "_bdksmm"
+elif options.b0ksmm:
+    suff = suff + "_b0ksmm"
+elif options.bskkkk:
+    suff = suff + "_bskkkk"
 else:
     suff = suff + "_ttb"
 
