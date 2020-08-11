@@ -53,6 +53,6 @@ This works in CMSSW_11_1_0_pre7_Patatrack with https://github.com/AdrianoDee/cms
 
 ##### Trimming
 
-To run the default trimming 
+To run the default trimming (v_7_2)
 
 ```cmsRun step3.py n=N zsep=25 wf=-4 frac=10 nvtx=20 ```
