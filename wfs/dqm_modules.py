@@ -2065,10 +2065,22 @@ hltPhase2PvMonitor = cms.EDProducer("PrimaryVertexMonitor",
     vertexLabel = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
-hltPhase2TrackingDQMgoodOfflinePrimaryVertices = cms.EDFilter("VertexSelector",
+hltPhase2TrackingDQMgoodPixelVertices = cms.EDFilter("VertexSelector",
     cut = cms.string('!isFake && ndof >= 4.0 && abs(z) <= 24.0 && abs(position.Rho) <= 2.0'),
     filter = cms.bool(False),
     src = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
+)
+
+hltPhase2TrackingDQMgoodOfflinePrimaryVertices = cms.EDFilter("VertexSelector",
+    cut = cms.string('!isFake && ndof >= 4.0 && abs(z) <= 24.0 && abs(position.Rho) <= 2.0'),
+    filter = cms.bool(False),
+    src = cms.InputTag("hltPhase2OfflinePrimaryVertices") #("hltPhase2OfflinePrimaryVertices")
+)
+
+hltPhase2TrackingDQMgoodTrimmedPixelVertices = cms.EDFilter("VertexSelector",
+    cut = cms.string('!isFake && ndof >= 4.0 && abs(z) <= 24.0 && abs(position.Rho) <= 2.0'),
+    filter = cms.bool(False),
+    src = cms.InputTag("hltPhase2TrimmedPixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 #############################################

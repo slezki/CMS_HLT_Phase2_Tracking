@@ -1087,7 +1087,7 @@ hltPhase2V0Validator = cms.EDProducer("V0Validator",
 hltPhase2SelectedOfflinePrimaryVertices = cms.EDFilter("VertexSelector",
     cut = cms.string('isValid & ndof > 4 & tracksSize > 0 & abs(z) <= 24 & abs(position.Rho) <= 2.'),
     filter = cms.bool(False),
-    src = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
+    src = cms.InputTag("hltPhase2OfflinePrimaryVertices","","RECO") #("hltPhase2OfflinePrimaryVertices")
 )
 
 hltPhase2SelectedOfflinePrimaryVerticesWithBS = cms.EDFilter("VertexSelector",
@@ -1123,5 +1123,5 @@ hltPhase2PixelVertexAnalysisTrackingOnly = cms.EDProducer("PrimaryVertexAnalyzer
     use_only_charged_tracks = cms.untracked.bool(True),
     verbose = cms.untracked.bool(False),
     vertexAssociator = cms.untracked.InputTag("hltPhase2PixelVertexAssociatorByPositionAndTracks"),
-    vertexRecoCollections = cms.VInputTag("hltPhase2PixelVertices", "hltPhase2SelectedPixelVertices")
+    vertexRecoCollections = cms.VInputTag("hltPhase2PixelVertices", "hltPhase2SelectedPixelVertices")#,"hltPhase2TrimmedPixelVertices")#,"offlinePrimaryVertices")
 )

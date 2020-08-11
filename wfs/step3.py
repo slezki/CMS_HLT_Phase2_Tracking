@@ -29,28 +29,37 @@ process.load('Configuration.StandardSequences.Validation_cff')
 process.load('DQMServices.Core.DQMStoreNonLegacy_cff')
 process.load('DQMOffline.Configuration.DQMOfflineMC_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+process.load("FWCore.Services.DependencyGraph_cfi")
 
 options = VarParsing.VarParsing('analysis')
 options.register ('wf',-1, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"wf number")
-options.register('pixtrip',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"pixel Triplets")
-options.register('timing',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"only timing")
-options.register('n',1,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"max events")
 
-options.register('patatrack',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"patatrack Pixel Tracks")
-options.register('T2',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"running on T2_Bari")
-options.register('mkfit',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"running mkfit")
+options.register('timing',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"only timing")
 options.register('debug',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"debug")
-options.register('threads',16,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"num of threads")
+
+options.register('n',1,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"max events")
 options.register('skip',0,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"events to skip")
+options.register('threads',16,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"num of threads")
+
+options.register('pixtrip',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"pixel Triplets")
+options.register('onlypixel',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"onlypixel")
+options.register('mkfit',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"running mkfit")
+options.register('patatrack',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"patatrack Pixel Tracks")
+options.register('davertex',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"da pixel vertexing")
+options.register('fullvertex',True,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"full vertexing")
+options.register('patavertex',True,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"pata vertexing")
+
+options.register('T2',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"running on T2_Bari")
 
 #EventContent
 options.register('fullcontent',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"full content")
 options.register('recosim',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"recosim content")
 
-#Trimming
+#Trimming&Vertexing
 options.register('frac',20,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx sum pt fraction (in %)")
 options.register('nvtx',10,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"n trimmed vtx")
 options.register('sumpt',20 ,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"minsumpt2 vtx")
+options.register('zsep',5,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"z_sep (x1000)")
 
 #MCs
 options.register('ztt',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"ZTT MC")
@@ -83,13 +92,13 @@ if options.ztt:
     from MCs.b0kstarmumu import b0kstarmumu
     filelist = b0kstarmumu
 if options.dstmmm:
-    from MCs.dstmmm #bdksmm import bdksmm
+    from MCs.dstmmm import dstmmm #bdksmm import bdksmm
     filelist = dstmmm
 if options.bdksmm:
     from MCs.bdksmm import bdksmm #bsphikkkk import bsphikkkk
     filelist = bdksmm
 if options.b0ksmm:
-    from MCs.b0ksmm #dstaumumumu import dstaumumumu
+    from MCs.b0ksmm import b0ksmm #dstaumumumu import dstaumumumu
     filelist = b0ksmm
 if options.bskkkk:
     from MCs.bskkkk import bskkkk
@@ -108,6 +117,7 @@ process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring()
     )
 
+process.source.inputCommands = cms.untracked.vstring("keep *")
 process.options = cms.untracked.PSet()
 process.source.skipEvents=cms.untracked.uint32(options.skip)
 
@@ -158,8 +168,31 @@ process.options.numberOfThreads = cms.untracked.uint32(options.threads)
 
 timing = options.timing
 
+
 suff = str(options.wf)
+
 #TRIMMING OPTIONS
+if options.wf < -1:
+
+    process.hltPhase2PixelVertexAnalysisTrackingOnly.vertexRecoCollections = cms.VInputTag("hltPhase2PixelVertices", "hltPhase2SelectedPixelVertices","hltPhase2TrimmedPixelVertices")
+    process.hltPhase2PixelVerticesSequence = cms.Sequence(
+        process.hltPhase2PixelVertices +
+        process.hltPhase2TrimmedPixelVertices
+    )
+    #Minimal reasonable setup
+    process.hltPhase2TrimmedPixelVertices.fractionSumPt2 = cms.double( 0.01 ),
+    process.hltPhase2TrimmedPixelVertices.minSumPt2 = cms.double( 10.0 ),
+    process.hltPhase2TrimmedPixelVertices.maxVtx = cms.uint32( 100 ) # > 200 # previous 100
+
+    process.hltPhase2PSetPvClusterComparerForITTrimming.track_chi2_max = cms.double( 20.0 )
+    process.hltPhase2PSetPvClusterComparerForITTrimming.track_pt_max = cms.double( 40.0 )
+    process.hltPhase2PSetPvClusterComparerForITTrimming.track_prob_min = cms.double( -1.0 )
+    process.hltPhase2PSetPvClusterComparerForITTrimming.track_pt_min = cms.double( 0.9 )
+
+if options.onlypixel:
+    options.wf = -100
+    suff = "pixelonly"
+
 if options.wf == -4:
     suff = "m4_0p%d_%d_%d"%(options.frac,options.nvtx,options.sumpt)
     customizeOriginal_v6(process,timing)
@@ -173,11 +206,15 @@ if options.wf == -2:
     customizeOriginal_v6(process,timing)
     suff = "m2_0p%d_%d_%d"%(options.frac,options.nvtx,options.sumpt)
     customizeOriginalTrimmingInitial_v6(process,timing,fraction=options.frac/100.,numVertex=options.nvtx,minSumPt2=options.sumpt)
+if options.wf == -5:
+    suff = "m5"
+    customizeOriginal_v6_withvertex(process,timing)
 
 ##ORIGINAL v6_1
 if options.wf == -1:
     suff = "m1"
     customizeOriginal_v6(process,timing)
+    process.hltPhase2TrimmedPixelVertices = process.MeasurementTrackerEvent.clone()
 
 #L1 Customizing
 if options.wf == 0:
@@ -200,8 +237,11 @@ if options.wf == 7:
 
 if options.mkfit:
     customizeHighPtTripletForMkFit(process)
-if options.pixtrip:
-    pixelTriplets(process)
+# if options.pixtrip:
+#     pixelTriplets(process)
+
+if options.onlypixel:
+    customizePixelOnly(process,timing)
 
 if options.debug:
     suff = suff + "_debug"
@@ -217,9 +257,42 @@ elif options.bskkkk:
     suff = suff + "_bskkkk"
 else:
     suff = suff + "_ttb"
+    # if not timing and not options.onlypixel:
+    #     process.prevalidation_startup = process.prevalidation_startup_offline
+    #     process.dqm_vertex = process.dqm_vertex_offline
+    # elif not timing:
+    #     process.prevalidation_startup = process.prevalidation_startup_offline
+    #     process.dqm_commons = process.dqm_commons_offline
 
-if options.skip > 0:
-    suff = suff + "_skip_" + str(options.skip)
+suff = suff + "_skip_" + str(options.skip) + "_n_" + str(options.n)
+
+if options.fullvertex or not options.timing:
+    process.schedule.extend([process.vertexing])
+    suff = suff + "_fullvertexing"
+
+if options.patavertex:
+    suff = suff + "_patavertex"
+if options.patatrack:
+    customizePixelTracksSoAonCPU(process,options.patavertex)
+
+    if options.pixtrip:
+        process.hltPhase2PixelTrackSoA.minHitsPerNtuplet = 3
+    suff = suff + "_pata"
+
+if options.davertex:
+    process.hltPhase2PixelVertices = process.hltPhase2DAPrimaryVerticesUnsorted.clone()
+    suff = suff + "_da"
+elif not options.patatrack:
+    process.hltPhase2PixelVertices.ZSeparation = float(options.zsep) / 1000.0
+
+suff = suff + "_zsep_0p0" + str(options.zsep)
+
+#DependecyGraph
+#from FWCore.ParameterSet.Utilities import moduleLabelsInSequences
+process.DependencyGraph.highlightModules = ["hltPhase2PixelTracks","hltPhase2PixelVertices","hltPhase2InitialStepTracks","hltPhase2InitialStepTrackCandidates"]
+
+process.DependencyGraph.showPathDependencies = True
+process.DependencyGraph.fileName = 'dependency' + suff + '.gv'
 
 process.RECOSIMoutput = cms.OutputModule("PoolOutputModule",
     dataset = cms.untracked.PSet(
@@ -251,9 +324,6 @@ process.FEVTDEBUGHLToutput = cms.OutputModule("PoolOutputModule",
     outputCommands = process.FEVTDEBUGHLTEventContent.outputCommands,
     splitLevel = cms.untracked.int32(0)
 )
-
-if options.patatrack:
-    customizePixelTracksSoAonCPU(process)
 
 if not timing:
     process.DQMoutput_step = cms.EndPath( process.DQMoutput)

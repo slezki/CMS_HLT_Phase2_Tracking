@@ -57,7 +57,7 @@ import RecoTracker.MkFit.mkFitProducer_cfi as mkFitProducer_cfi
 import RecoTracker.MkFit.mkFitOutputConverter_cfi as mkFitOutputConverter_cfi
 
 
-def customizePixelTracksSoAonCPU(process) :
+def customizePixelTracksSoAonCPU(process,vertex=True) :
 
   from RecoLocalTracker.SiPixelRecHits.siPixelRecHitHostSoA_cfi import siPixelRecHitHostSoA as _siPixelRecHitFromSOA
 
@@ -75,20 +75,24 @@ def customizePixelTracksSoAonCPU(process) :
   process.siPixelRecHits.convertToLegacy = True
   process.PixelCPEFastESProducer.Upgrade = True
 
-  process.pixelTrackSoA = process.caHitNtupletCUDA.clone()
-  process.pixelTrackSoA.onGPU = False
-  process.pixelTrackSoA.pixelRecHitSrc = 'siPixelRecHits'#'siPixelRecHitHostSoA'
-  process.pixelTrackSoA.isUpgrade = True
+  process.hltPhase2PixelTrackSoA = process.caHitNtupletCUDA.clone()
+  process.hltPhase2PixelTrackSoA.onGPU = False
+  process.hltPhase2PixelTrackSoA.pixelRecHitSrc = 'siPixelRecHits'#'siPixelRecHitHostSoA'
+  process.hltPhase2PixelTrackSoA.isUpgrade = True
 
   process.hltPhase2PixelTracks = process.pixelTrackProducerFromSoA.clone()
+  process.hltPhase2PixelTracks.trackSrc = cms.InputTag("hltPhase2PixelTrackSoA")
   process.hltPhase2PixelTracksSeedLayers.BPix.HitProducer = 'siPixelRecHits'#"siPixelRecHitHostSoA"
   process.hltPhase2PixelTracksSeedLayers.FPix.HitProducer = 'siPixelRecHits'#"siPixelRecHitHostSoA"
 
-  process.pixelVertexSoA = process.pixelVertexCUDA.clone()
-  process.pixelVertexSoA.onGPU = False
-  process.pixelVertexSoA.pixelTrackSrc = 'pixelTrackSoA'
+  if vertex:
+      process.hltPhase2PixelVertexSoA = process.pixelVertexCUDA.clone()
+      process.hltPhase2PixelVertexSoA.onGPU = False
+      process.hltPhase2PixelVertexSoA.pixelTrackSrc = 'hltPhase2PixelTrackSoA'
 
-  process.hltPhase2PixelVertices = process.pixelVertexFromSoA.clone()
+      process.hltPhase2PixelVertices = process.pixelVertexFromSoA.clone()
+      process.hltPhase2PixelVertices.src = cms.InputTag("hltPhase2PixelVertexSoA")
+
   process.hltPhase2PixelTracks.pixelRecHitLegacySrc = 'siPixelRecHits'#'siPixelRecHitHostSoA'
   process.hltPhase2PixelVertices.TrackCollection = 'hltPhase2PixelTracks'
 
@@ -96,15 +100,16 @@ def customizePixelTracksSoAonCPU(process) :
 
 
   process.hltPhase2PixelTracksSequence = cms.Sequence(
-      process.pixelTrackSoA +
+      process.hltPhase2PixelTrackSoA +
       process.hltPhase2PixelTracks
   )
 
-  process.hltPhase2PixelVerticesSequence = cms.Sequence(
-      process.pixelVertexSoA +
-      process.hltPhase2PixelVertices +
-      process.hltPhase2TrimmedPixelVertices
-  )
+  if vertex:
+      process.hltPhase2PixelVerticesSequence = cms.Sequence(
+          process.hltPhase2PixelVertexSoA +
+          process.hltPhase2PixelVertices +
+          process.hltPhase2TrimmedPixelVertices
+      )
 
   return process
 
@@ -196,7 +201,7 @@ def customizeGeneralTracksToInitialL1TracksStep(process,timing):
     process.schedule = cms.Schedule(*[ process.raw2digi_step,process.initial_l1tracks])
 
     if not timing:
-        process.schedule.extend([process.vertexing, process.prevalidation_l1initial,
+        process.schedule.extend([process.prevalidation_l1initial,
                                           process.validation_l1initial, process.dqm_l1initial])
 
     process.trackAlgoPriorityOrder.algoOrder = cms.vstring('initialStep','ctf')
@@ -225,7 +230,7 @@ def customizeGeneralTracksToInitialL1TracksStepMasking(process):
     process.schedule = cms.Schedule(*[ process.raw2digi_step,process.initial_l1tracks])
 
     if not timing:
-        process.schedule.extend([process.vertexing, process.prevalidation_l1initial,
+        process.schedule.extend([process.prevalidation_l1initial,
         process.validation_l1initial, process.dqm_l1initial])
 
     process.hltPhase2L1TracksTaskSeed.add(process.hltPhase2L1StepSeedClusterMask)
@@ -260,7 +265,7 @@ def customizeGeneralTracksToInitialL1TracksStepMasking(process):
     process.schedule = cms.Schedule(*[ process.raw2digi_step,process.initial_l1tracks])
 
     if not timing:
-            process.schedule.extend([process.vertexing, process.prevalidation_l1initial,
+            process.schedule.extend([process.prevalidation_l1initial,
                                           process.validation_l1initial, process.dqm_l1initial])
 
     process.hltPhase2L1TracksTaskSeed.add(process.hltPhase2L1TrackStepClusters)
@@ -384,6 +389,14 @@ def l1_pixel_recovery(process,timing):
     "hltPhase2CutsRecoTracksL1StepByOriginalAlgo","hltPhase2CutsRecoTracksL1StepByOriginalAlgoHp")
 
     return process
+
+def customizePixelOnly(process,timing):
+
+    process.schedule = cms.Schedule(*[process.raw2digi_step,process.pixel_tracks])
+
+    if not timing:
+        process.schedule.extend([process.prevalidation_pixel,
+                                      process.validation_pixel, process.dqm_pixel])
 
 def l1_pixel_recovery_triplets(process,timing):
 
@@ -515,7 +528,7 @@ def customizeOriginal_v7(process,timing):
     process.schedule = cms.Schedule(*[ process.raw2digi_step,process.original_v7])
 
     if not timing:
-        process.schedule.extend([process.vertexing, process.prevalidation_original,
+        process.schedule.extend([process.prevalidation_original,
             process.validation_original, process.dqm_original])
 
 
@@ -524,8 +537,10 @@ def customizeOriginal_v6(process,timing):
         process.schedule = cms.Schedule(*[process.raw2digi_step,process.original_v6])
 
         if not timing:
-            process.schedule.extend([process.vertexing, process.prevalidation_original,
+            process.hltPhase2PixelVertexAnalysisTrackingOnly.vertexRecoCollections.append(*["hltPhase2OfflinePrimaryVertices"])
+            process.schedule.extend([process.prevalidation_original,
                 process.validation_original, process.dqm_original])
+
 
 def customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.3,numVertex=30,minSumPt2=50):
 
@@ -546,10 +561,10 @@ def customizeOriginalTrimmingTriplet_v6(process,timing,fraction=0.3,numVertex=30
 
 def customizeGeneralTracksToPixelL1TracksStep(process,timing):
 
+    process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks])
     if not timing:
-        process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
-                                      process.vertexing, process.prevalidation_purel1,
-                                      process.validation_l1initial, process.dqm_purel1])
+        process.schedule.extend([process.prevalidation_purel1,
+                                      process.validation_l1initial, process.dqm_base])
 
     process.trackAlgoPriorityOrder.algoOrder = cms.vstring('ctf','hltPixel')
     process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1CtfTracks","hltPhase2PixelTracks")
@@ -597,14 +612,10 @@ def customizeGeneralTracksToPixelTripletL1TracksStep(process,timing):
     process.hltPhase2PixelTracksHitDoublets.layerPairs = cms.vuint32( 0, 1 )
     process.hltPhase2PixelTracksSeedLayers.layerList = cms.vstring(tripletsLayers)
 
-    if timing:
-        # process.initial_l1tracks = 0
-        process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
-                                          process.vertexing])
-    else:
-        process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
-                                          process.vertexing, process.prevalidation_purel1,
-                                          process.validation_l1initial, process.dqm_purel1])
+    process.schedule = cms.Schedule(*[ process.raw2digi_step, process.pure_l1tracks])
+
+    if not timing:
+        process.schedule.extend([process.validation_l1initial, process.dqm_base])
 
 
     #l1tracking.toReplaceWith(process.hltPhase2PixelTracksHitQuadruplets,process.hltPhase2PixelTracksHitTriplets)
@@ -626,11 +637,10 @@ def customizeGeneralTracksToPixelTripletL1TracksStep(process,timing):
 
 def customizeGeneralTracksToPureL1TracksStep(process,timing):
 
-    process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks,
-                                          process.vertexing])
+    process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1trackss])
     if not timing:
                 process.schedule.extend([process.prevalidation_purel1,
-                                          process.validation_purel1, process.dqm_purel1])
+                                          process.validation_purel1, process.dqm_base])
 
 
 

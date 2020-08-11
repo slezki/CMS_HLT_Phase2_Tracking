@@ -26,10 +26,10 @@ hltPhase2PSetPvClusterComparerForIT = cms.PSet(
 )
 
 hltPhase2PSetPvClusterComparerForITTrimming = cms.PSet(
-  track_chi2_max = cms.double( 20.0 ),
-  track_pt_max = cms.double( 30.0 ),
+  track_chi2_max = cms.double( 20000.0 ),
+  track_pt_max = cms.double( 40000.0 ),
   track_prob_min = cms.double( -1.0 ),
-  track_pt_min = cms.double( 0.9 )
+  track_pt_min = cms.double( -1.0 )
 )
 
 layerListForPhase2 = ['BPix1+BPix2+BPix3+BPix4',
@@ -648,15 +648,15 @@ hltPhase2PixelVertices = cms.EDProducer( "PixelVertexProducer",
     NTrkMin = cms.int32( 2 ),
     ZOffset = cms.double( 5.0 ),
     Finder = cms.string( "DivisiveVertexFinder" ),
-    ZSeparation = cms.double( 0.05 )
+    ZSeparation = cms.double( 0.025 )
 )
 
 hltPhase2TrimmedPixelVertices = cms.EDProducer( "PixelVertexCollectionTrimmer",
     src = cms.InputTag( "hltPhase2PixelVertices" ),
-    fractionSumPt2 = cms.double( 0.3 ),
-    minSumPt2 = cms.double( 10.0 ),
+    fractionSumPt2 = cms.double( 0.00000001 ),
+    minSumPt2 = cms.double( -100.0 ),
     PVcomparer = cms.PSet(  refToPSet_ = cms.string( "hltPhase2PSetPvClusterComparerForITTrimming" ) ),
-    maxVtx = cms.uint32( 100 ) # > 200 # previous 100
+    maxVtx = cms.uint32( 0 ) # > 200 # previous 100
 )
 
 #######
@@ -1770,4 +1770,45 @@ hltPhase2InitialStepTracks = cms.EDProducer("TrackProducer",
     src = cms.InputTag("hltPhase2InitialStepTrackCandidates"),
     useHitsSplitting = cms.bool(False),
     useSimpleMF = cms.bool(False)
+)
+
+
+####DA Vertexing
+
+hltPhase2DAPrimaryVerticesUnsorted = cms.EDProducer("PrimaryVertexProducer",
+    TkClusParameters = cms.PSet(
+        TkDAClusParameters = cms.PSet(
+            Tmin = cms.double(2.0),
+            Tpurge = cms.double(2.0),
+            Tstop = cms.double(0.5),
+            coolingFactor = cms.double(0.6),
+            d0CutOff = cms.double(3.0),
+            dzCutOff = cms.double(3.0),
+            uniquetrkweight = cms.double(0.8),
+            vertexSize = cms.double(0.006),
+            zmerge = cms.double(0.01)
+),
+algorithm = cms.string('DA_vect')
+    ),
+    TkFilterParameters = cms.PSet(
+        algorithm = cms.string('filter'),
+        maxD0Significance = cms.double(4.0),
+        maxEta = cms.double(4.0),
+        maxNormalizedChi2 = cms.double(10.0),
+        minPixelLayersWithHits = cms.int32(2),
+        minPt = cms.double(0.0),
+        minSiliconLayersWithHits = cms.int32(0), ## DOES NOT HAVE ANY SENSE w/ PIXEL TRACKS, PLEASE SET TO 0 !!!!
+        trackQuality = cms.string('any')
+    ),
+    TrackLabel = cms.InputTag("hltPhase2PixelTracks"),
+    beamSpotLabel = cms.InputTag("offlineBeamSpot"),
+    verbose = cms.untracked.bool(False),
+    vertexCollections = cms.VPSet(cms.PSet(
+        algorithm = cms.string('AdaptiveVertexFitter'),
+        chi2cutoff = cms.double(2.5),
+        label = cms.string(''),
+        maxDistanceToBeam = cms.double(1.0),
+        minNdof = cms.double(0.0),
+        useBeamConstraint = cms.bool(False)
+    ))
 )

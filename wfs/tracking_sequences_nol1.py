@@ -5,7 +5,7 @@ from Configuration.StandardSequences.Reconstruction_cff import *
 
 ####################################################
 ####### CPE Fix For Template When Track Angle
-
+'''
 PixelCPEGenericESProducer = cms.ESProducer('PixelCPEGenericESProducer',
   LoadTemplatesFromDB = cms.bool(True),
   Alpha2Order = cms.bool(True),
@@ -37,7 +37,7 @@ PixelCPEGenericESProducer = cms.ESProducer('PixelCPEGenericESProducer',
   DoLorentz = cms.bool(False),
   appendToDataLabel = cms.string('')
 )
-
+'''
 ####################################################
 ########################## Commonssoriginal_v7
 #############
@@ -147,3 +147,8 @@ vertexing = cms.Path(
     caloLocalReco +
     vertexReco
 )
+
+pixel_tracks = cms.Path(
+    hltPhase2StartUp +
+    hltPhase2PixelTracksSequence + # pixeltracks
+    hltPhase2PixelVerticesSequence)

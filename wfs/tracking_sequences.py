@@ -104,7 +104,6 @@ hltPhase2PixelTracksSequenceL1 = cms.Sequence(
 
 hltPhase2PixelVerticesSequence = cms.Sequence(
     hltPhase2PixelVertices +
-    hltPhase2TrimmedPixelVertices
 )
 
 
@@ -209,6 +208,11 @@ pure_l1tracks = cms.Path(
     hltPhase2L1TracksSequence +
     hltPhase2GeneralTracks
 )
+
+pixel_tracks = cms.Path(
+    hltPhase2StartUp +
+    hltPhase2PixelTracksSequence + # pixeltracks
+    hltPhase2PixelVerticesSequence)
 
 
 
@@ -317,6 +321,7 @@ l1emulation = cms.Path
 (
 TTTracksFromTrackletEmulation
 )
+
 vertexing = cms.Path(
     caloLocalReco +
     vertexReco
