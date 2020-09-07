@@ -148,6 +148,17 @@ vertexing = cms.Path(
     vertexReco
 )
 
+
+single_it = cms.Path(
+    hltPhase2StartUp +
+    hltPhase2PixelTracksSequence + # pixeltracks
+    hltPhase2PixelVerticesSequence + # pixelvertices
+##############################################
+    hltPhase2InitialStepSequence +
+    hltPhase2GeneralTracks
+)
+
+
 pixel_tracks = cms.Path(
     hltPhase2StartUp +
     hltPhase2PixelTracksSequence + # pixeltracks

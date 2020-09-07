@@ -47,7 +47,7 @@ options.register('mkfit',False,VarParsing.VarParsing.multiplicity.singleton,VarP
 options.register('patatrack',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"patatrack Pixel Tracks")
 options.register('davertex',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"da pixel vertexing")
 options.register('fullvertex',True,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"full vertexing")
-options.register('patavertex',True,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"pata vertexing")
+options.register('patavertex',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"pata vertexing")
 
 options.register('T2',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"running on T2_Bari")
 
@@ -111,6 +111,8 @@ if not options.T2:
     filelist = [f[5:] for f in filelist]
 
 print(filelist)
+
+# filelist=["/store/mc/Phase2HLTTDRWinter20DIGI/DoubleElectron_FlatPt-1To100/GEN-SIM-DIGI-RAW/PU200_110X_mcRun4_realistic_v3-v2/20000/6BF09AEE-5B7E-1340-9529-9A0E5E0F9442.root"]
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(filelist),
@@ -180,8 +182,8 @@ if options.wf < -1:
         process.hltPhase2TrimmedPixelVertices
     )
     #Minimal reasonable setup
-    process.hltPhase2TrimmedPixelVertices.fractionSumPt2 = cms.double( 0.01 ),
-    process.hltPhase2TrimmedPixelVertices.minSumPt2 = cms.double( 10.0 ),
+    process.hltPhase2TrimmedPixelVertices.fractionSumPt2 = cms.double( 0.01 )
+    process.hltPhase2TrimmedPixelVertices.minSumPt2 = cms.double( 10.0 )
     process.hltPhase2TrimmedPixelVertices.maxVtx = cms.uint32( 100 ) # > 200 # previous 100
 
     process.hltPhase2PSetPvClusterComparerForITTrimming.track_chi2_max = cms.double( 20.0 )
@@ -192,6 +194,12 @@ if options.wf < -1:
 if options.onlypixel:
     options.wf = -100
     suff = "pixelonly"
+
+if options.wf == -5:
+    customizeSingleIt(process,timing)
+    suff = "m5"
+    # customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.05,numVertex=30,minSumPt2=20)
+    process.hltPhase2PixelVertices.ZSeparation = float(options.zsep) / 1000.0
 
 if options.wf == -4:
     suff = "m4_0p%d_%d_%d"%(options.frac,options.nvtx,options.sumpt)
@@ -206,9 +214,9 @@ if options.wf == -2:
     customizeOriginal_v6(process,timing)
     suff = "m2_0p%d_%d_%d"%(options.frac,options.nvtx,options.sumpt)
     customizeOriginalTrimmingInitial_v6(process,timing,fraction=options.frac/100.,numVertex=options.nvtx,minSumPt2=options.sumpt)
-if options.wf == -5:
-    suff = "m5"
-    customizeOriginal_v6_withvertex(process,timing)
+# if options.wf == -5:
+#     suff = "m5"
+#     customizeOriginal_v6_withvertex(process,timing)
 
 ##ORIGINAL v6_1
 if options.wf == -1:
@@ -278,14 +286,14 @@ if options.patatrack:
     if options.pixtrip:
         process.hltPhase2PixelTrackSoA.minHitsPerNtuplet = 3
     suff = suff + "_pata"
-
+    process.quickTrackAssociatorByHits.Purity_SimToReco = cms.double(0.65)
 if options.davertex:
     process.hltPhase2PixelVertices = process.hltPhase2DAPrimaryVerticesUnsorted.clone()
     suff = suff + "_da"
-elif not options.patatrack:
+elif not options.patavertex:
     process.hltPhase2PixelVertices.ZSeparation = float(options.zsep) / 1000.0
 
-suff = suff + "_zsep_0p0" + str(options.zsep)
+suff = suff + "_zsep_" + str(options.zsep)
 
 #DependecyGraph
 #from FWCore.ParameterSet.Utilities import moduleLabelsInSequences
@@ -423,7 +431,7 @@ process.FastTimerService.dqmModuleMemoryRange      =  100000
 process.FastTimerService.dqmModuleMemoryResolution =     500
 
 process.FastTimerService.writeJSONSummary = cms.untracked.bool(True)
-process.FastTimerService.jsonFileName = cms.untracked.string('wf_' + suff + 'timing.json')
+process.FastTimerService.jsonFileName = cms.untracked.string('wf_' + suff + '_timing.json')
 
 if 'MessageLogger' in process.__dict__:
     process.MessageLogger.categories.append('TriggerSummaryProducerAOD')

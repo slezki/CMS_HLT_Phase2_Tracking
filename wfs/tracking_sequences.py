@@ -143,6 +143,18 @@ original_v6 = cms.Path(
     hltPhase2GeneralTracks
 )
 
+single_it = cms.Path(
+    itLocalReco +
+    offlineBeamSpot + #cmssw_10_6
+    otLocalReco +
+    #caloLocalReco +
+    trackerClusterCheck +
+    hltPhase2PixelTracksSequence + # pixeltracks
+##############################################
+    hltPhase2InitialStepSequence
+##############################################
+)
+
 original_v7 = cms.Path(
     hltPhase2StartUp +
     hltPhase2PixelTracksSequence + # pixeltracks

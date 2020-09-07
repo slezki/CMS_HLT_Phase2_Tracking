@@ -31,6 +31,6 @@ dqm_original = cms.EndPath(dqm_commons,dqm_vertex,dqm_pixelvertex,dqm_initial,dq
 dqm_l1initial = cms.EndPath(dqm_commons,dqm_vertex,dqm_pixelvertex,dqm_initial,dqm_general)
 dqm_l1trip = cms.EndPath(dqm_commons,dqm_vertex,dqm_pixelvertex,dqm_highpt,dqm_general)
 dqm_base= cms.EndPath(dqm_commons)
-
+dqm_onestep =  cms.EndPath(dqm_commons,dqm_vertex,dqm_pixelvertex,dqm_initial,dqm_general)
 dqm_pixel = cms.EndPath(dqm_commons,dqm_pixelvertex)
 dqm_all = cms.EndPath(dqm_commons,dqm_vertex,dqm_pixelvertex,dqm_initial,dqm_highpt,dqm_general)
