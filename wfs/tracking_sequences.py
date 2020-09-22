@@ -103,7 +103,7 @@ hltPhase2PixelTracksSequenceL1 = cms.Sequence(
 )
 
 hltPhase2PixelVerticesSequence = cms.Sequence(
-    hltPhase2PixelVertices +
+    hltPhase2PixelVertices
 )
 
 
@@ -207,9 +207,11 @@ hltPhase2L1TracksSequenceClassification = cms.Sequence(
             hltPhase2L1TracksSelectionHighPurity)
 
 hltPhase2L1TracksSequence = cms.Sequence(
+    # hltPhase2TransientFromL1 +
     hltPhase2L1TracksSeqSeed +
     hltPhase2L1TracksSeqPattern +
-    hltPhase2L1TracksSequenceClassification
+    hltPhase2L1TracksSequenceClassification +
+    hltPhase2L1PrimaryVertex
 )
 
 pure_l1tracks = cms.Path(

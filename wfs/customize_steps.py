@@ -684,7 +684,7 @@ def customizeGeneralTracksToPixelTripletL1TracksStep(process,timing):
 
 def customizeGeneralTracksToPureL1TracksStep(process,timing):
 
-    process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1trackss])
+    process.schedule = cms.Schedule(*[ process.raw2digi_step,process.pure_l1tracks])
     if not timing:
                 process.schedule.extend([process.prevalidation_purel1,
                                           process.validation_purel1, process.dqm_base])

@@ -1114,6 +1114,18 @@ hltPhase2VertexAnalysisTrackingOnly = cms.EDProducer("PrimaryVertexAnalyzer4PUSl
     vertexRecoCollections = cms.VInputTag("hltPhase2OfflinePrimaryVertices", "hltPhase2OfflinePrimaryVerticesWithBS", "hltPhase2SelectedOfflinePrimaryVertices", "hltPhase2SelectedOfflinePrimaryVerticesWithBS")#, "hltPhase2FirstStepPrimaryVertices")
 )
 
+hltPhase2VertexAnalysisL1 = cms.EDProducer("PrimaryVertexAnalyzer4PUSlimmed",
+    do_generic_sim_plots = cms.untracked.bool(True),
+    root_folder = cms.untracked.string('Vertexing/PrimaryVertexV'),
+    trackAssociatorMap = cms.untracked.InputTag("hltPhase2TrackingParticleRecoTrackAsssociation"),
+    trackingParticleCollection = cms.untracked.InputTag("mix","MergedTrackTruth"),
+    trackingVertexCollection = cms.untracked.InputTag("mix","MergedTrackTruth"),
+    use_only_charged_tracks = cms.untracked.bool(True),
+    verbose = cms.untracked.bool(False),
+    vertexAssociator = cms.untracked.InputTag("hltPhase2VertexAssociatorByPositionAndTracks"),
+    vertexRecoCollections = cms.VInputTag("hltPhase2L1PrimaryVertex", )#, "hltPhase2FirstStepPrimaryVertices")
+)
+
 hltPhase2PixelVertexAnalysisTrackingOnly = cms.EDProducer("PrimaryVertexAnalyzer4PUSlimmed",
     do_generic_sim_plots = cms.untracked.bool(False),
     root_folder = cms.untracked.string('Vertexing/PrimaryVertexV'),

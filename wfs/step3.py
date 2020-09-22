@@ -68,6 +68,7 @@ options.register('bdksmm',False,VarParsing.VarParsing.multiplicity.singleton,Var
 options.register('b0ksmm',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"B0ToKstarMuMu")
 options.register('bskkkk',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"BsToPhiPhi_KKKK MC")
 options.register('withl1',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"loading files with l1 tracks already produced")
+options.register('muons',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"DYMM MC")
 
 options.parseArguments()
 
@@ -105,8 +106,10 @@ if options.bskkkk:
     filelist = bskkkk
 if options.withl1:
     from MCs.ttbarl1 import ttbarl1
-    filelist = ttbar
-
+    filelist = ttbarl1
+if options.muons:
+    from MCs.muons import muon_files
+    filelist = muon_files
 if not options.T2:
     filelist = [f[5:] for f in filelist]
 
