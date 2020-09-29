@@ -56,3 +56,34 @@ This works in CMSSW_11_1_0_pre7_Patatrack with https://github.com/AdrianoDee/cms
 To run the default trimming (v_7_2)
 
 ```cmsRun step3.py n=N zsep=25 wf=-4 frac=10 nvtx=20 ```
+
+#### Adding tracking sequence to your process
+
+All the required modules are in `/wfs/` directory. First you need the raw2digi, tracking, validation, prevalidation, dqm sequences to be loaded
+```
+process.load('raw2digi_step_cff')
+process.load("tracking_sequences_nol1")
+process.load('validation_sequences')
+process.load('prevalidation_sequences')
+process.load('dqm_sequences')
+```
+
+then to run the __original__ (namely the v6_1) tracking sequence import the customization functions
+
+```from customize_steps import *```
+
+and use
+
+```customizeOriginal_v6(process,timing)```
+
+on your process. Note that this will overwrite your schedule and you would need to add your futher reco in the schedule after this. The `timing` variable is set to `False` by default. It set to `True` it basically drops prevalidation, validation and dqm steps. To run the __trimmed__ version (where regions are defined around trimmed vertices for both Initial and HighPtTriplet steps) *after* the `customizeOriginal_v6(process,timing)` insert
+
+```
+customizeOriginalTrimmingInitial_v6(process,timing,fraction=FRAC,numVertex=NVTX,minSumPt2=SUMPT2)
+customizeOriginalTrimmingTriplet_v6(process,timing,fraction=FRAC,numVertex=NVTX,minSumPt2=SUMPT2)
+```
+where the suggested cuts are 
+
+-`FRAC = 10` = 10% of minimun sum_pt_2 fraction w.r.t. leading PV 
+-`NVTX = 20`
+-`SUMPT2 = 20` = 20 GeV of minimun sum_pt_2 for each trimmed vtx
