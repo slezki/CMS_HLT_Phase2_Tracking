@@ -26,19 +26,27 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000),
+    input = cms.untracked.int32(-1),
     output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
 
-"""
+muon_files = ["file:/lustre/cms/store/user/adiflori/phase2_hlt_tests/muon_pog/01EE5DBD-FDBB-7948-A9D9-38F5E85B2881.root",
+"file:/lustre/cms/store/user/adiflori/phase2_hlt_tests/muon_pog/094C8485-81F8-F743-A1DD-EE0ABB4E7ABF.root",
+"file:/lustre/cms/store/user/adiflori/phase2_hlt_tests/muon_pog/0F568737-66DF-144B-8804-6CB8690C0B88.root",
+"file:/lustre/cms/store/user/adiflori/phase2_hlt_tests/muon_pog/1671A304-6A1B-8C48-AD15-79160817D735.root",
+"file:/lustre/cms/store/user/adiflori/phase2_hlt_tests/muon_pog/1FE2A7C6-1C45-4845-BA89-DEED9B8DDD4A.root",
+"file:/lustre/cms/store/user/adiflori/phase2_hlt_tests/muon_pog/5C7CF0D4-C802-EE41-B933-4C19031E549C.root",
+"file:/lustre/cms/store/user/adiflori/phase2_hlt_tests/muon_pog/9E1CF562-E0B5-2A48-AA72-8A80CC096AA9.root",
+"file:/lustre/cms/store/user/adiflori/phase2_hlt_tests/muon_pog/A831C6C7-6649-9142-9C03-79ACFE090816.root",
+"file:/lustre/cms/store/user/adiflori/phase2_hlt_tests/muon_pog/BCB68C37-F72E-DF45-B90F-B63D9287A969.root"]
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('file:step2.root'),
+    fileNames = cms.untracked.vstring(muon_files),
     secondaryFileNames = cms.untracked.vstring()
 )
-"""
 
-process.load("input_TTbar_Phase2HLTTDRWinter20-PU200_110X_upgrade2026D49_realistic_v3-v2_cff")
+
+#process.load("input_TTbar_Phase2HLTTDRWinter20-PU200_110X_upgrade2026D49_realistic_v3-v2_cff")
 
 process.options = cms.untracked.PSet(
 )
@@ -120,8 +128,8 @@ process.dqmofflineOnPAT_step = cms.EndPath(process.PostDQMOffline)
 process.RECOSIMoutput_step = cms.EndPath(process.RECOSIMoutput)
 """
 process.load('raw2digi_step_cff')
-process.load("MC_Tracking_v6_cff")
-process.load('MC_prevalidation_v6_cff') 
+process.load("MC_Tracking_v2_cff")
+process.load('MC_prevalidation_cff') 
 process.load('MC_Dqmoffline_cff')
 process.DQMoutput_step = cms.EndPath(process.DQMoutput)
 
@@ -133,8 +141,8 @@ process.DQMStore.enableMultiThread = True
 process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool( False )
 )
-process.options.numberOfStreams = cms.untracked.uint32(8)
-process.options.numberOfThreads = cms.untracked.uint32(8)
+process.options.numberOfStreams = cms.untracked.uint32(16)
+process.options.numberOfThreads = cms.untracked.uint32(16)
 
 ###### PixelCPE issue
 process.TrackProducer.TTRHBuilder = "WithTrackAngle"
@@ -148,7 +156,7 @@ process.PixelCPEGenericESProducer.Upgrade = cms.bool(True)
 
 
 # Schedule definition
-process.schedule = cms.Schedule(*[ process.raw2digi_step, process.MC_Tracking_v6, process.MC_Vertexing_v6, process.MC_prevalidation_v6, process.MC_validation_v6, process.MC_Dqmoffline, process.DQMoutput_step ])
+process.schedule = cms.Schedule(*[ process.raw2digi_step, process.MC_Tracking_v2, process.MC_Vertexing_v2, process.MC_prevalidation_v2, process.MC_validation_v2, process.MC_Dqmoffline, process.DQMoutput_step ])
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 
