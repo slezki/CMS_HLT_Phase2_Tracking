@@ -23,7 +23,7 @@ https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1TrackSoftware
 
 ##### Running the Tracking Reco
 
-In step3.py the different configurations are listed. Running as
+In [step3.py](https://github.com/AdrianoDee/CMS_HLT_Phase2_Tracking/blob/master/wfs/step3.py) the different configurations are listed. Running as
 
 ```cmsRun step3.py n=N```
 
