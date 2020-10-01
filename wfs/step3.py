@@ -9,6 +9,7 @@ from Configuration.Eras.Era_Phase2C9_cff import Phase2C9
 # import sys
 # sys.path.insert(1, './MCs/')
 
+from SLHCUpgradeSimulations.Configuration.aging import customise_aging_1000
 import FWCore.ParameterSet.VarParsing as VarParsing
 from customize_steps import *
 #from Configuration.StandardSequences.Reconstruction_cff import *
@@ -487,6 +488,7 @@ from FWCore.ParameterSet.Utilities import convertToUnscheduled
 
 
 # Customisation from command line
+process = customise_aging_1000(process) 
 
 #Have logErrorHarvester wait for the same EDProducers to finish as those providing data for the OutputModule
 from FWCore.Modules.logErrorHarvester_cff import customiseLogErrorHarvesterUsingOutputCommands
