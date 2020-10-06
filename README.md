@@ -87,3 +87,27 @@ where the suggested cuts are
 - `FRAC = 10` = 10% of minimun sum_pt_2 fraction w.r.t. leading PV 
 - `NVTX = 20`
 - `SUMPT2 = 20` = 20 GeV of minimun sum_pt_2 for each trimmed vtx
+
+##### Customizing your workflows
+
+Two customizers are available in order to run the __original v6_1__ and the __trimmed v_7_1__ tracking reconstruction configuration. 
+
+
+```
+cmsrel CMSSW_11_1_3
+cd CMSSW_11_1_3/src
+git clone git@github.com:AdrianoDee/CMS_HLT_Phase2_Tracking.git -b configs
+scram b -j 4
+```
+
+Then you can run and customise your own step 
+
+```
+cmsDriver.py step3 --geometry Extended2026D49 --era Phase2C9 --conditions auto:phase2_realistic_T15 --processName RECO2 --step RAW2DIGI,RECO --eventcontent RECO --datatier RECO --dasquery="file dataset=/TT_TuneCP5_14TeV-powheg-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v2/FEVT" --mc --nThreads 4 --nStreams 4 --no_exec -n 10 --customise SLHCUpgradeSimulations/Configuration/aging.customise_aging_1000,Configuration/DataProcessing/Utils.addMonitoring --customise CMS_HLT_Phase2_Tracking/Configs/phase2_tracking.customise_hltPhase2_TRKv06_1 --no_exec --python_filename hlt_phase2_tracking_v6p1.py  ```
+```
+
+for __v6_1__ and with 
+
+```--customise CMS_HLT_Phase2_Tracking/Configs/phase2_tracking.customise_hltPhase2_TRKv0/```
+
+for __v7_1__. Note that these customizer will add to the process new modules named with the scheme *hltPhase2ModuleName* and will ovverwrite the __globalreco_tracking__ Task.  
