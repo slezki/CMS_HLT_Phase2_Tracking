@@ -11,9 +11,9 @@ hltMultiTrackValidation = cms.Sequence(
 )
 
 validation_original = cms.Path(hltPhase2TrackValidatorPixelTrackingOnly
-                              +hltPhase2TrackValidatorTrackingOnly)
+                              +hltPhase2TrackValidatorTrackingOnly
                               #hltPhase2TrackValidatorTPPtLess09Standalone
-                              #+hltPhase2TrackValidatorFromPVStandalone
+                              +hltPhase2TrackValidatorFromPVStandalone)
                               #+hltPhase2TrackValidatorFromPVAllTPStandalone
                               #+hltPhase2TrackValidatorAllTPEfficStandalone)
                              # +hltPhase2TrackValidatorBHadronTrackingOnly

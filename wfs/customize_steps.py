@@ -596,6 +596,18 @@ def customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.3,numVertex=30
 
         process.hltPhase2InitialStepSeeds.usePV = cms.bool(True)
         process.hltPhase2InitialStepSeeds.InputVertexCollection = cms.InputTag("hltPhase2PixelVertices")
+        
+        process.hltPhase2TrackValidatorTrackingOnly.label_vertex = cms.untracked.InputTag("hltPhase2TrimmedPixelVertices") 
+        process.hltPhase2TrackValidatorFromPVStandalone.label_vertex = cms.untracked.InputTag("hltPhase2TrimmedPixelVertices")
+	
+	process.hltPhase2CutsRecoTracksFromPVHp.vertexCollection = cms.untracked.InputTag("hltPhase2TrimmedPixelVertices")
+        process.hltPhase2GeneralTracksFromPV.vertexCollection = cms.untracked.InputTag("hltPhase2TrimmedPixelVertices")
+        process.hltPhase2CutsRecoTracksFromPVPt09Hp.vertexCollection = cms.untracked.InputTag("hltPhase2TrimmedPixelVertices")
+	process.hltPhase2GeneralTracksFromPVPt09.vertexCollection = cms.untracked.InputTag("hltPhase2TrimmedPixelVertices")
+        process.hltPhase2CutsRecoTracksPt09Hp.vertexCollection = cms.untracked.InputTag("hltPhase2TrimmedPixelVertices")
+	process.hltPhase2CutsRecoTracksBtvLike.vertexCollection = cms.untracked.InputTag("hltPhase2TrimmedPixelVertices")
+        process.hltPhase2GeneralTracksPt09.vertexCollection = cms.untracked.InputTag("hltPhase2TrimmedPixelVertices")
+	process.hltPhase2CutsRecoTracksHp.vertexCollection = cms.untracked.InputTag("hltPhase2TrimmedPixelVertices")
 
 def customizeOriginalTrimmingTriplet_v6(process,timing,fraction=0.3,numVertex=30,minSumPt2=50):
 
