@@ -9,6 +9,7 @@ from Configuration.Eras.Era_Phase2C9_cff import Phase2C9
 # import sys
 # sys.path.insert(1, './MCs/')
 
+from SLHCUpgradeSimulations.Configuration.aging import customise_aging_1000
 import FWCore.ParameterSet.VarParsing as VarParsing
 from customize_steps import *
 #from Configuration.StandardSequences.Reconstruction_cff import *
@@ -41,14 +42,22 @@ options.register('n',1,VarParsing.VarParsing.multiplicity.singleton,VarParsing.V
 options.register('skip',0,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"events to skip")
 options.register('threads',16,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"num of threads")
 
+#Pixel setups
 options.register('pixtrip',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"pixel Triplets")
 options.register('onlypixel',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"onlypixel")
+
+#Patatrack
 options.register('mkfit',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"running mkfit")
 options.register('patatrack',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"patatrack Pixel Tracks")
+
+#Vetexing
 options.register('davertex',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"da pixel vertexing")
 options.register('fullvertex',True,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"full vertexing")
 options.register('patavertex',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"pata vertexing")
+options.register('fastl1',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"fastl1 vertexing")
+options.register('froml1',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"froml1 vertexing")
 
+#Files
 options.register('T2',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"running on T2_Bari")
 
 #EventContent
@@ -69,6 +78,9 @@ options.register('b0ksmm',False,VarParsing.VarParsing.multiplicity.singleton,Var
 options.register('bskkkk',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"BsToPhiPhi_KKKK MC")
 options.register('withl1',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"loading files with l1 tracks already produced")
 options.register('muons',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"DYMM MC")
+
+#Miscs
+options.register ('note','',VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string, "noting")
 
 options.parseArguments()
 
@@ -155,7 +167,7 @@ process.mix.digitizers = cms.PSet()
 for a in process.aliases: delattr(process, a)
 process.RandomNumberGeneratorService.restoreStateLabel=cms.untracked.string("randomEngineStateProducer")
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic_T15', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '111X_mcRun4_realistic_T15_v2', '')
 
 process.load('raw2digi_step_cff')
 if options.wf<=-1:
@@ -175,8 +187,11 @@ process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool( True ),
     sizeOfStackForThreadsInKB = cms.untracked.uint32( 10*1024 )
 )
-process.options.numberOfStreams = cms.untracked.uint32(options.threads)
-process.options.numberOfThreads = cms.untracked.uint32(options.threads)
+
+T = min(options.threads,options.n)
+
+process.options.numberOfThreads=cms.untracked.uint32(T)
+process.options.numberOfStreams=cms.untracked.uint32(T)
 
 #######
 # -1 - original v6
@@ -297,6 +312,12 @@ if options.fullvertex or not options.timing:
     process.schedule.extend([process.vertexing])
     suff = suff + "_fullvertexing"
 
+if options.fastl1:
+    process.hltPhase2L1PrimaryVertex.TrackLabel = cms.InputTag("hltPhase2TrackFromL1")
+    suff = suff + "_fastl1vertex"
+elif options.froml1:
+    process.hltPhase2VertexAnalysisL1.vertexRecoCollections = cms.VInputTag("hltPhase2L1PrimaryVertex","hltPhase2VertexFromL1")
+    suff = suff + "_froml1vertex"
 if options.patavertex:
     suff = suff + "_patavertex"
 if options.patatrack:
@@ -313,6 +334,8 @@ elif not options.patavertex:
     process.hltPhase2PixelVertices.ZSeparation = float(options.zsep) / 1000.0
 
 suff = suff + "_zsep_" + str(options.zsep)
+
+suff = suff + "_" + options.note
 
 #DependecyGraph
 #from FWCore.ParameterSet.Utilities import moduleLabelsInSequences
@@ -481,6 +504,7 @@ from FWCore.ParameterSet.Utilities import convertToUnscheduled
 
 
 # Customisation from command line
+process = customise_aging_1000(process) 
 
 #Have logErrorHarvester wait for the same EDProducers to finish as those providing data for the OutputModule
 from FWCore.Modules.logErrorHarvester_cff import customiseLogErrorHarvesterUsingOutputCommands

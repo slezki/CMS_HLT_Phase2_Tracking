@@ -588,14 +588,14 @@ def customizeSingleIt(process,timing):
             process.schedule.extend([process.prevalidation_onestep,
                 process.validation_original, process.dqm_onestep])
 
-def customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.3,numVertex=30,minSumPt2=50):
+def customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.3,numVertex=20,minSumPt2=20):
 
         process.hltPhase2TrimmedPixelVertices.fractionSumPt2 = cms.double(fraction)
         process.hltPhase2TrimmedPixelVertices.maxVtx = cms.uint32(numVertex)
         process.hltPhase2TrimmedPixelVertices.minSumPt2 = cms.double(minSumPt2)
 
         process.hltPhase2InitialStepSeeds.usePV = cms.bool(True)
-        process.hltPhase2InitialStepSeeds.InputVertexCollection = cms.InputTag("hltPhase2PixelVertices")
+        process.hltPhase2InitialStepSeeds.InputVertexCollection = cms.InputTag("hltPhase2TrimmedPixelVertices")
         
         process.hltPhase2TrackValidatorTrackingOnly.label_vertex = cms.untracked.InputTag("hltPhase2TrimmedPixelVertices") 
         process.hltPhase2TrackValidatorFromPVStandalone.label_vertex = cms.untracked.InputTag("hltPhase2TrimmedPixelVertices")
@@ -609,7 +609,8 @@ def customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.3,numVertex=30
         process.hltPhase2GeneralTracksPt09.vertexCollection = cms.untracked.InputTag("hltPhase2TrimmedPixelVertices")
 	process.hltPhase2CutsRecoTracksHp.vertexCollection = cms.untracked.InputTag("hltPhase2TrimmedPixelVertices")
 
-def customizeOriginalTrimmingTriplet_v6(process,timing,fraction=0.3,numVertex=30,minSumPt2=50):
+
+def customizeOriginalTrimmingTriplet_v6(process,timing,fraction=0.3,numVertex=20,minSumPt2=20):
 
         process.hltPhase2TrimmedPixelVertices.fractionSumPt2 = cms.double(fraction)
         process.hltPhase2TrimmedPixelVertices.maxVtx = cms.uint32(numVertex)

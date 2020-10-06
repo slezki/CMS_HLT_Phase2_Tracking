@@ -208,6 +208,8 @@ hltPhase2L1TracksSequenceClassification = cms.Sequence(
 
 hltPhase2L1TracksSequence = cms.Sequence(
     # hltPhase2TransientFromL1 +
+    hltPhase2VertexFromL1 +
+    # hltPhase2TrackFromL1 +
     hltPhase2L1TracksSeqSeed +
     hltPhase2L1TracksSeqPattern +
     hltPhase2L1TracksSequenceClassification +

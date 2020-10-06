@@ -79,9 +79,22 @@ tripletsLayersEta4 = tripletsLayers +  ['BPix1+BPix2+FPix2_pos', 'BPix1+BPix2+FP
 
 #hltPhase2TTTracksFromTracklet = TTTracksFromTrackletEmulation.clone()
 
-hltPhase2TransientFromL1 = cms.EDProducer("RecoTrackFromL1TTracksEDProducer",
-    InputCollection = cms.InputTag("TTTracksFromTrackletEmulation","Level1TTTracks")
-    )
+
+hltPhase2VertexFromL1 = cms.EDProducer("L1ToVertex")
+
+hltPhase2TrackFromL1 = cms.EDProducer("L1ToTrackFast",
+    InputCollection = cms.InputTag("TTTracksFromTrackletEmulation","Level1TTTracks"),
+    estimator = cms.string('hltPhase2L1TrackStepChi2Est'),
+    propagator = cms.string('PropagatorWithMaterial'),
+    MeasurementTrackerEvent = cms.InputTag("MeasurementTrackerEvent"),
+    maxEtaForTOB = cms.double(1.2),
+    minEtaForTEC = cms.double(0.9),
+    #TrajectoryBuilder = cms.string('GroupedCkfTrajectoryBuilder'),
+    #TrajectoryBuilderPSet = cms.PSet(refToPSet_ = cms.string('hltPhase2L1TrackStepTrajectoryBuilder')),
+    errorSFHitless = cms.double(1e-9)
+    #TrajectoryBuilder = cms.string('GroupedCkfTrajectoryBuilder'),
+    #TrajectoryBuilderPSet = cms.PSet( refToPSet_ = cms.string('L1TrackStepTrajectoryBuilder'))
+)
 
 hltPhase2L1TrackStepClusters = cms.EDProducer("TrackClusterRemoverPhase2",
     TrackQuality = cms.string('highPurity'),
@@ -903,7 +916,6 @@ hltPhase2TrackWithVertexRefSelectorBeforeSorting = cms.EDProducer("TrackWithVert
     vtxFallback = cms.bool(True),
     zetaVtx = cms.double(1.0)
 )
-
 
 hltPhase2L1PrimaryVertex = cms.EDProducer("PrimaryVertexProducer",
     TkClusParameters = cms.PSet(

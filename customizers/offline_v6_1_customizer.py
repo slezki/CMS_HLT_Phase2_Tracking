@@ -419,14 +419,9 @@ def customize_TRK_v6_1(process):
 
 
 	process.hltPhase2InitialStepSequence = cms.Sequence(
-	    #process.initialStepSeedLayers +
-	    #process.initialStepTrackingRegions +
-	    #process.initialStepHitDoublets +
-	    #process.initialStepHitQuadruplets +
 	    process.hltPhase2InitialStepSeeds +
 	    process.initialStepTrackCandidates +
 	    process.initialStepTracks +
-	    #hltPhase2InitialStepPVSequence + # use pixelVertices
 	    process.hltPhase2InitialStepTrackCutClassifier +
 	    process.hltPhase2InitialStepTrackselectionHighPurity
 	)

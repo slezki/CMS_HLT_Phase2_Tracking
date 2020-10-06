@@ -1123,7 +1123,7 @@ hltPhase2VertexAnalysisL1 = cms.EDProducer("PrimaryVertexAnalyzer4PUSlimmed",
     use_only_charged_tracks = cms.untracked.bool(True),
     verbose = cms.untracked.bool(False),
     vertexAssociator = cms.untracked.InputTag("hltPhase2VertexAssociatorByPositionAndTracks"),
-    vertexRecoCollections = cms.VInputTag("hltPhase2L1PrimaryVertex", )#, "hltPhase2FirstStepPrimaryVertices")
+    vertexRecoCollections = cms.VInputTag("hltPhase2L1PrimaryVertex")#, "hltPhase2FirstStepPrimaryVertices")
 )
 
 hltPhase2PixelVertexAnalysisTrackingOnly = cms.EDProducer("PrimaryVertexAnalyzer4PUSlimmed",
