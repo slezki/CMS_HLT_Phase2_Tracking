@@ -120,7 +120,7 @@ def customise_common(process):
         ptMin = cms.double(0.9),
     )
 
-    process.load("RecoPixelVertexing.PixelTrackFitting.pixelFitterByHelixProjections_cfi")
+    process.load("RecoPixelVertexing.PixelTrackFittifng.pixelFitterByHelixProjections_cfi")
     process.load("RecoPixelVertexing.PixelTrackFitting.pixelTrackCleanerBySharedHits_cfi")
 
     process.hltPhase2PixelTracks = cms.EDProducer('PixelTrackProducer',
@@ -143,7 +143,7 @@ def customise_common(process):
         PVcomparer = cms.PSet(refToPSet_ = cms.string('hltPhase2PSetPvClusterComparerForIT')),
         TrackCollection = cms.InputTag('hltPhase2PixelTracks'),
         ZOffset = cms.double(5.0),
-        ZSeparation = cms.double(0.05),
+        ZSeparation = cms.double(0.005),
     )
 
     process.hltPhase2HighPtTripletStepTrajectoryCleanerBySharedHits = cms.ESProducer('TrajectoryCleanerESProducer',
