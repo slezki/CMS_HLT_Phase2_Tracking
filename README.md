@@ -109,7 +109,7 @@ cmsDriver.py step3 --geometry Extended2026D49 --era Phase2C9 --conditions auto:p
 --mc --nThreads 4 --nStreams 4 --no_exec -n 10 \
 --customise SLHCUpgradeSimulations/Configuration/aging.customise_aging_1000,Configuration/DataProcessing/Utils.addMonitoring \
 --customise CMS_HLT_Phase2_Tracking/Configs/phase2_tracking.customise_hltPhase2_TRKv06_1 \
---no_exec --python_filename hlt_phase2_tracking_v6p1.py  ```
+--no_exec --python_filename hlt_phase2_tracking_v6p1.py
 ```
 
 for __v6_1__ and with 
