@@ -69,14 +69,14 @@ def customise_common(process):
     from RecoTracker.TkSeedingLayers.seedingLayersEDProducer_cfi import seedingLayersEDProducer
 
     #Seed Layers
-    proccess.hittrack = cms.PSet(
+    process.hittrack = cms.PSet(
         HitProducer = cms.string('siPixelRecHits'),
         TTRHBuilder = cms.string('WithTrackAngle')
     )
 
     process.hltPhase2PixelTracksSeedLayers = seedingLayersEDProducer.clone(
-        BPix = proccess.hittrack,
-        FPix = proccess.hittrack,
+        BPix = process.hittrack,
+        FPix = process.hittrack,
         layerList = cms.vstring(layerList)
     )
 
@@ -118,7 +118,7 @@ def customise_common(process):
         ptMin = cms.double(0.9),
     )
 
-    process.load("RecoPixelVertexing.PixelTrackFittifng.pixelFitterByHelixProjections_cfi")
+    process.load("RecoPixelVertexing.PixelTrackFitting.pixelFitterByHelixProjections_cfi")
     process.load("RecoPixelVertexing.PixelTrackFitting.pixelTrackCleanerBySharedHits_cfi")
 
     process.hltPhase2PixelTracks = cms.EDProducer('PixelTrackProducer',
@@ -224,7 +224,7 @@ def customise_common(process):
         MaxChi2 = cms.double(16.0),
     )
 
-    from TrackingTools.TrajectoryFiltering.TrajectoryFilter_cff.py import CkfBaseTrajectoryFilter_block
+    from TrackingTools.TrajectoryFiltering.TrajectoryFilter_cff import CkfBaseTrajectoryFilter_block
     process.hltPhase2InitialStepTrajectoryFilter = CkfBaseTrajectoryFilter_block.clone(
             maxLostHits = cms.int32(1),
 
@@ -265,9 +265,10 @@ def customise_common(process):
     )
 
 
-    from RecoTracker.CkfPattern..CkfTrackCandidates_cfi import CkfTrackCandidateMaker
+    from RecoTracker.CkfPattern.CkfTrackCandidates_cfi import ckfTrackCandidates
 
-    process.hltPhase2InitialStepTrackCandidates = CkfTrackCandidateMaker.clone(
+
+    process.hltPhase2InitialStepTrackCandidates = ckfTrackCandidates.clone(
 
         SimpleMagneticField = cms.string('ParabolicMf'),
         TrajectoryBuilderPSet = cms.PSet(
@@ -293,7 +294,7 @@ def customise_common(process):
     )
 
 
-    process.hltPhase2HighPtTripletStepSeeds = EDProducer('SeedCreatorFromRegionConsecutiveHitsEDProducer',
+    process.hltPhase2HighPtTripletStepSeeds = cms.EDProducer('SeedCreatorFromRegionConsecutiveHitsEDProducer',
         MinOneOverPtError = cms.double(1),
         OriginTransverseErrorMultiplier = cms.double(1),
         SeedComparitorPSet = cms.PSet(
@@ -1371,4 +1372,4 @@ def customise_hltPhase2_TRKv07(process):
 #
 #     return process
 #
-s
+
