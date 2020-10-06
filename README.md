@@ -108,6 +108,6 @@ cmsDriver.py step3 --geometry Extended2026D49 --era Phase2C9 --conditions auto:p
 
 for __v6_1__ and with 
 
-```--customise CMS_HLT_Phase2_Tracking/Configs/phase2_tracking.customise_hltPhase2_TRKv0/```
+```--customise CMS_HLT_Phase2_Tracking/Configs/phase2_tracking.customise_hltPhase2_TRKv07```
 
 for __v7_1__. Note that these customizer will add to the process new modules named with the scheme *hltPhase2ModuleName* and will ovverwrite the __globalreco_tracking__ Task.  
