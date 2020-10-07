@@ -1,7 +1,44 @@
 import FWCore.ParameterSet.Config as cms
-from phase2_tracking_validation import *
-
+from Configuration.StandardSequences.Reconstruction_cff import *
+from RecoLuminosity.LumiProducer.bunchSpacingProducer_cfi import *
 def customise_common(process):
+
+    #Local recos
+
+    process.ecalUncalibRecHitSequence = cms.Sequence(
+          ecalMultiFitUncalibRecHit
+        + ecalDetIdToBeRecovered
+    )
+
+    process.caloLocalReco = cms.Sequence(
+          ecalUncalibRecHitSequence
+        + ecalRecHit
+        + hbhereco
+        + hfprereco
+        + hfreco
+        + horeco
+    )
+
+    process.itLocalReco = cms.Sequence(
+        siPhase2Clusters
+      + siPixelClusters
+      + siPixelClusterShapeCache
+      + siPixelRecHits
+    )
+
+    process.otLocalReco = cms.Sequence(
+        MeasurementTrackerEvent
+        + bunchSpacingProducer
+    )
+
+    process.hltPhase2StartUp = cms.Sequence(
+          process.itLocalReco
+        + offlineBeamSpot
+        + process.otLocalReco
+        + process.caloLocalReco
+        + trackerClusterCheck
+    )
+
 
     #CPE
     process.PixelCPEGenericESProducer = cms.ESProducer('PixelCPEGenericESProducer',
@@ -156,15 +193,37 @@ def customise_common(process):
             fractionShared = cms.double(0.16)
         )
 
-    process.hltPhase2Ak4CaloJetsForTrk = cms.EDProducer('FastjetJetProducer',
-            doPVCorrection = cms.bool(True),
-            inputEMin = cms.double(0.0),
-            inputEtMin = cms.double(0.3),
-            jetType = cms.string('CaloJet'),
-            src = cms.InputTag('caloTowerForTrk'),
-            srcPVs = cms.InputTag('hltPhase2UnsortedOfflinePrimaryVertices'),
-            useDeterministicSeed = cms.bool(True),
-        )
+    process.hltPhase2Ak4CaloJetsForTrk = cms.EDProducer("FastjetJetProducer",
+        Active_Area_Repeats = cms.int32(1),
+        GhostArea = cms.double(0.01),
+        Ghost_EtaMax = cms.double(5.0),
+        Rho_EtaMax = cms.double(4.4),
+        doAreaDiskApprox = cms.bool(False),
+        doAreaFastjet = cms.bool(False),
+        doPUOffsetCorr = cms.bool(False),
+        doPVCorrection = cms.bool(True),
+        doRhoFastjet = cms.bool(False),
+        inputEMin = cms.double(0.0),
+        inputEtMin = cms.double(0.3),
+        jetAlgorithm = cms.string('AntiKt'),
+        jetPtMin = cms.double(10.0),
+        jetType = cms.string('CaloJet'),
+        maxBadEcalCells = cms.uint32(9999999),
+        maxBadHcalCells = cms.uint32(9999999),
+        maxProblematicEcalCells = cms.uint32(9999999),
+        maxProblematicHcalCells = cms.uint32(9999999),
+        maxRecoveredEcalCells = cms.uint32(9999999),
+        maxRecoveredHcalCells = cms.uint32(9999999),
+        minSeed = cms.uint32(14327),
+        nSigmaPU = cms.double(1.0),
+        puPtMin = cms.double(10),
+        rParam = cms.double(0.4),
+        radiusPU = cms.double(0.5),
+        src = cms.InputTag("caloTowerForTrk"),
+        srcPVs = cms.InputTag("hltPhase2UnsortedOfflinePrimaryVertices"),
+        useDeterministicSeed = cms.bool(True),
+        voronoiRfact = cms.double(-0.9)
+    )
 
     #Initia Step
     from RecoTracker.CkfPattern.GroupedCkfTrajectoryBuilder_cfi import GroupedCkfTrajectoryBuilder
@@ -195,26 +254,34 @@ def customise_common(process):
 
 
     process.hltPhase2HighPtTripletStepTrajectoryBuilder = process.hltPhase2InitialStepTrajectoryBuilder.clone(
-            ComponentType = cms.string('GroupedCkfTrajectoryBuilder'),
-            chargeSignificance = cms.double(-1.0),
-            constantValueForLostHitsFractionFilter = cms.double(1.0), # previous 2.0
-            extraNumberOfHitsBeforeTheFirstLoop = cms.int32(4),
-            maxCCCLostHits = cms.int32(0), # previous 9999
-            maxConsecLostHits = cms.int32(1),
-            maxLostHits = cms.int32(1), # previous 999
-            maxLostHitsFraction = cms.double(999.0), # previous 0.1
-            maxNumberOfHits = cms.int32(100),
-            minGoodStripCharge = cms.PSet(refToPSet_ = cms.string('SiStripClusterChargeCutNone')),
-            minHitsMinPt = cms.int32(3),
-            minNumberOfHitsForLoopers = cms.int32(13),
-            minNumberOfHitsPerLoop = cms.int32(4),
-            minPt = cms.double(0.9), # ptcut previous 0.2
-            minimumNumberOfHits = cms.int32(3),
-            nSigmaMinPt = cms.double(5.0),
-            pixelSeedExtension = cms.bool(False),
-            seedExtension = cms.int32(1), # previous 0
-            seedPairPenalty = cms.int32(0),
-            strictSeedExtension = cms.bool(False))
+            ComponentType = cms.string('GroupedCkfTrajectoryBuilder'), #needs to stay like this for now
+            MeasurementTrackerName = cms.string(''), #??
+            TTRHBuilder = cms.string('WithTrackAngle'),
+            alwaysUseInvalidHits = cms.bool(False), # previous True
+            bestHitOnly = cms.bool(True),
+            estimator = cms.string('hltPhase2HighPtTripletStepChi2Est'),
+            foundHitBonus = cms.double(10.0),
+            inOutTrajectoryFilter = cms.PSet(
+                refToPSet_ = cms.string('hltPhase2HighPtTripletStepTrajectoryFilterInOut') #??
+            ),
+            intermediateCleaning = cms.bool(True),
+            keepOriginalIfRebuildFails = cms.bool(False),
+            lockHits = cms.bool(True),
+            lostHitPenalty = cms.double(30.0),
+            maxCand = cms.int32(2), # previous 3
+            maxDPhiForLooperReconstruction = cms.double(2.0),
+            maxPtForLooperReconstruction = cms.double(0.7),
+            minNrOfHitsForRebuild = cms.int32(5),
+            propagatorAlong = cms.string('PropagatorWithMaterialParabolicMf'), # previous PropagatorWithMaterial
+            propagatorOpposite = cms.string('PropagatorWithMaterialParabolicMfOpposite'), # previous PropagatorWithMaterialOpposite
+            requireSeedHitsInRebuild = cms.bool(True),
+            seedAs5DHit = cms.bool(False), #cmssw_11_0
+            trajectoryFilter = cms.PSet(
+                refToPSet_ = cms.string('hltPhase2HighPtTripletStepTrajectoryFilter')
+            ),
+            updator = cms.string('KFUpdator'),
+            useSameTrajFilter = cms.bool(False)
+        )
 
 
     from RecoTracker.MeasurementDet.Chi2ChargeMeasurementEstimator_cfi import Chi2ChargeMeasurementEstimator
@@ -308,8 +375,8 @@ def customise_common(process):
         ),
         TrajectoryCleaner = cms.string('hltPhase2HighPtTripletStepTrajectoryCleanerBySharedHits'),
 
-        phase2clustersToSkip = cms.InputTag('highPtTripletStepClusters'),
-        src = cms.InputTag('highPtTripletStepSeeds'),
+        phase2clustersToSkip = cms.InputTag('hltPhase2HighPtTripletStepClusters'),
+        src = cms.InputTag('hltPhase2HighPtTripletStepSeeds'),
     )
 
 
@@ -345,6 +412,11 @@ def customise_common(process):
     process.hltPhase2InitialStepTrackRefsForJets = cms.EDProducer('ChargedRefCandidateProducer',
         particleType = cms.string('pi+'),
         src = cms.InputTag('hltPhase2InitialStepTracks')
+    )
+
+    process.hltPhase2GeneralTrackskRefsForJets = cms.EDProducer('ChargedRefCandidateProducer',
+        particleType = cms.string('pi+'),
+        src = cms.InputTag('hltPhase2GeneralTracks')
     )
 
     process.hltPhase2HighPtTripletStepClusters = cms.EDProducer('TrackClusterRemoverPhase2',
@@ -448,7 +520,7 @@ def customise_common(process):
             clusterShapeCacheSrc = cms.InputTag('siPixelClusterShapeCache'),
             clusterShapeHitFilter = cms.string('ClusterShapeHitFilter')
         ),
-        doublets = cms.InputTag('highPtTripletStepHitDoublets'),
+        doublets = cms.InputTag('hltPhase2HighPtTripletStepHitDoublets'),
         extraHitRPhitolerance = cms.double(0.032),
         maxChi2 = cms.PSet(
             enabled = cms.bool(True),
@@ -569,7 +641,7 @@ def customise_common(process):
         minQuality = cms.string('highPurity'),
         originalMVAVals = cms.InputTag('hltPhase2HighPtTripletStepTrackCutClassifier','MVAValues'),
         originalQualVals = cms.InputTag('hltPhase2HighPtTripletStepTrackCutClassifier','QualityMasks'),
-        originalSource = cms.InputTag('hltPhase2PixelTracks')
+        originalSource = cms.InputTag('hltPhase2HighPtTripletStepTracks','','RECO2')
     )
 
     process.hltPhase2TrackAlgoPriorityOrder = cms.ESProducer('TrackAlgoPriorityOrderESProducer',
@@ -654,6 +726,7 @@ def customise_common(process):
         )
     )
 
+
     process.hltPhase2TrackWithVertexRefSelectorBeforeSorting = cms.EDProducer('TrackWithVertexRefSelector',
         copyExtras = cms.untracked.bool(False),
         copyTrajectories = cms.untracked.bool(False),
@@ -686,7 +759,7 @@ def customise_common(process):
         src = cms.InputTag('hltPhase2TrackWithVertexRefSelectorBeforeSorting')
     )
 
-    process.hltPhase2OfflinePrimaryVerticesWithBS = cms.EDProducer('RecoChargedRefCandidatePrimaryVertexSorter',
+    process.hltPhase2OfflinePrimaryVerticesWithBS = cms.EDProducer("RecoChargedRefCandidatePrimaryVertexSorter",
         assignment = cms.PSet(
             maxDistanceToJetAxis = cms.double(0.07),
             maxDtSigForPrimaryAssignment = cms.double(4.0),
@@ -702,8 +775,8 @@ def customise_common(process):
             preferHighRanked = cms.bool(False),
             useTiming = cms.bool(False)
         ),
-        jets = cms.InputTag('hltPhase2Ak4CaloJetsForTrk'),
-        particles = cms.InputTag('hltPhase2TrackWithVertexRefSelectorBeforeSorting'),
+        jets = cms.InputTag("hltPhase2Ak4CaloJetsForTrk"),
+        particles = cms.InputTag("hltPhase2TrackRefsForJetsBeforeSorting"),
         produceAssociationToOriginalVertices = cms.bool(False),
         produceNoPileUpCollection = cms.bool(False),
         producePileUpCollection = cms.bool(False),
@@ -712,10 +785,10 @@ def customise_common(process):
         sorting = cms.PSet(
 
         ),
-        trackTimeResoTag = cms.InputTag(''),
-        trackTimeTag = cms.InputTag(''),
+        trackTimeResoTag = cms.InputTag(""),
+        trackTimeTag = cms.InputTag(""),
         usePVMET = cms.bool(True),
-        vertices = cms.InputTag('hltPhase2UnsortedOfflinePrimaryVertices','WithBS')
+        vertices = cms.InputTag("hltPhase2UnsortedOfflinePrimaryVertices","WithBS")
     )
 
     process.hltPhase2OfflinePrimaryVertices = cms.EDProducer('RecoChargedRefCandidatePrimaryVertexSorter',
@@ -735,7 +808,7 @@ def customise_common(process):
             useTiming = cms.bool(False)
         ),
         jets = cms.InputTag('hltPhase2Ak4CaloJetsForTrk'),
-        particles = cms.InputTag('hltPhase2TrackWithVertexRefSelectorBeforeSorting'),
+        particles = cms.InputTag('hltPhase2TrackRefsForJetsBeforeSorting'),
         produceAssociationToOriginalVertices = cms.bool(False),
         produceNoPileUpCollection = cms.bool(False),
         producePileUpCollection = cms.bool(False),
@@ -869,24 +942,6 @@ def customise_common(process):
     )
 
 
-    ##StarUp
-    process.itLocalReco = cms.Sequence(
-        process.siPhase2Clusters
-      + process.siPixelClusters
-      + process.siPixelClusterShapeCache
-      + process.siPixelRecHits
-    )
-
-    process.otLocalReco = cms.Sequence(
-        process.MeasurementTrackerEvent
-    )
-
-    process.hltPhase2StartUp = cms.Sequence(
-        process.itLocalReco
-        + process.offlineBeamSpot
-        + process.otLocalReco
-        + process.trackerClusterCheck
-    )
 
     return process
 
@@ -992,12 +1047,12 @@ def customise_hltPhase2_TRKv06(process):
 
     process.hltPhase2VertexReco = cms.Sequence(
 
-          #   process.hltPhase2FirstStepPrimaryVerticesUnsorted
+            process.hltPhase2FirstStepPrimaryVerticesUnsorted
           # + process.hltPhase2InitialStepTrackRefsForJets
-          # + process.hltPhase2CaloTowerForTrk
-          # + process.hltPhase2FirstStepPrimaryVertices
-            process.trackTimeValueMapProducer
+          # + process.caloTowerForTrk
+          + process.hltPhase2FirstStepPrimaryVertices
           + process.hltPhase2UnsortedOfflinePrimaryVertices
+          # + process.hltPhase2FirstStepPrimaryVerticesUnsorted
           + process.hltPhase2Ak4CaloJetsForTrk
           + process.hltPhase2TrackWithVertexRefSelectorBeforeSorting
           + process.hltPhase2TrackRefsForJetsBeforeSorting
@@ -1098,9 +1153,12 @@ def customise_hltPhase2_TRKv06_1(process):
     )
 
 
+    from RecoJets.JetProducers.caloJetsForTrk_cff import caloTowerForTrk
 
     process.hltPhase2VertexReco = cms.Sequence(
-            process.trackTimeValueMapProducer
+            #process.trackTimeValueMapProducer
+            caloTowerForTrk
+          + process.hltPhase2GeneralTrackskRefsForJets
           + process.hltPhase2UnsortedOfflinePrimaryVertices
           + process.hltPhase2Ak4CaloJetsForTrk
           + process.hltPhase2TrackWithVertexRefSelectorBeforeSorting
@@ -1113,9 +1171,6 @@ def customise_hltPhase2_TRKv06_1(process):
           + process.hltPhase2InclusiveSecondaryVertices
         )
 
-
-    # ambiguities
-    # process.hltPhase2Globalreco_tracking
 
     if hasattr(process,"trackTimeValueMapProducer"):
         del process.trackTimeValueMapProducer
@@ -1258,7 +1313,8 @@ def customise_hltPhase2_TRKv07(process):
 
 
     process.hltPhase2VertexReco = cms.Sequence(
-            process.hltPhase2Ak4CaloJetsForTrk
+            process.hltPhase2FirstStepPrimaryVerticesUnsorted
+          + process.hltPhase2Ak4CaloJetsForTrk
           + process.hltPhase2UnsortedOfflinePrimaryVertices
           + process.hltPhase2TrackWithVertexRefSelectorBeforeSorting
           + process.hltPhase2TrackRefsForJetsBeforeSorting
@@ -1270,9 +1326,6 @@ def customise_hltPhase2_TRKv07(process):
           + process.hltPhase2InclusiveSecondaryVertices
         )
 
-
-    # ambiguities
-    # process.hltPhase2Globalreco_tracking
 
     if hasattr(process,"trackTimeValueMapProducer"):
         del process.trackTimeValueMapProducer
@@ -1294,60 +1347,5 @@ def customise_hltPhase2_TRKv07(process):
         del process.globalreco_trackingTask
 
     process.reconstruction = cms.Sequence(process.tracking_v6_1)
-
+    process.__delattr__("selectedOfflinePrimaryVertices")
     return process
-
-def customise_hltPhase2_TRKv06_withvalidation(process):
-
-    process = customise_hltPhase2_TRKv06(process)
-    process = customise_prevalidation_common(process)
-    process = customise_validation_common(process)
-
-    process.prevalidation_step = cms.Path(process.prevalidation_startup,process.prevalidation_v0,process.prevalidation_initial,process.prevalidation_highpt,process.prevalidation_general)
-
-    process.validation_step = cms.Path(process.validation_baseline)
-
-    process.load("CMS_HLT_Phase2_Tracking.Configs.dqm")
-    process.dqmoffline_step = cms.Path(process.dqm_commons,process.dqm_vertex,process.dqm_pixelvertex,process.dqm_initial,process.dqm_highpt,process.dqm_general)
-
-    return process
-
-def customise_hltPhase2_TRKv06_1_withvalidation(process):
-
-    process = customise_hltPhase2_TRKv06_1(process)
-    process = customise_prevalidation_common(process)
-    process = customise_validation_common(process)
-
-    process.globalPrevalidationTrackingOnly = cms.Sequence(process.prevalidation_startup,process.prevalidation_v0,process.prevalidation_initial,process.prevalidation_highpt,process.prevalidation_general)
-
-    process.globalValidationTrackingOnly = cms.Sequence(process.validation_baseline)
-
-    process.load("CMS_HLT_Phase2_Tracking.Configs.dqm")
-    process.DQMOfflineTracking = cms.Sequence(process.dqm_commons,process.dqm_vertex,process.dqm_pixelvertex,process.dqm_initial,process.dqm_highpt,process.dqm_general)
-
-    return process
-
-def customise_hltPhase2_TRKv07_withvalidation(process):
-
-    process = customise_hltPhase2_TRKv07(process)
-    process = customise_prevalidation_common(process)
-    process = customise_validation_common(process)
-
-    process.globalPrevalidationTrackingOnly = cms.Sequence(process.prevalidation_startup,process.prevalidation_v0,process.prevalidation_initial,process.prevalidation_highpt,process.prevalidation_general)
-
-    process.globalValidationTrackingOnly = cms.Sequence(process.hltPhase2TrackValidatorPixelTrackingOnly,process.hltPhase2TrackValidator,
-                                     process.shltPhase2TrackValidatorTPPtLess09Standalone,process.shltPhase2TrackValidatorFromPVStandalone,
-                                     process.hltPhase2TrackValidatorFromPVAllTPStandalone)
-
-    process.load("CMS_HLT_Phase2_Tracking.Configs.dqm")
-    process.DQMOfflineTracking = cms.Sequence(process.dqm_commons,process.dqm_vertex,process.dqm_pixelvertex,process.dqm_initial,process.dqm_highpt,process.dqm_general)
-
-
-# def customise_globalReco_hltPhase2_TRKv06_1(process):
-#
-#     process = customise_hltPhase2_TRKv06_1(process)
-#
-#
-#
-#     return process
-#

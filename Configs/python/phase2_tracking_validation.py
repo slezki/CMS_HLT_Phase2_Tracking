@@ -194,130 +194,11 @@ def customise_prevalidation_common(process):
         algorithm = cms.vstring('hltIter0'),
     )
 
-
     process.hltPhase2CutsRecoTracksInitialStepByAlgoMask = process.hltPhase2CutsRecoTracksHp.clone(
         algorithm = cms.vstring(),
         algorithmMaskContains = cms.vstring('initialStep'),
     )
 
-    process.highPtTripletStepTracksSelectionHighPurity = cms.EDProducer('TrackCollectionFilterCloner',
-        copyExtras = cms.untracked.bool(True),
-        copyTrajectories = cms.untracked.bool(False),
-        minQuality = cms.string('highPurity'),
-        originalMVAVals = cms.InputTag('highPtTripletStepTrackCutClassifier','MVAValues'),
-        originalQualVals = cms.InputTag('highPtTripletStepTrackCutClassifier','QualityMasks'),
-        originalSource = cms.InputTag('highPtTripletStepTracks')
-    )
-
-    process.trackAlgoPriorityOrder = cms.ESProducer('TrackAlgoPriorityOrderESProducer',
-        ComponentName = cms.string('trackAlgoPriorityOrder'),
-        algoOrder = cms.vstring(
-            'initialStep',
-            'highPtTripletStep'
-        ),
-        appendToDataLabel = cms.string('')
-    )
-
-    process.generalTracks = cms.EDProducer('TrackListMerger',
-        Epsilon = cms.double(-0.001),
-        FoundHitBonus = cms.double(5.0),
-        LostHitPenalty = cms.double(5.0),
-        MaxNormalizedChisq = cms.double(1000.0),
-        MinFound = cms.int32(3),
-        MinPT = cms.double(0.9),
-        ShareFrac = cms.double(0.19),
-        TrackProducers = cms.VInputTag('initialStepTracksSelectionHighPurity', 'highPtTripletStepTracksSelectionHighPurity'),
-        allowFirstHitShare = cms.bool(True),
-        copyExtras = cms.untracked.bool(True),
-        copyMVA = cms.bool(False),
-        hasSelector = cms.vint32(0, 0),
-        indivShareFrac = cms.vdouble(1.0, 1.0),
-        makeReKeyedSeeds = cms.untracked.bool(False),
-        newQuality = cms.string('confirmed'),
-        selectedTrackQuals = cms.VInputTag(cms.InputTag('initialStepTrackSelectionHightPurity'), cms.InputTag('highPtTripletStepTracksSelectionHighPurity')),
-        setsToMerge = cms.VPSet(cms.PSet(
-            pQual = cms.bool(True),
-            tLists = cms.vint32(0, 1)
-        )),
-        trackAlgoPriorityOrder = cms.string('trackAlgoPriorityOrder'),
-        writeOnlyTrkQuals = cms.bool(False)
-    )
-
-    process.unsortedOfflinePrimaryVertices = cms.EDProducer('PrimaryVertexProducer',
-        TkClusParameters = cms.PSet(
-            TkDAClusParameters = cms.PSet(
-                Tmin = cms.double(2.0),
-                Tpurge = cms.double(2.0),
-                Tstop = cms.double(0.5),
-                coolingFactor = cms.double(0.6),
-                d0CutOff = cms.double(3.0),
-                dzCutOff = cms.double(3.0),
-                uniquetrkweight = cms.double(0.8),
-                vertexSize = cms.double(0.006),
-                zmerge = cms.double(0.01)
-            ),
-            algorithm = cms.string('DA_vect')
-        ),
-        TkFilterParameters = cms.PSet(
-            algorithm = cms.string('filter'),
-            maxD0Significance = cms.double(4.0),
-            maxEta = cms.double(4.0),
-            maxNormalizedChi2 = cms.double(10.0),
-            minPixelLayersWithHits = cms.int32(2),
-            minPt = cms.double(0.9),
-            minSiliconLayersWithHits = cms.int32(5),
-            trackQuality = cms.string('any')
-        ),
-        TrackLabel = cms.InputTag('generalTracks'),
-        beamSpotLabel = cms.InputTag('offlineBeamSpot'),
-        verbose = cms.untracked.bool(False),
-        vertexCollections = cms.VPSet(
-            cms.PSet(
-                algorithm = cms.string('AdaptiveVertexFitter'),
-                chi2cutoff = cms.double(2.5),
-                label = cms.string(''),
-                maxDistanceToBeam = cms.double(1.0),
-                minNdof = cms.double(0.0),
-                useBeamConstraint = cms.bool(False)
-            ),
-            cms.PSet(
-                algorithm = cms.string('AdaptiveVertexFitter'),
-                chi2cutoff = cms.double(2.5),
-                label = cms.string('WithBS'),
-                maxDistanceToBeam = cms.double(1.0),
-                minNdof = cms.double(2.0),
-                useBeamConstraint = cms.bool(True)
-            )
-        )
-    )
-
-    process.trackWithVertexRefSelectorBeforeSorting = cms.EDProducer('TrackWithVertexRefSelector',
-        copyExtras = cms.untracked.bool(False),
-        copyTrajectories = cms.untracked.bool(False),
-        d0Max = cms.double(999.0),
-        dzMax = cms.double(999.0),
-        etaMax = cms.double(5.0),
-        etaMin = cms.double(0.0),
-        nSigmaDtVertex = cms.double(0),
-        nVertices = cms.uint32(0),
-        normalizedChi2 = cms.double(999999.0),
-        numberOfLostHits = cms.uint32(999),
-        numberOfValidHits = cms.uint32(0),
-        numberOfValidPixelHits = cms.uint32(0),
-        ptErrorCut = cms.double(9e+99),
-        ptMax = cms.double(9e+99),
-        ptMin = cms.double(0.9),
-        quality = cms.string('highPurity'),
-        rhoVtx = cms.double(0.2),
-        src = cms.InputTag('generalTracks'),
-        timeResosTag = cms.InputTag(''),
-        timesTag = cms.InputTag(''),
-        useVtx = cms.bool(True),
-        vertexTag = cms.InputTag('unsortedOfflinePrimaryVertices'),
-        vtxFallback = cms.bool(True),
-        zetaVtx = cms.double(1.0)
-    )
->>>>>>> 69080ebc9cf4715778881890cbd1e30586e69162
 
     process.hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp = process.hltPhase2CutsRecoTracksHp.clone(
         algorithm = cms.vstring(),
@@ -527,7 +408,7 @@ def customise_prevalidation_common(process):
     )
 
     process.hltPhase2VertexAnalysisL1 = vertexAnalysis.clone(
-        trackAssociatorMap = cms.untracked.InputTag("hltPhase2TrackingParticleL1TrackAsssociationf"),
+        trackAssociatorMap = cms.untracked.InputTag("hltPhase2TrackingParticleRecoTrackAsssociation"),
         vertexAssociator = cms.untracked.InputTag("hltPhase2VertexAssociatorByPositionAndTracks"),
         vertexRecoCollections = cms.VInputTag("hltPhase2L1PrimaryVertex")#
     )
@@ -575,25 +456,10 @@ def customise_prevalidation_common(process):
                                                process.hltPhase2CutsRecoTracksFromPVInitialStep,process.hltPhase2CutsRecoTracksFromPVPt09InitialStep,
                                                process.hltPhase2CutsRecoTracksPt09InitialStepHp,process.hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp)
 
-
     process.prevalidation_general = cms.Task(process.hltPhase2CutsRecoTracksFromPVHp,process.hltPhase2GeneralTracksFromPV,
                                     process.hltPhase2CutsRecoTracksFromPVPt09Hp,process.hltPhase2GeneralTracksFromPVPt09,
                                     process.hltPhase2CutsRecoTracksPt09Hp,process.hltPhase2CutsRecoTracksBtvLike,
                                     process.hltPhase2GeneralTracksPt09,process.hltPhase2CutsRecoTracksHp)
-
-    process.vertexReco = cms.Sequence(
-            process.ak4CaloJetsForTrk
-          + process.unsortedOfflinePrimaryVertices
-          + process.trackWithVertexRefSelectorBeforeSorting
-          + process.trackRefsForJetsBeforeSorting
-          + process.offlinePrimaryVertices
-          + process.offlinePrimaryVerticesWithBS
-#          + process.inclusiveVertexFinder
-#          + process.vertexMerger
-#          + process.trackVertexArbitrator
-#          + process.inclusiveSecondaryVertices
-        )
->>>>>>> 69080ebc9cf4715778881890cbd1e30586e69162
 
     process.prevalidation_vertex = cms.Task(process.hltPhase2SelectedOfflinePrimaryVertices,
                                     process.hltPhase2SelectedOfflinePrimaryVerticesWithBS,
@@ -608,7 +474,6 @@ def customise_prevalidation_common(process):
     process.prevalidation_startup = cms.Task(process.prevalidation_commons,process.prevalidation_associators,process.prevalidation_associators_pixel,process.prevalidation_pixelvertex)
 
     return process
-
 
 def customise_validation_common(process):
 
@@ -996,7 +861,7 @@ def customise_validation_common(process):
         simPVMaxZ = cms.untracked.double(-1),
         stableOnlyTP = cms.bool(False),
         tipTP = cms.double(60.0),
-        trackCollectionForDrCalculation = cms.InputTag(""),
+        trackCollectionForDrCalculation = cms.InputTag("hltPhase2GeneralTracks"),
         useGsf = cms.bool(False),
         useLogPt = cms.untracked.bool(True),
         vertexAssociator = cms.untracked.InputTag("hltPhase2VertexAssociatorByPositionAndTracks"),
@@ -1072,23 +937,50 @@ def customise_validation_common(process):
          + process.hltPhase2TrackValidator
      )
 
-    process.validation_baseline= cms.Task(process.hltPhase2TrackValidatorPixelTrackingOnly,process.hltPhase2TrackValidator,
+    process.validation_baselineTask = cms.Task(process.hltPhase2TrackValidatorPixelTrackingOnly,process.hltPhase2TrackValidator,
                                      process.hltPhase2TrackValidatorTPPtLess09Standalone,process.hltPhase2TrackValidatorFromPVStandalone,
                                      process.hltPhase2TrackValidatorFromPVAllTPStandalone)
+
+    process.validation_baseline = cms.Sequence(process.validation_baselineTask)
+
     return process
-     # process.validation_original = cms.Path( )
-     #                               #+hltPhase2TrackValidatorAllTPEfficStandalone)
-     #                              # +hltPhase2TrackValidatorBHadronTrackingOnly
-     #                              # +hltPhase2TrackValidatorSeedingTrackingOnly)
-     #
-     # process.validation_purel1 = cms.Path(process.hltPhase2TrackValidatorL1)
-     #
-     # process.validation_l1initial = cms.Path(process.hltPhase2TrackValidatorPixelTrackingOnly + process.hltPhase2TrackValidatorTrackingOnly + process.hltPhase2TrackValidatorL1)
-     #
-     # process.validation_l1trip = cms.Path(process.hltPhase2TrackValidatorPixelTrackingOnly + process.hltPhase2TrackValidatorTrackingOnly + process.hltPhase2TrackValidatorL1)
-     #
-     # process.validation_base = cms.EndPath(process.hltMultiTrackValidation + process.hltTrackAssociatorByHits)
-     #
-     # process.validation_pixel = cms.Path(process.hltPhase2TrackValidatorPixelTrackingOnly)
-     #
-     # process.validation_all = cms.Path(process.hltPhase2TrackValidatorPixelTrackingOnly + process.hltPhase2TrackValidatorTrackingOnly + process.hltPhase2TrackValidatorL1)
+
+
+
+
+def customise_hltPhase2_TRKv06_1_withvalidation(process):
+
+
+    process = customise_hltPhase2_TRKv06_1(process)
+    process = customise_prevalidation_common(process)
+    process = customise_validation_common(process)
+
+    process.reconstruction_step = cms.Path(process.reconstruction)
+    process.prevalidation_step= cms.Path(process.prevalidation_startup,process.prevalidation_v0,process.prevalidation_initial,process.prevalidation_highpt,process.prevalidation_general)
+    process.validation_step = cms.EndPath(process.validation_baseline)
+
+    process.load("CMS_HLT_Phase2_Tracking.Configs.dqm")
+
+    process.DQMOfflineTracking = cms.Sequence(process.dqm_commons,process.dqm_vertex,process.dqm_pixelvertex,process.dqm_initial,process.dqm_highpt,process.dqm_general)
+    process.dqm_step = cms.EndPath(process.DQMOfflineTracking)
+    process.schedule = cms.Schedule(*[ process.raw2digi_step, process.reconstruction_step, process.prevalidation_step, process.validation_step, process.dqm_step, process.endjob_step, process.RECOoutput_step, process.DQMoutput_step])
+
+    return process
+
+def customise_hltPhase2_TRKv07_withvalidation(process):
+
+    process = customise_hltPhase2_TRKv07(process)
+    process = customise_prevalidation_common(process)
+    process = customise_validation_common(process)
+
+    process.reconstruction_step = cms.Path(process.reconstruction)
+    process.prevalidation_step= cms.Path(process.prevalidation_startup,process.prevalidation_v0,process.prevalidation_initial,process.prevalidation_highpt,process.prevalidation_general)
+    process.validation_step = cms.EndPath(process.validation_baseline)
+
+    process.load("CMS_HLT_Phase2_Tracking.Configs.dqm")
+
+    process.DQMOfflineTracking = cms.Sequence(process.dqm_commons,process.dqm_vertex,process.dqm_pixelvertex,process.dqm_initial,process.dqm_highpt,process.dqm_general)
+    process.dqm_step = cms.EndPath(process.DQMOfflineTracking)
+    process.schedule = cms.Schedule(*[ process.raw2digi_step, process.reconstruction_step, process.prevalidation_step, process.validation_step, process.dqm_step, process.endjob_step, process.RECOoutput_step, process.DQMoutput_step])
+
+    return process
