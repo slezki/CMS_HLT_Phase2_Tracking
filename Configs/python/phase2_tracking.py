@@ -265,7 +265,6 @@ def customise_common(process):
                 maxLostHits = cms.int32(1),
                 minPt = cms.double(0.9),
                 minimumNumberOfHits = cms.int32(3),
-                minPt = cms.double(0.9)
             )
 
     process.hltPhase2HighPtTripletStepTrajectoryFilter = cms.PSet(
@@ -602,7 +601,7 @@ def customise_common(process):
         MinFound = cms.int32(3),
         MinPT = cms.double(0.9),
         ShareFrac = cms.double(0.19),
-        TrackProducers = cms.VInputTag('initialStepTrackSelectionHP', 'highPtTripletStepTracksSelectionHighPurity'),
+        TrackProducers = cms.VInputTag('initialStepTrackSelectionHighPurity', 'highPtTripletStepTracksSelectionHighPurity'),
         allowFirstHitShare = cms.bool(True),
         copyExtras = cms.untracked.bool(True),
         copyMVA = cms.bool(False),
@@ -610,7 +609,7 @@ def customise_common(process):
         indivShareFrac = cms.vdouble(1.0, 1.0),
         makeReKeyedSeeds = cms.untracked.bool(False),
         newQuality = cms.string('confirmed'),
-        selectedTrackQuals = cms.VInputTag(cms.InputTag('initialStepTrackSelectionHP'), cms.InputTag('highPtTripletStepTracksSelectionHighPurity')),
+        selectedTrackQuals = cms.VInputTag(cms.InputTag('initialStepTrackSelectionHighPurity'), cms.InputTag('highPtTripletStepTracksSelectionHighPurity')),
         setsToMerge = cms.VPSet(cms.PSet(
             pQual = cms.bool(True),
             tLists = cms.vint32(0, 1)
@@ -906,84 +905,6 @@ def customise_common(process):
 def customise_hltPhase2_TRKv06(process):
 
     process = customise_common(process)
-
-    process.hltPhase2CaloTowerForTrk = cms.EDProducer('CaloTowersCreator',
-        AllowMissingInputs = cms.bool(False),
-        EBGrid = cms.vdouble(-1.0, 1.0, 10.0, 100.0, 1000.0),
-        EBSumThreshold = cms.double(0.2),
-        EBThreshold = cms.double(0.07),
-        EBWeight = cms.double(1.0),
-        EBWeights = cms.vdouble(1.0, 1.0, 1.0, 1.0, 1.0),
-        EEGrid = cms.vdouble(-1.0, 1.0, 10.0, 100.0, 1000.0),
-        EESumThreshold = cms.double(0.45),
-        EEThreshold = cms.double(0.3),
-        EEWeight = cms.double(1.0),
-        EEWeights = cms.vdouble(1.0, 1.0, 1.0, 1.0, 1.0),
-        EcalRecHitSeveritiesToBeExcluded = cms.vstring(
-            'kTime',
-            'kWeird',
-            'kBad'
-        ),
-        EcalSeveritiesToBeUsedInBadTowers = cms.vstring(),
-        EcutTower = cms.double(-1000.0),
-        HBGrid = cms.vdouble(-1.0, 1.0, 10.0, 100.0, 1000.0),
-        HBThreshold = cms.double(1.2),
-        HBThreshold1 = cms.double(0.8),
-        HBThreshold2 = cms.double(1.2),
-        HBWeight = cms.double(1.0),
-        HBWeights = cms.vdouble(1.0, 1.0, 1.0, 1.0, 1.0),
-        HEDGrid = cms.vdouble(-1.0, 1.0, 10.0, 100.0, 1000.0),
-        HEDThreshold = cms.double(0.2),
-        HEDThreshold1 = cms.double(0.1),
-        HEDWeight = cms.double(1.0),
-        HEDWeights = cms.vdouble(1.0, 1.0, 1.0, 1.0, 1.0),
-        HESGrid = cms.vdouble(-1.0, 1.0, 10.0, 100.0, 1000.0),
-        HESThreshold = cms.double(0.2),
-        HESThreshold1 = cms.double(0.1),
-        HESWeight = cms.double(1.0),
-        HESWeights = cms.vdouble(1.0, 1.0, 1.0, 1.0, 1.0),
-        HF1Grid = cms.vdouble(-1.0, 1.0, 10.0, 100.0, 1000.0),
-        HF1Threshold = cms.double(0.5),
-        HF1Weight = cms.double(1.0),
-        HF1Weights = cms.vdouble(1.0, 1.0, 1.0, 1.0, 1.0),
-        HF2Grid = cms.vdouble(-1.0, 1.0, 10.0, 100.0, 1000.0),
-        HF2Threshold = cms.double(0.85),
-        HF2Weight = cms.double(1.0),
-        HF2Weights = cms.vdouble(1.0, 1.0, 1.0, 1.0, 1.0),
-        HOGrid = cms.vdouble(-1.0, 1.0, 10.0, 100.0, 1000.0),
-        HOThreshold0 = cms.double(1.1),
-        HOThresholdMinus1 = cms.double(3.5),
-        HOThresholdMinus2 = cms.double(3.5),
-        HOThresholdPlus1 = cms.double(3.5),
-        HOThresholdPlus2 = cms.double(3.5),
-        HOWeight = cms.double(1.0),
-        HOWeights = cms.vdouble(1.0, 1.0, 1.0, 1.0, 1.0),
-        HcalAcceptSeverityLevel = cms.uint32(9),
-        HcalAcceptSeverityLevelForRejectedHit = cms.uint32(9999),
-        HcalPhase = cms.int32(1),
-        HcalThreshold = cms.double(-1000.0),
-        MomConstrMethod = cms.int32(1),
-        MomEBDepth = cms.double(0.3),
-        MomEEDepth = cms.double(0.0),
-        MomHBDepth = cms.double(0.2),
-        MomHEDepth = cms.double(0.4),
-        UseEcalRecoveredHits = cms.bool(False),
-        UseEtEBTreshold = cms.bool(False),
-        UseEtEETreshold = cms.bool(False),
-        UseHO = cms.bool(True),
-        UseHcalRecoveredHits = cms.bool(True),
-        UseRejectedHitsOnly = cms.bool(False),
-        UseRejectedRecoveredEcalHits = cms.bool(False),
-        UseRejectedRecoveredHcalHits = cms.bool(True),
-        UseSymEBTreshold = cms.bool(True),
-        UseSymEETreshold = cms.bool(True),
-        ecalInputs = cms.VInputTag(cms.InputTag('ecalRecHit','EcalRecHitsEB'), cms.InputTag('ecalRecHit','EcalRecHitsEE')),
-        hbheInput = cms.InputTag('hbhereco'),
-        hfInput = cms.InputTag('hfreco'),
-        hoInput = cms.InputTag('horeco'),
-        missingHcalRescaleFactorForEcal = cms.double(0)
-    )
-
     ## Seeding for Initial Step
     process.hltPhase2InitialStepSeeds = cms.EDProducer('SeedCreatorFromRegionConsecutiveHitsTripletOnlyEDProducer',
         MinOneOverPtError = cms.double(1),
@@ -1081,22 +1002,22 @@ def customise_hltPhase2_TRKv06(process):
       + process.hltPhase2HighPtTripletStepTracksSelectionHighPurity
     )
 
-        process.hltPhase2VertexReco = cms.Sequence(
+    process.hltPhase2VertexReco = cms.Sequence(
             process.hltPhase2FirstStepPrimaryVerticesUnsorted
           + process.hltPhase2InitialStepTrackRefsForJets
-          + process.hltPhase2CaloTowerForTrk
+          + process.caloTowerForTrk
           + process.hltPhase2Ak4CaloJetsForTrk
           + process.hltPhase2FirstStepPrimaryVertices
-          + process.hltPhase2TrackTimeValueMapProducer
+          + process.trackTimeValueMapProducer
           + process.hltPhase2UnsortedOfflinePrimaryVertices
           + process.hltPhase2TrackWithVertexRefSelectorBeforeSorting
           + process.hltPhase2TrackRefsForJetsBeforeSorting
           + process.hltPhase2OfflinePrimaryVertices
           + process.hltPhase2OfflinePrimaryVerticesWithBS
-          + process.hltPhase2InclusiveVertexFinder
-          + process.hltPhase2VertexMerger
-          + process.hltPhase2TrackVertexArbitrator
-          + process.hltPhase2InclusiveSecondaryVertices
+    #      + process.hltPhase2InclusiveVertexFinder
+   #       + process.hltPhase2VertexMerger
+   #       + process.hltPhase2TrackVertexArbitrator
+   #       + process.hltPhase2InclusiveSecondaryVertices
         )
 
     # ambiguities
@@ -1189,13 +1110,13 @@ def customise_hltPhase2_TRKv06_1(process):
 
 
 
-        process.hltPhase2VertexReco = cms.Sequence(
+    process.hltPhase2VertexReco = cms.Sequence(
             process.hltPhase2FirstStepPrimaryVerticesUnsorted
           + process.hltPhase2InitialStepTrackRefsForJets
-          + process.hltPhase2CaloTowerForTrk
+          + process.caloTowerForTrk
           + process.hltPhase2Ak4CaloJetsForTrk
           + process.hltPhase2FirstStepPrimaryVertices
-          + process.hltPhase2TrackTimeValueMapProducer
+          + process.trackTimeValueMapProducer
           + process.hltPhase2UnsortedOfflinePrimaryVertices
           + process.hltPhase2TrackWithVertexRefSelectorBeforeSorting
           + process.hltPhase2TrackRefsForJetsBeforeSorting

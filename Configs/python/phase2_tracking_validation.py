@@ -585,7 +585,7 @@ def customise_common(process):
         minQuality = cms.string('highPurity'),
         originalMVAVals = cms.InputTag('highPtTripletStepTrackCutClassifier','MVAValues'),
         originalQualVals = cms.InputTag('highPtTripletStepTrackCutClassifier','QualityMasks'),
-        originalSource = cms.InputTag('highlPtTripletStepTracks')
+        originalSource = cms.InputTag('highPtTripletStepTracks')
     )
 
     process.trackAlgoPriorityOrder = cms.ESProducer('TrackAlgoPriorityOrderESProducer',
@@ -605,7 +605,7 @@ def customise_common(process):
         MinFound = cms.int32(3),
         MinPT = cms.double(0.9),
         ShareFrac = cms.double(0.19),
-        TrackProducers = cms.VInputTag('initialStepTrackSelectionHP', 'highPtTripletStepTracksSelectionHighPurity'),
+        TrackProducers = cms.VInputTag('initialStepTracksSelectionHighPurity', 'highPtTripletStepTracksSelectionHighPurity'),
         allowFirstHitShare = cms.bool(True),
         copyExtras = cms.untracked.bool(True),
         copyMVA = cms.bool(False),
@@ -613,7 +613,7 @@ def customise_common(process):
         indivShareFrac = cms.vdouble(1.0, 1.0),
         makeReKeyedSeeds = cms.untracked.bool(False),
         newQuality = cms.string('confirmed'),
-        selectedTrackQuals = cms.VInputTag(cms.InputTag('initialStepTrackSelectionHP'), cms.InputTag('highPtTripletStepTracksSelectionHighPurity')),
+        selectedTrackQuals = cms.VInputTag(cms.InputTag('initialStepTrackSelectionHightPurity'), cms.InputTag('highPtTripletStepTracksSelectionHighPurity')),
         setsToMerge = cms.VPSet(cms.PSet(
             pQual = cms.bool(True),
             tLists = cms.vint32(0, 1)
@@ -1363,10 +1363,10 @@ def customise_hltPhase2_TRKv07(process):
           + process.trackRefsForJetsBeforeSorting
           + process.offlinePrimaryVertices
           + process.offlinePrimaryVerticesWithBS
-          + process.inclusiveVertexFinder
-          + process.vertexMerger
-          + process.trackVertexArbitrator
-          + process.inclusiveSecondaryVertices
+#          + process.inclusiveVertexFinder
+#          + process.vertexMerger
+#          + process.trackVertexArbitrator
+#          + process.inclusiveSecondaryVertices
         )
 
 
