@@ -85,7 +85,8 @@ def customise_common(process):
     #Pixel Tracks
     from RecoTracker.TkHitPairs.hitPairEDProducerDefault_cfi import hitPairEDProducerDefault
     process.pixelTracksHitDoublets = hitPairEDProducerDefault.clone(
-        produceIntermediateHitDoublets = cms.bool(False),
+        produceIntermediateHitDoublets = cms.bool(True),
+        produceSeedingHitSets = cms.bool(False), 
         seedingLayers = cms.InputTag('pixelTracksSeedLayers'),
         trackingRegions = cms.InputTag('pixelTracksTrackingRegions'),
         )
@@ -153,16 +154,38 @@ def customise_common(process):
             allowSharedFirstHit = cms.bool(True),
             fractionShared = cms.double(0.16)
         )
-
-    process.ak4CaloJetsForTrk = cms.EDProducer('FastjetJetProducer',
-            doPVCorrection = cms.bool(True),
-            inputEMin = cms.double(0.0),
-            inputEtMin = cms.double(0.3),
-            jetType = cms.string('CaloJet'),
-            src = cms.InputTag('caloTowerForTrk'),
-            srcPVs = cms.InputTag('firstStepPrimaryVerticesUnsorted'),
-            useDeterministicSeed = cms.bool(True),
-        )
+    
+    hltPhase2Ak4CaloJetsForTrk = cms.EDProducer("FastjetJetProducer",
+    Active_Area_Repeats = cms.int32(1),
+    GhostArea = cms.double(0.01),
+    Ghost_EtaMax = cms.double(5.0),
+    Rho_EtaMax = cms.double(4.4),
+    doAreaDiskApprox = cms.bool(False),
+    doAreaFastjet = cms.bool(False),
+    doPUOffsetCorr = cms.bool(False),
+    doPVCorrection = cms.bool(True),
+    doRhoFastjet = cms.bool(False),
+    inputEMin = cms.double(0.0),
+    inputEtMin = cms.double(0.3),
+    jetAlgorithm = cms.string('AntiKt'),
+    jetPtMin = cms.double(10.0),
+    jetType = cms.string('CaloJet'),
+    maxBadEcalCells = cms.uint32(9999999),
+    maxBadHcalCells = cms.uint32(9999999),
+    maxProblematicEcalCells = cms.uint32(9999999),
+    maxProblematicHcalCells = cms.uint32(9999999),
+    maxRecoveredEcalCells = cms.uint32(9999999),
+    maxRecoveredHcalCells = cms.uint32(9999999),
+    minSeed = cms.uint32(14327),
+    nSigmaPU = cms.double(1.0),
+    puPtMin = cms.double(10),
+    rParam = cms.double(0.4),
+    radiusPU = cms.double(0.5),
+    src = cms.InputTag("caloTowerForTrk"),
+    srcPVs = cms.InputTag("hltPhase2FirstStepPrimaryVerticesUnsorted"),
+    useDeterministicSeed = cms.bool(True),
+    voronoiRfact = cms.double(-0.9)
+)
 
     #Initia Step
     from RecoTracker.CkfPattern.GroupedCkfTrajectoryBuilder_cfi import GroupedCkfTrajectoryBuilder
@@ -187,7 +210,7 @@ def customise_common(process):
         )
 
 
-    process.highPtTripletStepTrajectoryBuilder = cms.PSet(
+    process.highPtTripletStepTrajectoryBuilder = process.initialStepTrajectoryBuilder.clone(
         bestHitOnly = cms.bool(True),
         estimator = cms.string('highPtTripletStepChi2Est'),
         inOutTrajectoryFilter = cms.PSet(
@@ -226,7 +249,7 @@ def customise_common(process):
     from TrackingTools.TrajectoryFiltering.TrajectoryFilter_cff import CkfBaseTrajectoryFilter_block
     process.initialStepTrajectoryFilter = CkfBaseTrajectoryFilter_block.clone(
             maxLostHits = cms.int32(1),
-
+	     maxLostHitsFraction = cms.double(999.0), # previous 0.1
             minHitsMinPt = cms.int32(4),
             minPt = cms.double(0.9),
             minimumNumberOfHits = cms.int32(4),
@@ -236,20 +259,36 @@ def customise_common(process):
             minimumNumberOfHits = cms.int32(4),
             nSigmaMinPt = cms.double(5.0),
             seedExtension = cms.int32(1),
-            minPt = cms.double(0.9)
+	    seedPairPenalty = cms.int32(0),
+            minPt = cms.double(0.9),
+             maxLostHitsFraction = cms.double(999.0), # previous 0.1
+	    maxNumberOfHits = cms.int32(100)
         )
 
     process.highPtTripletStepTrajectoryFilterBase = cms.PSet(
-                ComponentType = cms.string('CkfBaseTrajectoryFilter'),
-                chargeSignificance = cms.double(-1.0),
-                constantValueForLostHitsFractionFilter = cms.double(1.0),
-                extraNumberOfHitsBeforeTheFirstLoop = cms.int32(4),
-                maxCCCLostHits = cms.int32(0),
-                maxConsecLostHits = cms.int32(1),
-                maxLostHits = cms.int32(1),
-                minPt = cms.double(0.9),
-                minimumNumberOfHits = cms.int32(3),
-            )
+               ComponentType = cms.string('CkfBaseTrajectoryFilter'),
+    chargeSignificance = cms.double(-1.0),
+    constantValueForLostHitsFractionFilter = cms.double(1.0), # previous 2.0
+    extraNumberOfHitsBeforeTheFirstLoop = cms.int32(4),
+    maxCCCLostHits = cms.int32(0), # previous 9999
+    maxConsecLostHits = cms.int32(1),
+    maxLostHits = cms.int32(1), # previous 999
+    maxLostHitsFraction = cms.double(999.0), # previous 0.1
+    maxNumberOfHits = cms.int32(100),
+    minGoodStripCharge = cms.PSet(
+        refToPSet_ = cms.string('SiStripClusterChargeCutNone')
+    ),
+    minHitsMinPt = cms.int32(3),
+    minNumberOfHitsForLoopers = cms.int32(13),
+    minNumberOfHitsPerLoop = cms.int32(4),
+    minPt = cms.double(0.9), # ptcut previous 0.2
+    minimumNumberOfHits = cms.int32(3),
+    nSigmaMinPt = cms.double(5.0),
+    pixelSeedExtension = cms.bool(False),
+    seedExtension = cms.int32(1), # previous 0
+    seedPairPenalty = cms.int32(0),
+    strictSeedExtension = cms.bool(False) 
+	      )
 
     process.highPtTripletStepTrajectoryFilter = cms.PSet(
         ComponentType = cms.string('CompositeTrajectoryFilter'),
@@ -281,7 +320,7 @@ def customise_common(process):
     )
 
     process.highPtTripletStepTrackCandidates = ckfTrackCandidates.clone(
-
+	ComponentType = cms.string('ckfTrackCandidates'),
         TrajectoryBuilderPSet = cms.PSet(
             refToPSet_ = cms.string('highPtTripletStepTrajectoryBuilder')
         ),
@@ -289,7 +328,8 @@ def customise_common(process):
 
         phase2clustersToSkip = cms.InputTag('highPtTripletStepClusters'),
         src = cms.InputTag('highPtTripletStepSeeds'),
-
+         
+    
         maxNSeeds = cms.uint32(100000),
         maxSeedsBeforeCleaning = cms.uint32(1000),
         numHitsForSeedCleaner = cms.int32(50),
@@ -314,7 +354,7 @@ def customise_common(process):
 
     from RecoTracker.TrackProducer.TrackProducer_cfi import TrackProducer
 
-    process.initialStepTracks = cms.EDProducer('TrackProducer',
+    process.initialStepTracks = TrackProducer.clone( 
         AlgorithmName = cms.string('initialStep'),
         Fitter = cms.string('FlexibleKFFittingSmoother'),
         TTRHBuilder = cms.string('WithTrackAngle'),
@@ -1106,6 +1146,8 @@ def customise_hltPhase2_TRKv06(process):
 def customise_hltPhase2_TRKv06_1(process):
 
     process = customise_common(process)
+    
+    process.ak4CaloJetsForTrk.srcPVs = cms.InputTag("pixelVertices")
 
     process.seedFromProtoTracks = cms.PSet(
       TTRHBuilder = cms.string( "WithTrackAngle"), #hltESPTTRHBuilderPixelOnly" ),
@@ -1191,7 +1233,7 @@ def customise_hltPhase2_TRKv06_1(process):
     if hasattr(process,"trackTimeValueMapProducer"):
         del process.trackTimeValueMapProducer
     if hasattr(process,"gsfTrackTimeValueMapProducer"):
-        del process.gsfTrackTimeValueMapProducer
+        del process.gsfTrackTimeValueMapProducer 
 
 
     process.tracking_v6_1 = cms.Sequence(
@@ -1207,7 +1249,7 @@ def customise_hltPhase2_TRKv06_1(process):
     if hasattr(process, 'globalreco_trackingTask'):
         del process.globalreco_trackingTask
 
-    process.globalreco_tracking = cms.Sequence(process.tracking_v6_1)
+    process.reconstruction = cms.Sequence(process.tracking_v6_1)
 
     return process
 
