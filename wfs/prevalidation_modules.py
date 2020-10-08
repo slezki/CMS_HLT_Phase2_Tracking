@@ -1,5 +1,7 @@
 import FWCore.ParameterSet.Config as cms
-from  Configuration.StandardSequences.Validation_cff import *
+from  Configuration.StandardSequences.Validation_cff import quickTrackAssociatorByHits, quickTrackAssociatorByHits, tpClusterProducer
+from  Configuration.StandardSequences.Validation_cff import trackingParticlesBHadron, simHitTPAssocProducer, trackingParticlesConversion
+from  Configuration.StandardSequences.Validation_cff import trackingParticleNumberOfLayersProducer
 
 ####################################################
 ########################## Pixel Tracks

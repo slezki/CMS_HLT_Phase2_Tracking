@@ -21,17 +21,12 @@ hltPhase2SeedFromProtoTracks = cms.PSet(
 
 hltPhase2PSetPvClusterComparerForIT = cms.PSet(
   track_chi2_max = cms.double( 20.0 ),
-  track_pt_max = cms.double( 30.0 ),
+  track_pt_max = cms.double( 80.0 ),
   track_prob_min = cms.double( -1.0 ),
   track_pt_min = cms.double( 1.0 )
 )
 
-hltPhase2PSetPvClusterComparerForITTrimming = cms.PSet(
-  track_chi2_max = cms.double( 20000.0 ),
-  track_pt_max = cms.double( 40000.0 ),
-  track_prob_min = cms.double( -1.0 ),
-  track_pt_min = cms.double( -1.0 )
-)
+hltPhase2PSetPvClusterComparerForITTrimming = hltPhase2PSetPvClusterComparerForIT.clone()
 
 layerListForPhase2 = ['BPix1+BPix2+BPix3+BPix4',
                        'BPix1+BPix2+BPix3+FPix1_pos','BPix1+BPix2+BPix3+FPix1_neg',
@@ -831,7 +826,7 @@ hltPhase2Ak4CaloJetsForTrk = cms.EDProducer("FastjetJetProducer",
     rParam = cms.double(0.4),
     radiusPU = cms.double(0.5),
     src = cms.InputTag("caloTowerForTrk"),
-    srcPVs = cms.InputTag("hltPhase2FirstStepPrimaryVerticesUnsorted"),
+    srcPVs = cms.InputTag("hltPhase2UnsortedOfflinePrimaryVertices"),
     useDeterministicSeed = cms.bool(True),
     voronoiRfact = cms.double(-0.9)
 )

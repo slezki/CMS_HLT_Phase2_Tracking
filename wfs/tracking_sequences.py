@@ -249,9 +249,9 @@ hltPhase2InitialStepSequenceL1 = cms.Sequence(
 )
 
 vertexReco = cms.Sequence(
-    hltPhase2InitialStepPVSequence + # pixelVertices moved to here, for now still keeping it
-    hltPhase2Ak4CaloJetsForTrk + # uses caloTowerForTrk
+    #hltPhase2InitialStepPVSequence + # pixelVertices moved to here, for now still keeping it
     hltPhase2UnsortedOfflinePrimaryVertices +
+    hltPhase2Ak4CaloJetsForTrk + # uses caloTowerForTrk
     hltPhase2TrackWithVertexRefSelectorBeforeSorting +
     hltPhase2TrackRefsForJetsBeforeSorting +
     hltPhase2OfflinePrimaryVertices +

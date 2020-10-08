@@ -119,11 +119,11 @@ hltPhase2HighPtTripletStepSequence = cms.Sequence(
 )
 
 vertexReco = cms.Sequence(
-    hltPhase2InitialStepPVSequence + # pixelVertices moved to here, for now still keeping it
-    hltPhase2Ak4CaloJetsForTrk + # uses caloTowerForTrk
     hltPhase2UnsortedOfflinePrimaryVertices +
     hltPhase2TrackWithVertexRefSelectorBeforeSorting +
     hltPhase2TrackRefsForJetsBeforeSorting +
+    caloTowerForTrk +
+    hltPhase2Ak4CaloJetsForTrk + # uses caloTowerForTrk
     hltPhase2OfflinePrimaryVertices +
     hltPhase2OfflinePrimaryVerticesWithBS +
     hltPhase2InclusiveVertexFinder +
