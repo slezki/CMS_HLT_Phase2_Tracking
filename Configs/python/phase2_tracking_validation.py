@@ -961,9 +961,9 @@ def customise_hltPhase2_TRKv06_1_withvalidation(process):
 
     process.load("CMS_HLT_Phase2_Tracking.Configs.dqm")
 
-    process.DQMOfflineTracking = cms.Sequence(process.dqm_commons,process.dqm_vertex,process.dqm_pixelvertex,process.dqm_initial,process.dqm_highpt,process.dqm_general)
-    process.dqm_step = cms.EndPath(process.DQMOfflineTracking)
-    process.schedule = cms.Schedule(*[ process.raw2digi_step, process.reconstruction_step, process.prevalidation_step, process.validation_step, process.dqm_step, process.endjob_step, process.RECOoutput_step, process.DQMoutput_step])
+    process.mydqm = cms.Sequence(process.dqm_commons,process.dqm_vertex,process.dqm_pixelvertex,process.dqm_initial,process.dqm_highpt,process.dqm_general)
+    process.dqm_step = cms.EndPath(process.mydqm)
+    process.schedule = cms.Schedule(*[ process.raw2digi_step, process.reconstruction_step, process.prevalidation_step, process.validation_step, process.dqm_step, process.dqmofflineOnPAT_step , process.endjob_step, process.RECOoutput_step, process.DQMoutput_step])
 
     return process
 
