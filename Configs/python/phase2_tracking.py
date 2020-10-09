@@ -1347,5 +1347,5 @@ def customise_hltPhase2_TRKv07(process):
         del process.globalreco_trackingTask
 
     process.reconstruction = cms.Sequence(process.tracking_v6_1)
-    process.__delattr__("selectedOfflinePrimaryVertices")
+
     return process
