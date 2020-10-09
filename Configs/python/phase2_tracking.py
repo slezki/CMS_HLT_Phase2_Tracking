@@ -1171,7 +1171,7 @@ def customise_hltPhase2_TRKv06_1(process):
         useEventsWithNoVertex = cms.bool( True ),
         originHalfLength = cms.double(0.3),
         useProtoTrackKinematics = cms.bool( False ),
-        usePV = cms.bool( False ),
+        usePV = cms.bool( True ),
         SeedCreatorPSet = cms.PSet(  refToPSet_ = cms.string( "hltPhase2SeedFromProtoTracks" ) ),
         InputVertexCollection = cms.InputTag(""),
         TTRHBuilder = cms.string( "WithTrackAngle"), #hltESPTTRHBuilderPixelOnly" ),
