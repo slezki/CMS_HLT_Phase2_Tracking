@@ -74,7 +74,7 @@ hltPhase2InitialStepSequence = cms.Sequence(
     hltPhase2InitialStepTracks +
     #hltPhase2InitialStepPVSequence + # use pixelVertices
     hltPhase2InitialStepTrackCutClassifier +
-    hltPhase2InitialStepTrackSelectionHighPurity
+    hltPhase2InitialStepTracksSelectionHighPurity
 )
 
 ####################################################
@@ -112,7 +112,7 @@ hltPhase2InitialStepSequenceFromPixelTracks = cms.Sequence(
     hltPhase2InitialStepTrackCandidates +
     hltPhase2InitialStepTracks +
     hltPhase2InitialStepTrackCutClassifier +
-    hltPhase2InitialStepTrackSelectionHighPurity
+    hltPhase2InitialStepTracksSelectionHighPurity
 )
 
 hltPhase2HighPtTripletStepSequence = cms.Sequence(
@@ -125,7 +125,7 @@ hltPhase2HighPtTripletStepSequence = cms.Sequence(
     hltPhase2HighPtTripletStepTrackCandidates +
     hltPhase2HighPtTripletStepTracks +
     hltPhase2HighPtTripletStepTrackCutClassifier +
-    hltPhase2HighPtTripletStepTrackSelectionHighPurity
+    hltPhase2HighPtTripletStepTracksSelectionHighPurity
 )
 
 original_v6 = cms.Path(
@@ -245,7 +245,7 @@ hltPhase2InitialStepSequenceL1 = cms.Sequence(
     #hltPhase2InitialStepPVSequence + # use pixelVertices
     #hltPhase2InitialStepSelector
     hltPhase2InitialStepTrackCutClassifier +
-    hltPhase2InitialStepTrackSelectionHighPurity
+    hltPhase2InitialStepTracksSelectionHighPurity
 )
 
 vertexReco = cms.Sequence(

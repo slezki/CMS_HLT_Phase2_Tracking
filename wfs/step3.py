@@ -69,7 +69,7 @@ options.register('frac',10,VarParsing.VarParsing.multiplicity.singleton,VarParsi
 options.register('nvtx',20,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"n trimmed vtx")
 options.register('sumpt',20 ,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"minsumpt2 vtx")
 options.register('zsep',5,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"z_sep (x1000)")
-
+options.register('fromPV',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"fromPV for ininitial step")
 #MCs
 options.register('ztt',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"ZTT MC")
 options.register('dstmmm',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"DsTau3M MC")
@@ -174,9 +174,11 @@ if options.wf<=-1:
     process.load("tracking_sequences_nol1")
 else:
     process.load("tracking_sequences")
-process.load('validation_sequences')
-process.load('prevalidation_sequences')
-process.load('dqm_sequences')
+
+if not options.timing:
+    process.load('validation_sequences')
+    process.load('prevalidation_sequences')
+    process.load('dqm_sequences')
 
 # load the DQMStore and DQMRootOutputModule
 # enable multithreading
@@ -209,8 +211,11 @@ suff = str(options.wf)
 
 #TRIMMING OPTIONS
 if options.wf < -1:
-
-    process.hltPhase2PixelVertexAnalysisTrackingOnly.vertexRecoCollections = cms.VInputTag("hltPhase2PixelVertices", "hltPhase2SelectedPixelVertices","hltPhase2TrimmedPixelVertices")
+	
+    if not options.timing:
+    	process.hltPhase2PixelVertexAnalysisTrackingOnly.vertexRecoCollections = cms.VInputTag("hltPhase2PixelVertices", "hltPhase2SelectedPixelVertices","hltPhase2TrimmedPixelVertices")
+   
+    process.hltPhase2InitialStepSeeds.usePV = cms.bool(options.fromPV) 
     process.hltPhase2PixelVerticesSequence = cms.Sequence(
         process.hltPhase2PixelVertices +
         process.hltPhase2TrimmedPixelVertices
@@ -220,10 +225,7 @@ if options.wf < -1:
     process.hltPhase2TrimmedPixelVertices.minSumPt2 = cms.double( 10.0 )
     process.hltPhase2TrimmedPixelVertices.maxVtx = cms.uint32( 100 ) # > 200 # previous 100
 
-    process.hltPhase2PSetPvClusterComparerForITTrimming.track_chi2_max = cms.double( 20.0 )
-    process.hltPhase2PSetPvClusterComparerForITTrimming.track_pt_max = cms.double( 40.0 )
-    process.hltPhase2PSetPvClusterComparerForITTrimming.track_prob_min = cms.double( -1.0 )
-    process.hltPhase2PSetPvClusterComparerForITTrimming.track_pt_min = cms.double( 0.9 )
+   
 
 if options.onlypixel:
     options.wf = -100
@@ -502,7 +504,8 @@ process = setCrossingFrameOn(process)
 from FWCore.ParameterSet.Utilities import convertToUnscheduled
 # process=convertToUnschedule   d(process)
 
-
+if options.timing:
+   open('step3_dump.py', 'w').write(process.dumpPython())
 # Customisation from command line
 process = customise_aging_1000(process) 
 
@@ -514,5 +517,3 @@ process = customiseLogErrorHarvesterUsingOutputCommands(process)
 from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete
 process = customiseEarlyDelete(process)
 
-# from HLTrigger.Configuration.customizeHLTforALL import customizeHLTforAll
-# process = customizeHLTforAll(process,"Fake",_customInfo)

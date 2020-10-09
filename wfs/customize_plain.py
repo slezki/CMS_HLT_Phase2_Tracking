@@ -176,10 +176,10 @@ def customizeGeneralTracksToInitialL1TracksStep(process,timing):
                                           process.validation_l1initial, process.dqm_l1initial])
 
     process.trackAlgoPriorityOrder.algoOrder = cms.vstring('initialStep','ctf')
-    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2InitialStepTrackSelectionHighPurity","hltPhase2L1TracksSelectionHighPurity")
+    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2InitialStepTracksSelectionHighPurity","hltPhase2L1TracksSelectionHighPurity")
     process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0)
     process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,1.0)
-    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2InitialStepTrackSelectionHighPurity"),
+    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2InitialStepTracksSelectionHighPurity"),
                                                                      cms.InputTag("hltPhase2L1TracksSelectionHighPurity"))
     process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1)
 
@@ -208,10 +208,10 @@ def customizeGeneralTracksToInitialL1TracksStepMasking(process):
     process.hltPhase2L1TracksCutClassifier.vertices = cms.InputTag("hltPhase2L1TracksStepPrimaryVertices")
 
     process.trackAlgoPriorityOrder.algoOrder = cms.vstring('initialStep','ctf')
-    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2InitialStepTrackSelectionHighPurity","hltPhase2L1TracksSelectionHighPurity")
+    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2InitialStepTracksSelectionHighPurity","hltPhase2L1TracksSelectionHighPurity")
     process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0)
     process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,1.0)
-    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2InitialStepTrackSelectionHighPurity"),
+    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2InitialStepTracksSelectionHighPurity"),
                                                                      cms.InputTag("hltPhase2L1TracksSelectionHighPurity"))
     process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1)
 
@@ -245,10 +245,10 @@ def customizeGeneralTracksToInitialL1TracksStepMasking(process):
     process.hltPhase2L1TracksCutClassifier.vertices = cms.InputTag("hltPhase2L1TracksStepPrimaryVertices")
 
     process.trackAlgoPriorityOrder.algoOrder = cms.vstring('initialStep','ctf')
-    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2InitialStepTrackSelectionHighPurity","hltPhase2L1TracksSelectionHighPurity")
+    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2InitialStepTracksSelectionHighPurity","hltPhase2L1TracksSelectionHighPurity")
     process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0)
     process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,1.0)
-    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2InitialStepTrackSelectionHighPurity"),
+    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2InitialStepTracksSelectionHighPurity"),
                                                                      cms.InputTag("hltPhase2L1TracksSelectionHighPurity"))
     process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1)
 
@@ -292,11 +292,11 @@ def pixel_l1_recovery(process,timing):
 
     ##general tracks - recovery + l1
     process.trackAlgoPriorityOrder.algoOrder = cms.vstring('hltIter0','initialStep')
-    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1CtfTracks","hltPhase2InitialStepTrackSelectionHighPurity")
+    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1CtfTracks","hltPhase2InitialStepTracksSelectionHighPurity")
     process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0)
     process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,0.9)
     process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("loose"),
-                                                                     cms.InputTag("hltPhase2InitialStepTrackSelectionHighPurity"))
+                                                                     cms.InputTag("hltPhase2InitialStepTracksSelectionHighPurity"))
     process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1)
 
     #process.hltPhase2InitialStepTracks.clusterRemovalInfo = cms.InputTag("hltPhase2L1TrackStepClusters")
@@ -342,11 +342,11 @@ def l1_pixel_recovery(process,timing):
 
     ##general tracks - recovery + l1
     process.trackAlgoPriorityOrder.algoOrder = cms.vstring('hltIter0','initialStep')
-    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1CtfTracks","hltPhase2InitialStepTrackSelectionHighPurity")
+    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1CtfTracks","hltPhase2InitialStepTracksSelectionHighPurity")
     process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0)
     process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,1.0)
     process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag(""),
-                                                                     cms.InputTag("hltPhase2InitialStepTrackSelectionHighPurity"))
+                                                                     cms.InputTag("hltPhase2InitialStepTracksSelectionHighPurity"))
     process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1)
 
     #process.hltPhase2InitialStepTracks.clusterRemovalInfo = cms.InputTag("hltPhase2L1TrackStepClusters")
@@ -425,12 +425,12 @@ def l1_pixel_recovery_triplets(process,timing):
 
     ##general tracks - recovery + l1
     process.trackAlgoPriorityOrder.algoOrder = cms.vstring('hltIter0','initialStep','highPtTripletStep')
-    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1CtfTracks","hltPhase2InitialStepTrackSelectionHighPurity","hltPhase2HighPtTripletStepTrackSelectionHighPurity")
+    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1CtfTracks","hltPhase2InitialStepTracksSelectionHighPurity","hltPhase2HighPtTripletStepTracksSelectionHighPurity")
     process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0,0)
     process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,1.0,1.0)
     process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag(""),
-                                                                     cms.InputTag("hltPhase2InitialStepTrackSelectionHighPurity"),
-                                                                     cms.InputTag("hltPhase2HighPtTripletStepTrackSelectionHighPurity"))
+                                                                     cms.InputTag("hltPhase2InitialStepTracksSelectionHighPurity"),
+                                                                     cms.InputTag("hltPhase2HighPtTripletStepTracksSelectionHighPurity"))
     process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1,2)
 
     #process.hltPhase2InitialStepTracks.clusterRemovalInfo = cms.InputTag("hltPhase2L1TrackStepClusters")
@@ -449,10 +449,10 @@ def customizeTripletL1(process,timing=False):
     # process.hltPhase2L1TracksCutClassifier.vertices = cms.InputTag("hltPhase2L1TracksStepPrimaryVertices")
     process.hltPhase2HighPtTripletStepClusters.trajectories = cms.InputTag("hltPhase2L1TracksSelectionHighPurity")
     process.trackAlgoPriorityOrder.algoOrder = cms.vstring('highPtTripletStep','ctf')
-    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2HighPtTripletStepTrackSelectionHighPurity","hltPhase2L1TracksSelectionHighPurity")
+    process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2HighPtTripletStepTracksSelectionHighPurity","hltPhase2L1TracksSelectionHighPurity")
     process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0)
     process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,1.0)
-    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2HighPtTripletStepTrackSelectionHighPurity"),
+    process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2HighPtTripletStepTracksSelectionHighPurity"),
                                                                      cms.InputTag("hltPhase2L1TracksSelectionHighPurity"))
     process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1)
 
