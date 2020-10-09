@@ -105,7 +105,7 @@ Then you can run and customise your own step
 ```
 cmsDriver.py step3 --geometry Extended2026D49 --era Phase2C9 --conditions auto:phase2_realistic_T15_v2 \
 --processName RECO2 --step RAW2DIGI,RECO --eventcontent RECO --datatier RECO \
---dasquery="file dataset=/TT_TuneCP5_14TeV-powheg-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v2/FEVT" 
+--dasquery="file dataset=/TT_TuneCP5_14TeV-powheg-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v2/FEVT" \
 --mc --nThreads 4 --nStreams 4 --no_exec -n 10 \
 --customise SLHCUpgradeSimulations/Configuration/aging.customise_aging_1000,Configuration/DataProcessing/Utils.addMonitoring \
 --customise CMS_HLT_Phase2_Tracking/Configs/phase2_tracking.customise_hltPhase2_TRKv06_1 \
