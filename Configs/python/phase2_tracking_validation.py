@@ -420,12 +420,12 @@ def customise_prevalidation_common(process):
         vertexRecoCollections = cms.VInputTag("hltPhase2PixelVertices", "hltPhase2SelectedPixelVertices")#,"hltPhase2TrimmedPixelVertices")#,"offlinePrimaryVertices")
     )
 
-    process.load("SimTracker.TrackAssociatorProducers.quickTrackAssociatorByHits_cfi")
-    process.load("SimTracker.TrackerHitAssociation.tpClusterProducer_cfi")
-    process.load("Validation.RecoTrack.TrackValidation_cff")
-    process.load("SimGeneral.TrackingAnalysis.simHitTPAssociation_cfi")
+    process.load("SimTracker.TrackAssociatorProducers.quickTrackAssociatorByHits_cfi")# import quickTrackAssociatorByHits
+    process.load("SimTracker.TrackerHitAssociation.tpClusterProducer_cfi")# import tpClusterProducer
+    process.load("Validation.RecoTrack.TrackValidation_cff")# import trackingParticlesBHadron,trackingParticlesConversion,trackingParticleNumberOfLayersProducer
+    process.load("SimGeneral.TrackingAnalysis.simHitTPAssociation_cfi")# import simHitTPAssocProducer
 
-    process.prevalidation_commons =  cms.Task(
+    process.prevalidation_commons = cms.Task(
                                     process.quickTrackAssociatorByHits,
                                     process.tpClusterProducer,process.trackingParticlesBHadron,process.simHitTPAssocProducer,
                                     process.trackingParticlesConversion,process.trackingParticleNumberOfLayersProducer,
@@ -929,7 +929,7 @@ def customise_validation_common(process):
         ),
       )
 
-    process.load("Validation.RecoTrack.associators_cff")
+    process.load("Validation.RecoTrack.associators_cff")# import hltTPClusterProducer,hltTrackAssociatorByHits
 
     process.hltMultiTrackValidation = cms.Sequence(
            process.hltTPClusterProducer
@@ -945,25 +945,727 @@ def customise_validation_common(process):
 
     return process
 
+def customise_dqm_common(process):
+
+    from CommonTools.RecoAlgos.TrackWithVertexSelector_cfi import trackWithVertexSelector
+
+    #Track Selector Vtx
+    process.hltPhase2PV0p1 = trackWithVertexSelector.clone(
+        numberOfValidPixelHits = cms.uint32(0),
+        ptErrorCut = cms.double(9999999.0),
+        etaMax = cms.double(5.0),
+        etaMin = cms.double(-5.0),
+        ptMax = cms.double(100000.0),
+        ptMin = cms.double(0.8),
+        quality = cms.string(''),
+        rhoVtx = cms.double(999.0),
+        src = cms.InputTag("hltPhase2GeneralTracks"),
+        vertexTag = cms.InputTag("hltPhase2TrackingDQMgoodOfflinePrimaryVertices"),
+        zetaVtx = cms.double(0.1)
+    )
+
+    process.hltPhase2HighPurityPV0p1 = process.hltPhase2PV0p1.clone(
+        quality = cms.string('highPurity'),
+    )
+
+    #Eff monitor
+    process.hltPhase2TrackMon_ckf = cms.EDProducer("TrackEfficiencyMonitor",
+        AlgoName = cms.string('CKFTk'),
+        FolderName = cms.string('Tracking/TrackParameters'),
+        OutputFileName = cms.string('MonitorTrackEfficiency.root'),
+        OutputMEsInRootFile = cms.bool(False),
+        STATrackCollection = cms.InputTag("cosmicMuons"),
+        TKTrackCollection = cms.InputTag("hltPhase2GeneralTracks"),
+        deltaXBin = cms.int32(50),
+        deltaXMax = cms.double(100),
+        deltaXMin = cms.double(-100),
+        deltaYBin = cms.int32(50),
+        deltaYMax = cms.double(100),
+        deltaYMin = cms.double(-100),
+        isBFieldOff = cms.bool(False),
+        muonCompatibleLayersBin = cms.int32(10),
+        muonCompatibleLayersMax = cms.double(30),
+        muonCompatibleLayersMin = cms.double(0),
+        muonD0Bin = cms.int32(50),
+        muonD0Max = cms.double(100),
+        muonD0Min = cms.double(-100),
+        muonEtaBin = cms.int32(50),
+        muonEtaMax = cms.double(3.2),
+        muonEtaMin = cms.double(-3.2),
+        muonPhiBin = cms.int32(50),
+        muonPhiMax = cms.double(0.0),
+        muonPhiMin = cms.double(-3.2),
+        muonXBin = cms.int32(50),
+        muonXMax = cms.double(100),
+        muonXMin = cms.double(-100),
+        muonYBin = cms.int32(50),
+        muonYMax = cms.double(100),
+        muonYMin = cms.double(-100),
+        muonZBin = cms.int32(50),
+        muonZMax = cms.double(500),
+        muonZMin = cms.double(-500),
+        muoncoll = cms.InputTag("muons"),
+        signDeltaXBin = cms.int32(50),
+        signDeltaXMax = cms.double(5),
+        signDeltaXMin = cms.double(-5),
+        signDeltaYBin = cms.int32(50),
+        signDeltaYMax = cms.double(5),
+        signDeltaYMin = cms.double(-5),
+        theMaxZ = cms.double(110.0),
+        theRadius = cms.double(85.0),
+        trackCompatibleLayersBin = cms.int32(10),
+        trackCompatibleLayersMax = cms.double(30),
+        trackCompatibleLayersMin = cms.double(0),
+        trackD0Bin = cms.int32(50),
+        trackD0Max = cms.double(100),
+        trackD0Min = cms.double(-100),
+        trackEfficiency = cms.bool(True),
+        trackEtaBin = cms.int32(50),
+        trackEtaMax = cms.double(3.2),
+        trackEtaMin = cms.double(-3.2),
+        trackPhiBin = cms.int32(50),
+        trackPhiMax = cms.double(0.0),
+        trackPhiMin = cms.double(-3.2),
+        trackXBin = cms.int32(50),
+        trackXMax = cms.double(100),
+        trackXMin = cms.double(-100),
+        trackYBin = cms.int32(50),
+        trackYMax = cms.double(100),
+        trackYMin = cms.double(-100),
+        trackZBin = cms.int32(50),
+        trackZMax = cms.double(500),
+        trackZMin = cms.double(-500)
+    )
+
+    #Track monitors
+    process.hltPhase2TrackSeedMonHighPtTripletStep = cms.EDProducer("TrackingMonitor",
+    **dict(
+        [
+            ("AbsDxyBin" , cms.int32(120) ),
+            ("AbsDxyMax" , cms.double(60.0) ),
+            ("AbsDxyMin" , cms.double(0.0) ),
+            ("AlgoName" , cms.string('highPtTripletStep') ),
+            ("BSFolderName" , cms.string('Tracking/TrackParameters/BeamSpotParameters') ),
+            ("BXlumiSetup" , cms.PSet(
+            BXlumiBin = cms.int32(400),
+            BXlumiMax = cms.double(6000),
+            BXlumiMin = cms.double(2000),
+            lumi = cms.InputTag("lumiProducer"),
+            lumiScale = cms.double(6.37)
+        ) ),
+            ("Chi2Bin" , cms.int32(50) ),
+            ("Chi2Max" , cms.double(199.5) ),
+            ("Chi2Min" , cms.double(-0.5) ),
+            ("Chi2NDFBin" , cms.int32(50) ),
+            ("Chi2NDFMax" , cms.double(19.5) ),
+            ("Chi2NDFMin" , cms.double(-0.5) ),
+            ("Chi2ProbBin" , cms.int32(100) ),
+            ("Chi2ProbMax" , cms.double(1.0) ),
+            ("Chi2ProbMin" , cms.double(0.0) ),
+            ("ClusterLabels" , cms.vstring(
+            'Tot',
+            'Strip',
+            'Pix'
+        ) ),
+            ("DxyBin" , cms.int32(100) ),
+            ("DxyErrBin" , cms.int32(200) ),
+            ("DxyErrMax" , cms.double(0.1) ),
+            ("DxyMax" , cms.double(0.5) ),
+            ("DxyMin" , cms.double(-0.5) ),
+            ("Eta2DBin" , cms.int32(26) ),
+            ("EtaBin" , cms.int32(46) ),
+            ("EtaMax" , cms.double(4.5) ),
+            ("EtaMin" , cms.double(-4.5) ),
+            ("FolderName" , cms.string('Tracking/TrackParameters/hltPhase2GeneralTracks') ),
+            ("GoodPVtxBin" , cms.int32(200) ),
+            ("GoodPVtxMax" , cms.double(200.0) ),
+            ("GoodPVtxMin" , cms.double(0.0) ),
+            ("LSBin" , cms.int32(2000) ),
+            ("LSMax" , cms.double(2000.0) ),
+            ("LSMin" , cms.double(0) ),
+            ("LUMIBin" , cms.int32(700) ),
+            ("LUMIMax" , cms.double(70000.0) ),
+            ("LUMIMin" , cms.double(0.0) ),
+            ("LongDCABins" , cms.int32(100) ),
+            ("LongDCAMax" , cms.double(8.0) ),
+            ("LongDCAMin" , cms.double(-8.0) ),
+            ("MVABin" , cms.int32(100) ),
+            ("MVAMax" , cms.double(1) ),
+            ("MVAMin" , cms.double(-1) ),
+            ("MVAProducers" , cms.vstring(
+            'initialStepClassifier1',
+            'initialStepClassifier2'
+        ) ),
+            ("MeanHitBin" , cms.int32(30) ),
+            ("MeanHitMax" , cms.double(29.5) ),
+            ("MeanHitMin" , cms.double(-0.5) ),
+            ("MeanLayBin" , cms.int32(25) ),
+            ("MeanLayMax" , cms.double(24.5) ),
+            ("MeanLayMin" , cms.double(-0.5) ),
+            ("MeasurementState" , cms.string('ImpactPoint') ),
+            ("NClusPxBin" , cms.int32(500) ),
+            ("NClusPxMax" , cms.double(150000) ),
+            ("NClusPxMin" , cms.double(-0.5) ),
+            ("NClusStrBin" , cms.int32(500) ),
+            ("NClusStrMax" , cms.double(199999.5) ),
+            ("NClusStrMin" , cms.double(-0.5) ),
+            ("NTrk2DBin" , cms.int32(50) ),
+            ("NTrk2DMax" , cms.double(1999.5) ),
+            ("NTrk2DMin" , cms.double(-0.5) ),
+            ("PVBin" , cms.int32(125) ),
+            ("PVFolderName" , cms.string('Tracking/PrimaryVertices') ),
+            ("PVMax" , cms.double(249.5) ),
+            ("PVMin" , cms.double(-0.5) ),
+            ("PXBLayBin" , cms.int32(6) ),
+            ("PXBLayMax" , cms.double(5.5) ),
+            ("PXBLayMin" , cms.double(-0.5) ),
+            ("PXFLayBin" , cms.int32(6) ),
+            ("PXFLayMax" , cms.double(5.5) ),
+            ("PXFLayMin" , cms.double(-0.5) ),
+            ("Phi2DBin" , cms.int32(32) ),
+            ("PhiBin" , cms.int32(32) ),
+            ("PhiMax" , cms.double(3.141592654) ),
+            ("PhiMin" , cms.double(-3.141592654) ),
+            ("Quality" , cms.string('') ),
+            ("RecHitBin" , cms.int32(40) ),
+            ("RecHitMax" , cms.double(39.5) ),
+            ("RecHitMin" , cms.double(-0.5) ),
+            ("RecLayBin" , cms.int32(25) ),
+            ("RecLayMax" , cms.double(24.5) ),
+            ("RecLayMin" , cms.double(-0.5) ),
+            ("RecLostBin" , cms.int32(10) ),
+            ("RecLostMax" , cms.double(9.5) ),
+            ("RecLostMin" , cms.double(-0.5) ),
+            ("RegionCandidatePtBin" , cms.int32(100) ),
+            ("RegionCandidatePtMax" , cms.double(1000) ),
+            ("RegionCandidatePtMin" , cms.double(0) ),
+            ("RegionCandidates" , cms.InputTag("") ),
+            ("RegionProducer" , cms.InputTag("") ),
+            ("RegionSeedingLayersProducer" , cms.InputTag("") ),
+            ("RegionSizeBin" , cms.int32(20) ),
+            ("RegionSizeMax" , cms.double(19.5) ),
+            ("RegionSizeMin" , cms.double(-0.5) ),
+            ("SeedCandBin" , cms.int32(20) ),
+            ("SeedCandMax" , cms.double(19.5) ),
+            ("SeedCandMin" , cms.double(-0.5) ),
+            ("SeedDxyBin" , cms.int32(100) ),
+            ("SeedDxyMax" , cms.double(0.5) ),
+            ("SeedDxyMin" , cms.double(-0.5) ),
+            ("SeedDzBin" , cms.int32(120) ),
+            ("SeedDzMax" , cms.double(30.0) ),
+            ("SeedDzMin" , cms.double(-30.0) ),
+            ("SeedHitBin" , cms.int32(6) ),
+            ("SeedHitMax" , cms.double(5.5) ),
+            ("SeedHitMin" , cms.double(-0.5) ),
+            ("SeedProducer" , cms.InputTag("hltPhase2HighPtTripletStepSeeds") ),
+            ("TCDxyBin" , cms.int32(100) ),
+            ("TCDxyMax" , cms.double(100.0) ),
+            ("TCDxyMin" , cms.double(-100.0) ),
+            ("TCDzBin" , cms.int32(100) ),
+            ("TCDzMax" , cms.double(400.0) ),
+            ("TCDzMin" , cms.double(-400.0) ),
+            ("TCHitBin" , cms.int32(40) ),
+            ("TCHitMax" , cms.double(39.5) ),
+            ("TCHitMin" , cms.double(-0.5) ),
+            ("TCProducer" , cms.InputTag("hltPhase2HighPtTripletStepTrackCandidates") ),
+            ("TCSizeBin" , cms.int32(200) ),
+            ("TCSizeMax" , cms.double(999.5) ),
+            ("TCSizeMin" , cms.double(-0.5) ),
+            ("TECLayBin" , cms.int32(15) ),
+            ("TECLayMax" , cms.double(14.5) ),
+            ("TECLayMin" , cms.double(-0.5) ),
+            ("TIBLayBin" , cms.int32(6) ),
+            ("TIBLayMax" , cms.double(5.5) ),
+            ("TIBLayMin" , cms.double(-0.5) ),
+            ("TIDLayBin" , cms.int32(6) ),
+            ("TIDLayMax" , cms.double(5.5) ),
+            ("TIDLayMin" , cms.double(-0.5) ),
+            ("TOBLayBin" , cms.int32(10) ),
+            ("TOBLayMax" , cms.double(9.5) ),
+            ("TOBLayMin" , cms.double(-0.5) ),
+            ("TTRHBuilder" , cms.string('WithTrackAngle') ),
+            ("ThetaBin" , cms.int32(32) ),
+            ("ThetaMax" , cms.double(3.2) ),
+            ("ThetaMin" , cms.double(0.0) ),
+            ("TkSeedSizeBin" , cms.int32(100) ),
+            ("TkSeedSizeMax" , cms.double(5000) ),
+            ("TkSeedSizeMin" , cms.double(-0.5) ),
+            ("TkSizeBin" , cms.int32(1000) ),
+            ("TkSizeMax" , cms.double(999.5) ),
+            ("TkSizeMin" , cms.double(-0.5) ),
+            ("TrackPBin" , cms.int32(100) ),
+            ("TrackPMax" , cms.double(100.0) ),
+            ("TrackPMin" , cms.double(0.0) ),
+            ("TrackProducer" , cms.InputTag("hltPhase2GeneralTracks") ),
+            ("TrackProducerForMVA" , cms.InputTag("hltPhase2InitialStepTracks") ),
+            ("TrackPt2DBin" , cms.int32(100) ),
+            ("TrackPtBin" , cms.int32(100) ),
+            ("TrackPtMax" , cms.double(100.0) ),
+            ("TrackPtMin" , cms.double(0.1) ),
+            ("TrackPxBin" , cms.int32(50) ),
+            ("TrackPxMax" , cms.double(50.0) ),
+            ("TrackPxMin" , cms.double(-50.0) ),
+            ("TrackPyBin" , cms.int32(50) ),
+            ("TrackPyMax" , cms.double(50.0) ),
+            ("TrackPyMin" , cms.double(-50.0) ),
+            ("TrackPzBin" , cms.int32(50) ),
+            ("TrackPzMax" , cms.double(50.0) ),
+            ("TrackPzMin" , cms.double(-50.0) ),
+            ("TrackQBin" , cms.int32(8) ),
+            ("TrackQMax" , cms.double(2.5) ),
+            ("TrackQMin" , cms.double(-2.5) ),
+            ("TransDCABins" , cms.int32(100) ),
+            ("TransDCAMax" , cms.double(8.0) ),
+            ("TransDCAMin" , cms.double(-8.0) ),
+            ("VXBin" , cms.int32(100) ),
+            ("VXMax" , cms.double(0.5) ),
+            ("VXMin" , cms.double(-0.5) ),
+            ("VYBin" , cms.int32(100) ),
+            ("VYMax" , cms.double(0.5) ),
+            ("VYMin" , cms.double(-0.5) ),
+            ("VZBin" , cms.int32(100) ),
+            ("VZBinProf" , cms.int32(100) ),
+            ("VZMax" , cms.double(30.0) ),
+            ("VZMaxProf" , cms.double(0.2) ),
+            ("VZMin" , cms.double(-30.0) ),
+            ("VZMinProf" , cms.double(-0.2) ),
+            ("X0Bin" , cms.int32(100) ),
+            ("X0Max" , cms.double(0.5) ),
+            ("X0Min" , cms.double(-0.5) ),
+            ("Y0Bin" , cms.int32(100) ),
+            ("Y0Max" , cms.double(0.5) ),
+            ("Y0Min" , cms.double(-0.5) ),
+            ("Z0Bin" , cms.int32(120) ),
+            ("Z0Max" , cms.double(60.0) ),
+            ("Z0Min" , cms.double(-60.0) ),
+            ("allTrackProducer" , cms.InputTag("hltPhase2GeneralTracks") ),
+            ("beamSpot" , cms.InputTag("offlineBeamSpot") ),
+            ("denCut" , cms.string(' pt >= 1 ') ),
+            ("doAllPlots" , cms.bool(False) ),
+            ("doAllTrackCandHistos" , cms.bool(False) ),
+            ("doBeamSpotPlots" , cms.bool(False) ),
+            ("doDCAPlots" , cms.bool(False) ),
+            ("doDCAwrt000Plots" , cms.bool(False) ),
+            ("doDCAwrtPVPlots" , cms.bool(False) ),
+            ("doEffFromHitPatternVsBX" , cms.bool(False) ),
+            ("doEffFromHitPatternVsLUMI" , cms.bool(False) ),
+            ("doEffFromHitPatternVsPU" , cms.bool(False) ),
+            ("doGeneralPropertiesPlots" , cms.bool(False) ),
+            ("doHIPlots" , cms.bool(False) ),
+            ("doHitPropertiesPlots" , cms.bool(False) ),
+            ("doLayersVsPhiVsEtaPerTrack" , cms.bool(False) ),
+        ] +
+        [
+            ("doLumiAnalysis" , cms.bool(False) ),
+            ("doMVAPlots" , cms.bool(False) ),
+            ("doMeasurementStatePlots" , cms.bool(False) ),
+            ("doPUmonitoring" , cms.bool(False) ),
+            ("doPlotsVsBX" , cms.bool(False) ),
+            ("doPlotsVsBXlumi" , cms.bool(False) ),
+            ("doPlotsVsGoodPVtx" , cms.bool(True) ),
+            ("doPlotsVsLUMI" , cms.bool(False) ),
+            ("doPrimaryVertexPlots" , cms.bool(False) ),
+            ("doProfilesVsLS" , cms.bool(False) ),
+            ("doRecHitVsPhiVsEtaPerTrack" , cms.bool(False) ),
+            ("doRecHitVsPtVsEtaPerTrack" , cms.bool(False) ),
+            ("doRecHitsPerTrackProfile" , cms.bool(False) ),
+            ("doRegionCandidatePlots" , cms.bool(False) ),
+            ("doRegionPlots" , cms.bool(False) ),
+            ("doSIPPlots" , cms.bool(False) ),
+            ("doSeedDxyHisto" , cms.bool(False) ),
+            ("doSeedDzHisto" , cms.bool(False) ),
+            ("doSeedETAHisto" , cms.bool(True) ),
+            ("doSeedLumiAnalysis" , cms.bool(True) ),
+            ("doSeedNRecHitsHisto" , cms.bool(False) ),
+            ("doSeedNVsEtaProf" , cms.bool(False) ),
+            ("doSeedNVsPhiProf" , cms.bool(False) ),
+            ("doSeedNumberHisto" , cms.bool(True) ),
+            ("doSeedPHIHisto" , cms.bool(True) ),
+            ("doSeedPHIVsETAHisto" , cms.bool(True) ),
+            ("doSeedPTHisto" , cms.bool(True) ),
+            ("doSeedParameterHistos" , cms.bool(False) ),
+            ("doSeedQHisto" , cms.bool(False) ),
+            ("doSeedThetaHisto" , cms.bool(False) ),
+            ("doSeedVsClusterHisto" , cms.bool(True) ),
+            ("doStopSource" , cms.bool(True) ),
+            ("doTestPlots" , cms.bool(False) ),
+            ("doThetaPlots" , cms.bool(False) ),
+            ("doTrackCandHistos" , cms.bool(True) ),
+            ("doTrackPxPyPlots" , cms.bool(False) ),
+            ("doTrackerSpecific" , cms.bool(False) ),
+            ("etaErrBin" , cms.int32(50) ),
+            ("etaErrMax" , cms.double(0.1) ),
+            ("etaErrMin" , cms.double(0.0) ),
+            ("genericTriggerEventPSet" , cms.PSet(
+
+        ) ),
+            ("minNumberOfPixelsPerCluster" , cms.int32(2) ),
+            ("minPixelClusterCharge" , cms.double(15000.0) ),
+            ("numCut" , cms.string(" pt >= 1 & quality(\'highPurity\') ") ),
+            ("pErrBin" , cms.int32(50) ),
+            ("pErrMax" , cms.double(1.0) ),
+            ("pErrMin" , cms.double(0.0) ),
+            ("phiErrBin" , cms.int32(50) ),
+            ("phiErrMax" , cms.double(0.1) ),
+            ("phiErrMin" , cms.double(0.0) ),
+            ("pixelCluster" , cms.InputTag("siPixelClusters") ),
+            ("pixelCluster4lumi" , cms.InputTag("siPixelClustersPreSplitting") ),
+            ("primaryVertex" , cms.InputTag("hltPhase2OfflinePrimaryVertices") ),
+            ("primaryVertexInputTags" , cms.VInputTag() ),
+            ("ptErrBin" , cms.int32(50) ),
+            ("ptErrMax" , cms.double(1.0) ),
+            ("ptErrMin" , cms.double(0.0) ),
+            ("pvLabels" , cms.vstring() ),
+            ("pvNDOF" , cms.int32(4) ),
+            ("pxErrBin" , cms.int32(50) ),
+            ("pxErrMax" , cms.double(1.0) ),
+            ("pxErrMin" , cms.double(0.0) ),
+            ("pyErrBin" , cms.int32(50) ),
+            ("pyErrMax" , cms.double(1.0) ),
+            ("pyErrMin" , cms.double(0.0) ),
+            ("pzErrBin" , cms.int32(50) ),
+            ("pzErrMax" , cms.double(1.0) ),
+            ("pzErrMin" , cms.double(0.0) ),
+            ("qualityString" , cms.string('highPurity') ),
+            ("scal" , cms.InputTag("scalersRawToDigi") ),
+            ("selPrimaryVertexInputTags" , cms.VInputTag() ),
+            ("stripCluster" , cms.InputTag("siStripClusters") ),
+            ("subdetectorBin" , cms.int32(25) ),
+            ("subdetectors" , cms.vstring(
+            'TIB',
+            'TOB',
+            'TID',
+            'TEC',
+            'PixBarrel',
+            'PixEndcap',
+            'Pixel',
+            'Strip'
+        ) ),
+            ("useBPixLayer1" , cms.bool(False) ),
+            ]
+        )
+    )
+
+    process.hltPhase2TrackSeedMonInitialStep = process.hltPhase2TrackSeedMonHighPtTripletStep.clone(
+            AlgoName = cms.string('initialStep'),
+            BSFolderName = cms.string('Tracking/TrackParameters/BeamSpotParameters'),
+            MVAProducers=cms.vstring('hltPhase2InitialStepTrackCutClassifier'),
+            FolderName = cms.string('Tracking/TrackParameters/hltPhase2GeneralTracks'),
+            PVFolderName = cms.string('Tracking/PrimaryVertices'),
+            SeedProducer = cms.InputTag("hltPhase2InitialStepSeeds"),
+            TCProducer = cms.InputTag("hltPhase2InitialStepTrackCandidates"),
+            TrackProducer = cms.InputTag("hltPhase2GeneralTracks"),
+            TrackProducerForMVA = cms.InputTag("hltPhase2InitialStepTracks"),
+            denCut = cms.string(' pt >= 1 '),
+            genericTriggerEventPSet = cms.PSet(),
+            numCut = cms.string(" pt >= 1 & quality(\'highPurity\') "),
+            primaryVertexInputTags = cms.VInputTag(),
+            selPrimaryVertexInputTags = cms.VInputTag()
+            )
 
 
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks = process.hltPhase2TrackSeedMonHighPtTripletStep.clone(
+           AlgoName=cms.string('GenTk'),
+           BSFolderName=cms.string('Tracking/ParametersVsBeamSpot'),
+           FolderName=cms.string('Tracking/TrackParameters/hltPhase2GeneralTracks'),
+           MVAProducers=cms.vstring('hltPhase2InitialStepTrackCutClassifier'),
+           MeasurementState=cms.string('ImpactPoint'),
+           PVFolderName=cms.string('Tracking/PrimaryVertices/hltPhase2GeneralTracks'),
+           RegionCandidates=cms.InputTag(""),
+           RegionProducer=cms.InputTag(""),
+           RegionSeedingLayersProducer=cms.InputTag(""),
+           SeedProducer=cms.InputTag("hltPhase2InitialStepSeeds"),
+           TCProducer=cms.InputTag("hltPhase2InitialStepTrackCandidates"),
+           TTRHBuilder=cms.string('WithTrackAngle'),
+           TrackProducer=cms.InputTag("hltPhase2GeneralTracks"),
+           TrackProducerForMVA=cms.InputTag("hltPhase2InitialStepTracks"),
+           allTrackProducer=cms.InputTag("hltPhase2GeneralTracks"),
+           beamSpot=cms.InputTag("offlineBeamSpot"),
+           denCut=cms.string(''),
+           genericTriggerEventPSet=cms.PSet(
+            andOr = cms.bool(False),
+            andOrDcs = cms.bool(False),
+            dcsInputTag = cms.InputTag("scalersRawToDigi"),
+            dcsPartitions = cms.vint32(
+                24, 25, 26, 27, 28,
+                29
+            ),
+            errorReplyDcs = cms.bool(True)),
+           numCut=cms.string("quality(\'highPurity\')"),
+           pixelCluster=cms.InputTag("siPixelClusters"),
+           pixelCluster4lumi=cms.InputTag("siPixelClustersPreSplitting"),
+           primaryVertex=cms.InputTag("hltPhase2OfflinePrimaryVertices"),
+           primaryVertexInputTags=cms.VInputTag(cms.InputTag("hltPhase2OfflinePrimaryVertices")),
+           qualityString=cms.string('highPurity'),
+           scal=cms.InputTag("scalersRawToDigi"),
+           selPrimaryVertexInputTags=cms.VInputTag(cms.InputTag("goodOfflinePrimaryVertices")),
+           stripCluster=cms.InputTag("siStripClusters")
+    )
 
-def customise_hltPhase2_TRKv06_1_withvalidation(process):
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonHighPurityPV0p1 = process.hltPhase2TrackSeedMonHighPtTripletStep.clone(
 
+           AlgoName=cms.string('GenTk'),
+           BSFolderName=cms.string('Tracking/ParametersVsBeamSpot'),
+           FolderName=cms.string('Tracking/TrackParameters/HighPurityTracks/dzPV0p1'),
+           MVAProducers=cms.vstring('hltPhase2InitialStepTrackCutClassifier'),
+           MeasurementState=cms.string('ImpactPoint'),
+           PVFolderName=cms.string('Tracking/PrimaryVertices/HighPurityTracks/dzPV0p1'),
+           RegionCandidates=cms.InputTag(""),
+           RegionProducer=cms.InputTag(""),
+           RegionSeedingLayersProducer=cms.InputTag(""),
+           SeedProducer=cms.InputTag("hltPhase2InitialStepSeeds"),
+           TCProducer=cms.InputTag("hltPhase2InitialStepTrackCandidates"),
+           TTRHBuilder=cms.string('WithTrackAngle'),
+           TrackProducer=cms.InputTag("hltPhase2HighPurityPV0p1"),
+           TrackProducerForMVA=cms.InputTag("hltPhase2InitialStepTracks"),
+           allTrackProducer=cms.InputTag("hltPhase2PV0p1"),
+           beamSpot=cms.InputTag("offlineBeamSpot"),
+           denCut=cms.string(''),
+           genericTriggerEventPSet=cms.PSet(
+            andOr = cms.bool(False),
+            andOrDcs = cms.bool(False),
+            dcsInputTag = cms.InputTag("scalersRawToDigi"),
+            dcsPartitions = cms.vint32(
+                24, 25, 26, 27, 28,
+                29),
+            errorReplyDcs = cms.bool(True)),
+           numCut=cms.string("quality(\'highPurity\')"),
+           pixelCluster=cms.InputTag("siPixelClusters"),
+           pixelCluster4lumi=cms.InputTag("siPixelClustersPreSplitting"),
+           primaryVertex=cms.InputTag("hltPhase2OfflinePrimaryVertices"),
+           primaryVertexInputTags=cms.VInputTag(cms.InputTag("hltPhase2OfflinePrimaryVertices")),
+           qualityString=cms.string('highPurity'),
+           scal=cms.InputTag("scalersRawToDigi"),
+           selPrimaryVertexInputTags=cms.VInputTag(cms.InputTag("goodOfflinePrimaryVertices")),
+           stripCluster=cms.InputTag("siStripClusters"),
+
+        )
+
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonHighPurity = process.hltPhase2TrackSeedMonHighPtTripletStep.clone(
+           AlgoName=cms.string('GenTk'),
+           BSFolderName=cms.string('Tracking/ParametersVsBeamSpot'),
+           FolderName=cms.string('Tracking/TrackParameters/HighPurityTracks/pt_1'),
+           MVAProducers=cms.vstring('hltPhase2InitialStepTrackCutClassifier'),
+           MeasurementState=cms.string('ImpactPoint'),
+           PVFolderName=cms.string('Tracking/PrimaryVertices/HighPurityTracks/pt_1'),
+           RegionSeedingLayersProducer=cms.InputTag(""),
+           SeedProducer=cms.InputTag("hltPhase2InitialStepSeeds"),
+           TCProducer=cms.InputTag("hltPhase2InitialStepTrackCandidates"),
+           TTRHBuilder=cms.string('WithTrackAngle'),
+           TrackProducer=cms.InputTag("hltPhase2HighPurity"),
+           TrackProducerForMVA=cms.InputTag("hltPhase2InitialStepTracks"),
+           allTrackProducer=cms.InputTag("hltPhase2GeneralTracks"),
+           beamSpot=cms.InputTag("offlineBeamSpot"),
+           denCut=cms.string(' pt >= 1 '),
+           genericTriggerEventPSet=cms.PSet(
+            andOr = cms.bool(False),
+            andOrDcs = cms.bool(False),
+            dcsInputTag = cms.InputTag("scalersRawToDigi"),
+            dcsPartitions = cms.vint32(
+                24, 25, 26, 27, 28,
+                29
+            ),
+            errorReplyDcs = cms.bool(True)
+        ),
+           numCut=cms.string(" pt >= 1 & quality(\'highPurity\')"),
+           pixelCluster=cms.InputTag("siPixelClusters"),
+           pixelCluster4lumi=cms.InputTag("siPixelClustersPreSplitting"),
+           primaryVertex=cms.InputTag("hltPhase2OfflinePrimaryVertices"),
+           primaryVertexInputTags=cms.VInputTag(cms.InputTag("hltPhase2OfflinePrimaryVertices")),
+           qualityString=cms.string('highPurity'),
+           scal=cms.InputTag("scalersRawToDigi"),
+           selPrimaryVertexInputTags=cms.VInputTag(cms.InputTag("goodOfflinePrimaryVertices")),
+           stripCluster=cms.InputTag("siStripClusters"),
+
+        )
+
+
+    #Track selector
+    process.hltPhase2HighPurity = cms.EDFilter("TrackSelector",
+        cut = cms.string("quality(\'highPurity\')"),
+        src = cms.InputTag("hltPhase2GeneralTracks")
+    )
+
+    #PV resol
+    process.hltPhase2PrimaryVertexResolution = cms.EDProducer("PrimaryVertexResolution",
+        beamspotSrc = cms.untracked.InputTag("offlineBeamSpot"),
+        binsNtracks = cms.untracked.int32(60),
+        binsNvertices = cms.untracked.int32(100),
+        binsPull = cms.untracked.int32(100),
+        binsResol = cms.untracked.int32(100),
+        lumiScalersSrc = cms.untracked.InputTag("scalersRawToDigi"),
+        maxLumi = cms.untracked.double(20000),
+        maxNtracks = cms.untracked.double(119.5),
+        maxNvertices = cms.untracked.double(199.5),
+        maxPt = cms.untracked.double(1000),
+        maxPull = cms.untracked.double(5),
+        maxResol = cms.untracked.double(0.02),
+        minLumi = cms.untracked.double(200),
+        minNtracks = cms.untracked.double(-0.5),
+        minNvertices = cms.untracked.double(-0.5),
+        minPt = cms.untracked.double(1),
+        rootFolder = cms.untracked.string('OfflinePV/Resolution'),
+        transientTrackBuilder = cms.untracked.string('TransientTrackBuilder'),
+        vertexSrc = cms.untracked.InputTag("hltPhase2TrackingDQMgoodOfflinePrimaryVertices")
+    )
+
+    process.hltPhase2PvMonitor = cms.EDProducer("PrimaryVertexMonitor",
+        AlignmentLabel = cms.string('Alignment'),
+        DxyBin = cms.int32(100),
+        DxyMax = cms.double(5000.0),
+        DxyMin = cms.double(-5000.0),
+        DzBin = cms.int32(100),
+        DzMax = cms.double(2000.0),
+        DzMin = cms.double(-2000.0),
+        EtaBin = cms.int32(41),
+        EtaMax = cms.double(4.0),
+        EtaMin = cms.double(-4.0),
+        PhiBin = cms.int32(32),
+        PhiMax = cms.double(3.141592654),
+        PhiMin = cms.double(-3.141592654),
+        TkSizeBin = cms.int32(100),
+        TkSizeMax = cms.double(499.5),
+        TkSizeMin = cms.double(-0.5),
+        TopFolderName = cms.string('OfflinePV'),
+        Xpos = cms.double(0.1),
+        Ypos = cms.double(0.0),
+        beamSpotLabel = cms.InputTag("offlineBeamSpot"),
+        ndof = cms.int32(4),
+        vertexLabel = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
+    )
+
+    #Vertex Selector
+    process.hltPhase2TrackingDQMgoodPixelVertices = cms.EDFilter("VertexSelector",
+        cut = cms.string('!isFake && ndof >= 4.0 && abs(z) <= 24.0 && abs(position.Rho) <= 2.0'),
+        filter = cms.bool(False),
+        src = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
+    )
+
+    process.hltPhase2TrackingDQMgoodOfflinePrimaryVertices = cms.EDFilter("VertexSelector",
+        cut = cms.string('!isFake && ndof >= 4.0 && abs(z) <= 24.0 && abs(position.Rho) <= 2.0'),
+        filter = cms.bool(False),
+        src = cms.InputTag("hltPhase2OfflinePrimaryVertices") #("hltPhase2OfflinePrimaryVertices")
+    )
+
+    process.hltPhase2TrackingDQMgoodTrimmedPixelVertices = cms.EDFilter("VertexSelector",
+        cut = cms.string('!isFake && ndof >= 4.0 && abs(z) <= 24.0 && abs(position.Rho) <= 2.0'),
+        filter = cms.bool(False),
+        src = cms.InputTag("hltPhase2TrimmedPixelVertices") #("hltPhase2OfflinePrimaryVertices")
+    )
+
+    #############################################
+    ##### Release updates from 11_1_0_pre6
+
+    ##11_1_0_pre7
+
+    gooppvtx_60 = cms.PSet(GoodPVtxBin = cms.int32(60),GoodPVtxMax = cms.double(60.0),GoodPVtxMin = cms.double(0.0))
+    gooppvtx_200 = cms.PSet(GoodPVtxBin = cms.int32(200),GoodPVtxMax = cms.double(200.0),GoodPVtxMin = cms.double(0.0))
+    npvtx = cms.PSet(NTrkPVtxBin = cms.int32(200), NTrkPVtxMin = cms.double( 0.), NTrkPVtxMax = cms.double(200.))
+    sumptvtx = cms.PSet(SumPtPVtxBin = cms.int32(200), SumPtPVtxMin = cms.double( 0.), SumPtPVtxMax = cms.double(1000.))
+
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonHighPurity.GoodPVtx = gooppvtx_200
+    process.hltPhase2TrackSeedMonHighPtTripletStep.GoodPVtx = gooppvtx_200
+    process.hltPhase2TrackSeedMonInitialStep.GoodPVtx = gooppvtx_200
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonHighPurityPV0p1.GoodPVtx = gooppvtx_60
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks.GoodPVtx = gooppvtx_60
+
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonHighPurity.SumPtPVtx = sumptvtx
+    process.hltPhase2TrackSeedMonHighPtTripletStep.SumPtPVtx = sumptvtx
+    process.hltPhase2TrackSeedMonInitialStep.SumPtPVtx = sumptvtx
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonHighPurityPV0p1.SumPtPVtx = sumptvtx
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks.SumPtPVtx = sumptvtx
+
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonHighPurity.NTrkPVtx = npvtx
+    process.hltPhase2TrackSeedMonHighPtTripletStep.NTrkPVtx = npvtx
+    process.hltPhase2TrackSeedMonInitialStep.NTrkPVtx = npvtx
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonHighPurityPV0p1.NTrkPVtx = npvtx
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks.NTrkPVtx = npvtx
+
+
+    ##11_1_0
+
+    ntrk2d = cms.PSet(NTrk2DBin = cms.int32(50), NTrk2DMax = cms.double(1999.5), NTrk2DMin = cms.double(-0.5))
+
+    process.hltPhase2TrackSeedMonHighPtTripletStep.NTrk2D = ntrk2d
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks.NTrk2D = ntrk2d
+    process.hltPhase2TrackSeedMonInitialStep.NTrk2D = ntrk2d
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonHighPurityPV0p1.NTrk2D = ntrk2d
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonHighPurity.NTrk2D = ntrk2d
+
+    process.hltPhase2TrackSeedMonHighPtTripletStep.forceSCAL = cms.bool(True)
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks.forceSCAL = cms.bool(True)
+    process.hltPhase2TrackSeedMonInitialStep.forceSCAL = cms.bool(True)
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonHighPurityPV0p1.forceSCAL = cms.bool(True)
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonHighPurity.forceSCAL = cms.bool(True)
+
+    process.hltPhase2TrackSeedMonHighPtTripletStep.metadata = cms.InputTag('onlineMetaDataDigis')
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks.metadata = cms.InputTag('onlineMetaDataDigis')
+    process.hltPhase2TrackSeedMonInitialStep.metadata = cms.InputTag('onlineMetaDataDigis')
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonHighPurityPV0p1.metadata = cms.InputTag('onlineMetaDataDigis')
+    process.hltPhase2TrackerCollisionSelectedTrackMonCommonHighPurity.metadata = cms.InputTag('onlineMetaDataDigis')
+
+    process.load("DQM.TrackingMonitor.TrackSplittingMonitor_cfi")# import TrackSplitMonitor
+    process.load("DQM.TrackingMonitorSource.TrackingSourceConfig_Tier0_cff")# import dqmInfoTracking
+
+    process.dqm_commons = cms.Task(process.TrackSplitMonitor,process.dqmInfoTracking)
+
+    process.dqm_initial = cms.Task(process.hltPhase2TrackSeedMonInitialStep)
+
+    process.dqm_highpt = cms.Task(process.hltPhase2TrackSeedMonHighPtTripletStep)
+
+    process.dqm_vertex = cms.Task(process.hltPhase2PvMonitor,process.hltPhase2PrimaryVertexResolution,process.hltPhase2TrackingDQMgoodOfflinePrimaryVertices)
+
+    process.dqm_pixelvertex = cms.Task(process.hltPhase2TrackingDQMgoodPixelVertices,process.hltPhase2TrackingDQMgoodPixelVertices)
+
+    process.dqm_general = cms.Task(process.hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks,
+                           ##High Purity & Selectors
+                           process.hltPhase2PV0p1, process.hltPhase2HighPurityPV0p1, #PV
+                           process.hltPhase2HighPurity, #HP
+                           #Monitors
+                           process.hltPhase2TrackerCollisionSelectedTrackMonCommonHighPurityPV0p1,
+                           process.hltPhase2TrackerCollisionSelectedTrackMonCommonHighPurity,
+                           #Eff Mon
+                           process.hltPhase2TrackMon_ckf)
+    process.dqm_original = cms.EndPath(process.dqm_commons,process.dqm_vertex,process.dqm_pixelvertex,process.dqm_initial,process.dqm_highpt,process.dqm_general)
+
+    return process
+
+def deletions(process):
+
+    if 'trackingDQMgoodOfflinePrimaryVertices' in process.__dict__:
+        del process.trackingDQMgoodOfflinePrimaryVertices
+    if 'dedxDQMHarm2SP' in process.__dict__:
+        del process.dedxDQMHarm2SP
+    if 'dedxDQMHarm2SO' in process.__dict__:
+        del process.dedxDQMHarm2SO
+    if 'dedxDQMHarm2PO' in process.__dict__:
+        del process.dedxDQMHarm2PO
+
+    return process
+
+def customise_hltPhase2_TRKv06_1_val(process):
+
+    process.load("RecoLocalTracker.SiStripClusterizer.SiStripClusterChargeCut_cfi")
+    process.load("RecoPixelVertexing.PixelLowPtUtilities.ClusterShapeTrajectoryFilter_cfi")
+    process.load('RecoLocalCalo.EcalRecAlgos.EcalSeverityLevelESProducer_cfi')
+    process.load('Geometry.CaloEventSetup.CaloTowerConstituents_cfi')
 
     process = customise_hltPhase2_TRKv06_1(process)
     process = customise_prevalidation_common(process)
     process = customise_validation_common(process)
+    process = customise_dqm_common(process)
+
+    del process.schedule[:]
 
     process.reconstruction_step = cms.Path(process.reconstruction)
     process.prevalidation_step= cms.Path(process.prevalidation_startup,process.prevalidation_v0,process.prevalidation_initial,process.prevalidation_highpt,process.prevalidation_general)
     process.validation_step = cms.EndPath(process.validation_baseline)
-
-    process.load("CMS_HLT_Phase2_Tracking.Configs.dqm")
-
     process.mydqm = cms.Sequence(process.dqm_commons,process.dqm_vertex,process.dqm_pixelvertex,process.dqm_initial,process.dqm_highpt,process.dqm_general)
     process.dqm_step = cms.EndPath(process.mydqm)
-    process.schedule = cms.Schedule(*[ process.raw2digi_step, process.reconstruction_step, process.prevalidation_step, process.validation_step, process.dqm_step, process.dqmofflineOnPAT_step , process.endjob_step, process.RECOoutput_step, process.DQMoutput_step])
+    process.dqmoffline_step = cms.EndPath()
+    process = deletions(process)
+
+    process.schedule = cms.Schedule(process.raw2digi_step, process.reconstruction_step, process.prevalidation_step, process.validation_step, process.dqm_step, process.endjob_step, process.DQMoutput_step)
 
     return process
 
@@ -977,10 +1679,8 @@ def customise_hltPhase2_TRKv07_withvalidation(process):
     process.prevalidation_step= cms.Path(process.prevalidation_startup,process.prevalidation_v0,process.prevalidation_initial,process.prevalidation_highpt,process.prevalidation_general)
     process.validation_step = cms.EndPath(process.validation_baseline)
 
-    process.load("CMS_HLT_Phase2_Tracking.Configs.dqm")
-
     process.DQMOfflineTracking = cms.Sequence(process.dqm_commons,process.dqm_vertex,process.dqm_pixelvertex,process.dqm_initial,process.dqm_highpt,process.dqm_general)
     process.dqm_step = cms.EndPath(process.DQMOfflineTracking)
-    process.schedule = cms.Schedule(*[ process.raw2digi_step, process.reconstruction_step, process.prevalidation_step, process.validation_step, process.dqm_step, process.endjob_step, process.RECOoutput_step, process.DQMoutput_step])
+    process.schedule = cms.Schedule(*[ process.raw2digi_step, process.reconstruction_step, process.prevalidation_step, process.validation_step, process.dqm_step, process.endjob_step, process.DQMoutput_step])
 
     return process

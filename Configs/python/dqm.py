@@ -17,11 +17,10 @@ dqm_pixelvertex = cms.Task(hltPhase2TrackingDQMgoodPixelVertices,hltPhase2Tracki
 dqm_general = cms.Task(hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks,
                        ##High Purity & Selectors
                        hltPhase2PV0p1, hltPhase2HighPurityPV0p1, #PV
-                       hltPhase2HighPurityPt1,hltPhase2HighPurityPtRange0to1, #PT
+                       hltPhase2HighPurity, #HP
                        #Monitors
                        hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPV0p1,
                        hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPt1,
-                       hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPtRange0to1,
                        #Eff Mon
                        hltPhase2TrackMon_ckf)
 
