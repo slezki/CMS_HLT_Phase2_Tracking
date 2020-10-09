@@ -55,7 +55,7 @@ This works in CMSSW_11_1_0_pre7_Patatrack with https://github.com/AdrianoDee/cms
 
 To run the default trimming (v_7_2)
 
-```cmsRun step3.py n=N zsep=25 wf=-4 frac=10 nvtx=20 ```
+```cmsRun step3.py n=N wf=-4 frac=10 nvtx=20 ```
 
 #### Adding tracking sequence to your process
 
