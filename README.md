@@ -85,8 +85,8 @@ customizeOriginalTrimmingTriplet_v6(process,timing,fraction=FRAC,numVertex=NVTX,
 where the suggested cuts are 
 
 - `FRAC = 10` = 10% of minimun sum_pt_2 fraction w.r.t. leading PV 
-- `NVTX = 20`
-- `SUMPT2 = 20` = 20 GeV of minimun sum_pt_2 for each trimmed vtx
+- `NVTX = 10`
+- `SUMPT2 = 10` = 10 GeV of minimun sum_pt_2 for each trimmed vtx
 
 ##### Customizing your workflows
 
