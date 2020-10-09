@@ -232,6 +232,7 @@ def customise_common(process):
     process.hltPhase2PSetPvClusterComparerForIT = cms.PSet(
         track_chi2_max = cms.double( 20.0 ),
         track_pt_max = cms.double( 100.0 ),
+        track_pt_max = cms.double(100.0 ),
         track_prob_min = cms.double( -1.0 ),
         track_pt_min = cms.double( 1.0 )
 
@@ -1419,6 +1420,7 @@ def customise_hltPhase2_TRKv07(process):
 
     if hasattr(process, 'globalreco_trackingTask'):
         del process.globalreco_trackingTask
+
 
     process.reconstruction = cms.Sequence(process.tracking_v7)
   
