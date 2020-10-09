@@ -1195,7 +1195,7 @@ def customise_hltPhase2_TRKv06_1(process):
     process.reconstruction = cms.Sequence(process.tracking_v6_1)
     return process
 
-def customizeOriginalTrimmingInitial(process,fraction=0.3,numVertex=20,minSumPt2=20):
+def customizeOriginalTrimmingInitial(process,fraction=0.1,numVertex=10,minSumPt2=10):
 
         process.hltPhase2TrimmedPixelVertices.fractionSumPt2 = cms.double(fraction)
         process.hltPhase2TrimmedPixelVertices.maxVtx = cms.uint32(numVertex)
@@ -1206,7 +1206,7 @@ def customizeOriginalTrimmingInitial(process,fraction=0.3,numVertex=20,minSumPt2
 
         return process
 
-def customizeOriginalTrimmingTriplet(process,fraction=0.3,numVertex=20,minSumPt2=20):
+def customizeOriginalTrimmingTriplet(process,fraction=0.1,numVertex=10,minSumPt2=10):
 
         process.hltPhase2TrimmedPixelVertices.fractionSumPt2 = cms.double(fraction)
         process.hltPhase2TrimmedPixelVertices.maxVtx = cms.uint32(numVertex)
