@@ -234,7 +234,7 @@ hltPhase2L1TrackStepChi2Est = cms.ESProducer("Chi2ChargeMeasurementEstimatorESPr
     pTChargeCutThreshold = cms.double(15.0)
 )
 
-hltPhase2L1TrackCandidates= cms.EDProducer("CkfTrackCandidateMaker",
+hltPhase2L1TrackCandidates = cms.EDProducer("CkfTrackCandidateMaker",
     MeasurementTrackerEvent = cms.InputTag("MeasurementTrackerEvent"),
     NavigationSchool = cms.string('SimpleNavigationSchool'),
     # During tracking, eliminate seeds used by an already found track

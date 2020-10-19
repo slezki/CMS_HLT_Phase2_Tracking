@@ -471,7 +471,6 @@ process.FastTimerService.printEventSummary         = False
 process.FastTimerService.printRunSummary           = False
 process.FastTimerService.printJobSummary           = True
 
-
 # enable DQM plots
 process.FastTimerService.enableDQM                 = True
 
@@ -486,16 +485,30 @@ process.FastTimerService.enableDQMbyLumiSection    = True
 process.FastTimerService.dqmLumiSectionsRange      = 2500
 
 # set the time resolution of the DQM plots
-process.FastTimerService.dqmTimeRange              = 5000.
-process.FastTimerService.dqmTimeResolution         =    5.
-process.FastTimerService.dqmPathTimeRange          = 5000.
-process.FastTimerService.dqmPathTimeResolution     =    5.
-process.FastTimerService.dqmModuleTimeRange        = 5000.
-process.FastTimerService.dqmModuleTimeResolution   =    5.
+tr = 10000000000.
+tp = 10000000000.
+tm = 2000000000.
+process.FastTimerService.dqmTimeRange              = tr
+process.FastTimerService.dqmTimeResolution         = tr/100.0
+process.FastTimerService.dqmPathTimeRange          = tp
+process.FastTimerService.dqmPathTimeResolution     = tp/100.0
+process.FastTimerService.dqmModuleTimeRange        = tm
+process.FastTimerService.dqmModuleTimeResolution   = tm/100.0
 
 # set the base DQM folder for the plots
 process.FastTimerService.dqmPath                   = 'HLT/TimerService'
 process.FastTimerService.enableDQMbyProcesses      = True
+
+
+process.FastTimerService.dqmMemoryRange            = 1000000
+process.FastTimerService.dqmMemoryResolution       =    5000
+process.FastTimerService.dqmPathMemoryRange        = 1000000
+process.FastTimerService.dqmPathMemoryResolution   =    5000
+process.FastTimerService.dqmModuleMemoryRange      =  100000
+process.FastTimerService.dqmModuleMemoryResolution =     500
+
+process.FastTimerService.writeJSONSummary = cms.untracked.bool(True)
+process.FastTimerService.jsonFileName = cms.untracked.string('wf_' + suff + '_timing.json')
 
 #Have logErrorHarvester wait for the same EDProducers to finish as those providing data for the OutputModule
 from FWCore.Modules.logErrorHarvester_cff import customiseLogErrorHarvesterUsingOutputCommands
