@@ -433,7 +433,24 @@ hltPhase2TrackValidatorFromPVStandalone = hltPhase2TrackValidator.clone(
         "hltPhase2CutsRecoTracksFromPVHighPtTripletStep", "hltPhase2CutsRecoTracksFromPVInitialStepHp", "hltPhase2CutsRecoTracksFromPVHighPtTripletStepHp",
         "hltPhase2CutsRecoTracksFromPVPt09InitialStep", "hltPhase2CutsRecoTracksFromPVPt09HighPtTripletStep",
         "hltPhase2CutsRecoTracksFromPVPt09InitialStepHp", "hltPhase2CutsRecoTracksFromPVPt09HighPtTripletStepHp",
+        "hltPhase2GeneralTracks", "hltPhase2CutsRecoTracksInitialStep",
+        "hltPhase2CutsRecoTracksHighPtTripletStep","hltPhase2CutsRecoTracksInitialStepHp",
+        "hltPhase2CutsRecoTracksHighPtTripletStepHp",
+        "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo",
+        "hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgo",
+        "hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
+        "hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgoHp",
+        "hltPhase2GeneralTracksPt09", "hltPhase2CutsRecoTracksPt09Hp",
+        "hltPhase2CutsRecoTracksBtvLike", "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
+        "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMask",
+        "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp",
+        "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMaskHp",
+        "hltPhase2CutsRecoTracksPt09InitialStep",
+        "hltPhase2CutsRecoTracksPt09HighPtTripletStep",
+        "hltPhase2CutsRecoTracksPt09InitialStepHp",
+        "hltPhase2CutsRecoTracksPt09HighPtTripletStepHp"
     ),
+    # dirName = cms.string('Tracking/TrackFromPV')
  )
 
 hltPhase2TrackValidatorFromPVAllTPStandalone = hltPhase2TrackValidator.clone(
@@ -442,12 +459,47 @@ hltPhase2TrackValidatorFromPVAllTPStandalone = hltPhase2TrackValidator.clone(
          "hltPhase2CutsRecoTracksFromPVHighPtTripletStep", "hltPhase2CutsRecoTracksFromPVInitialStepHp", "hltPhase2CutsRecoTracksFromPVHighPtTripletStepHp",
          "hltPhase2CutsRecoTracksFromPVPt09InitialStep", "hltPhase2CutsRecoTracksFromPVPt09HighPtTripletStep",
          "hltPhase2CutsRecoTracksFromPVPt09InitialStepHp", "hltPhase2CutsRecoTracksFromPVPt09HighPtTripletStepHp",
+         "hltPhase2GeneralTracks", "hltPhase2CutsRecoTracksInitialStep",
+         "hltPhase2CutsRecoTracksHighPtTripletStep","hltPhase2CutsRecoTracksInitialStepHp",
+         "hltPhase2CutsRecoTracksHighPtTripletStepHp",
+         "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo",
+         "hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgo",
+         "hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
+         "hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgoHp",
+         "hltPhase2GeneralTracksPt09", "hltPhase2CutsRecoTracksPt09Hp",
+         "hltPhase2CutsRecoTracksBtvLike", "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
+         "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMask",
+         "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp",
+         "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMaskHp",
+         "hltPhase2CutsRecoTracksPt09InitialStep",
+         "hltPhase2CutsRecoTracksPt09HighPtTripletStep",
+         "hltPhase2CutsRecoTracksPt09InitialStepHp",
+         "hltPhase2CutsRecoTracksPt09HighPtTripletStepHp"
      ),
+     # dirName = cms.string('Tracking/TrackFromPV')
   )
 
 hltPhase2TrackValidatorBHadronTrackingOnly = hltPhase2TrackValidator.clone(
     label_tp_effic = cms.InputTag("trackingParticlesBHadron"),
-    label_tp_effic_refvector = cms.bool(True)
+    label_tp_effic_refvector = cms.bool(True),
+    label = cms.VInputTag(
+    "hltPhase2GeneralTracks", "hltPhase2CutsRecoTracksInitialStep",
+    "hltPhase2CutsRecoTracksHighPtTripletStep","hltPhase2CutsRecoTracksInitialStepHp",
+    "hltPhase2CutsRecoTracksHighPtTripletStepHp",
+    "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo",
+    "hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgo",
+    "hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
+    "hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgoHp",
+    "hltPhase2GeneralTracksPt09", "hltPhase2CutsRecoTracksPt09Hp",
+    "hltPhase2CutsRecoTracksBtvLike", "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
+    "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMask",
+    "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp",
+    "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMaskHp",
+    "hltPhase2CutsRecoTracksPt09InitialStep",
+    "hltPhase2CutsRecoTracksPt09HighPtTripletStep",
+    "hltPhase2CutsRecoTracksPt09InitialStepHp",
+    "hltPhase2CutsRecoTracksPt09HighPtTripletStepHp"),
+    dirName = cms.string('Tracking/TrackBHadron/')
   )
 
 hltPhase2TrackValidatorSeedingTrackingOnly = hltPhase2TrackValidator.clone(
@@ -455,6 +507,7 @@ hltPhase2TrackValidatorSeedingTrackingOnly = hltPhase2TrackValidator.clone(
     label = cms.VInputTag(
         "hltPhase2SeedTracksinitialStepSeeds", "hltPhase2SeedTrackshighPtTripletStepSeeds" ### v2
     ),
+
   )
 
 

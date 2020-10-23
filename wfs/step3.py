@@ -58,7 +58,7 @@ options.register('fullvertex',True,VarParsing.VarParsing.multiplicity.singleton,
 options.register('patavertex',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"pata vertexing")
 options.register('fastl1',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"fastl1 vertexing")
 options.register('froml1',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"froml1 vertexing")
-options.register('minPt',1000,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"min pt in MeV")
+
 #Files
 options.register('T2',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"running on T2_Bari")
 
@@ -238,7 +238,6 @@ if options.wf < -1:
     process.hltPhase2TrimmedPixelVertices.maxVtx = cms.uint32( 100 ) # > 200 # previous 100
 
 
-process.hltPhase2PixelVertices.PtMin=options.minPt/1000.0 
 
 if options.onlypixel:
     options.wf = -100
