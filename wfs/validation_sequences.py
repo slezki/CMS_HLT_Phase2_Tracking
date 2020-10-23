@@ -3,8 +3,6 @@ from  Configuration.StandardSequences.Validation_cff import *
 from validation_modules import *
 from prevalidation_modules import *
 
-                             hltPhase2TrackValidatorFromPVAllTPStandalone)
-
 validation_original = cms.Path( hltTPClusterProducer +
                                 hltTrackAssociatorByHits +
                                 hltPhase2TrackValidatorPixelTrackingOnly + hltPhase2TrackValidator +
