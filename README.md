@@ -21,41 +21,6 @@ and eventyally following instructions here (depending if L1 Tracking PR has alre
 
 https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1TrackSoftware
 
-##### Running the Tracking Reco
-
-In [step3.py](https://github.com/AdrianoDee/CMS_HLT_Phase2_Tracking/blob/master/wfs/step3.py) the different configurations are listed. Running as
-
-```cmsRun step3.py n=N```
-
-will run the baseline configuration (v6.1) which includes the following steps:
-
-- Pixel Tracks (Quadruplets Seeding)
-- Initial Step Tracks Seeded by Pixel Tracks
-- HighPt Triplet Tracks (running from pixel triplet seeds to full tracks) with cluster & trajectory masking from InitialStep tracks
-
-different customisation are listed in step3.py. Running as
-
-```cmsRun step3.py n=N wf=7```
-
-will run the l1 traking before the baseline configuration (v6.1).
-
-If you with to test the usage of pixelTriplets for initial step seeding:
-
-```cmsRun step3.py n=N wf=W pixtrip=True```
-
-##### Patatrack Pixel Tracks Customizer
-
-To run Patatrack pixel Tracks inplace of legacy PixelTracks
-
-```cmsRun step3.py n=N patatrack=True```
-
-This works in CMSSW_11_1_0_pre7_Patatrack with https://github.com/AdrianoDee/cmssw/tree/phase2_pixel merged
-
-##### Trimming
-
-To run the default trimming (v_7_2)
-
-```cmsRun step3.py n=N wf=-4 frac=10 nvtx=10 ```
 
 #### Adding tracking sequence to your process
 
@@ -68,52 +33,126 @@ process.load('prevalidation_sequences')
 process.load('dqm_sequences')
 ```
 
-then to run the __original__ (namely the v6_1) tracking sequence import the customization functions
+then to run the various tracking sequence import the customization functions
 
 ```from customize_steps import *```
 
-and use
+### Patatrack configurations
+
+If you want to run a configuration including Patatrack pixel tracks (see (the wiki)[https://patatrack.web.cern.ch/patatrack/wiki/]), you would need to set up your release to be 11_1_3_Patatrack adding on top of that what is needed to run with Phase2 tracker.
+
+```
+cmsrel CMSSW_11_1_3_Patatrack
+cd CMSSW_11_1_3/src/
+cmsenv
+git cms-init -x cms-patatrack
+git branch CMSSW_11_1_X_Patatrack --track cms-patatrack/CMSSW_11_1_X_Patatrack
+
+git cms-merge-topic AdrianoDee:patatrack_hlt_phase2
+
+scram b -j 8
+```
+
+
+## Tracking configurations
+
+### V6s
+
+#### V6_1 (baseline)
+
+The __v6_1__ configuration is the __baseline__ configuration consisting of two main iterations running after pixel tracks building.
+
+1. PixelTracks and PixelVertices (Run2 like set up to have high PV tagging) production; 
+2. initialStep iteration: seeded from pixel tracks, BS constrained; 
+3. highPtTripletStep iteration: seeded with pixel triplet seeds, BS constrained; 
+
+The final products are:
+
+4. hltPhase2GeneralTracks: from the merge of initialStepTracks and highPtTripletStepTracks;
+5. hltPhase2UnsortedOfflinePrimaryVertices: vertices with Deterministic Annealing built from hltPhase2GeneralTracks;
+
+To run this configuration use
+
+```cmsRun step3.py n=N ```
+
+or use
 
 ```customizeOriginal_v6(process,timing)```
 
-on your process. Note that this will overwrite your schedule and you would need to add your futher reco in the schedule after this. The `timing` variable is set to `False` by default. It set to `True` it basically drops prevalidation, validation and dqm steps. To run the __trimmed__ version (where regions are defined around trimmed vertices for both Initial and HighPtTriplet steps) *after* the `customizeOriginal_v6(process,timing)` insert
+on your process. Note that this will overwrite your schedule and you would need to add your futher reco in the schedule after this. The `timing` variable is set to `False` by default. If set to `True` it basically drops prevalidation, validation and dqm steps.
+
+#### V6_2 (baseline with patatrack pixel tracks)
+
+The __v6_2__ configuration has the same iterations as the __baseline__ configuration with the difference the pixel tracks, used as seeding for InitialStep, are reconstructed with Patatrack pixel tracks. Once the Patatrack CMSSW environment is set up you would need only to run:
+
+```cmsRun step3.py n=N patatrack=True```
+
+Or to use the 
+
+```customizePixelTracksSoAonCPU(process,vertex=False)```
+
+where the vertex flag indicates if the vertices has to be Patatrack-like (not the default option).
+
+#### V6_3 (baseline with seeding only from patatrack pixel tracks)
+
+The __v6_3__ configuration has the same iterations as the __baseline__ configuration with the difference the pixel tracks are reconstructed with Patatrack pixel tracks and the further used both to seed the initial step iteration (being filtered to have > 3 hits) and the high pT triplet (being filtered to have exactly 3 hits)
+
+```cmsRun step3.py allpata=True patatrack=True pixtrip=True```
+
+### V7s
+
+#### V7_1 (trimmed)
+
+The __v7_2__ configuration is the configuration __trimmed__ around the vertices reconstructed as pixel vertices with pixel tracks. It consists of two main iterations running after pixel tracks building.
+
+1. PixelTracks and PixelVertices (Run2 like set up to have high PV tagging) production; 
+2. Pixel Vertices Trimming with: max number of vertices==10, min SumPt2 fraction w.r.t. leading = 0.1 and min SumPt2==10GeV;
+2. initialStep iteration: seeded from pixel tracks, constrained to the trimmed PVs; 
+3. highPtTripletStep iteration: seeded with pixel triplet seeds, constrained to the trimmed PVs; 
+
+The final products are:
+
+4. hltPhase2GeneralTracks: from the merge of initialStepTracks and highPtTripletStepTracks;
+5. hltPhase2UnsortedOfflinePrimaryVertices: vertices with Deterministic Annealing built from hltPhase2GeneralTracks;
+
+To run this configuration use
+
+```cmsRun step3.py n=N wf=-4```
+
+or either use 
 
 ```
 customizeOriginalTrimmingInitial_v6(process,timing,fraction=FRAC,numVertex=NVTX,minSumPt2=SUMPT2)
 customizeOriginalTrimmingTriplet_v6(process,timing,fraction=FRAC,numVertex=NVTX,minSumPt2=SUMPT2)
 ```
-where the suggested cuts are 
 
-- `FRAC = 10` = 10% of minimun sum_pt_2 fraction w.r.t. leading PV 
+on your process where the suggested cuts are the above mentioned:
+
+- `FRAC = 10` 
 - `NVTX = 10`
-- `SUMPT2 = 10` = 10 GeV of minimun sum_pt_2 for each trimmed vtx
-
-##### Customizing your workflows
-
-Two customizers are available in order to run the __original v6_1__ and the __trimmed v_7_1__ tracking reconstruction configuration. 
+- `SUMPT2 = 10`
 
 
-```
-cmsrel CMSSW_11_1_3
-cd CMSSW_11_1_3/src
-git clone git@github.com:AdrianoDee/CMS_HLT_Phase2_Tracking.git -b configs
-scram b -j 4
-```
+#### V7_2 (baseline with patatrack pixel tracks)
 
-Then you can run and customise your own step 
+The __v7_2__ configuration has the same iterations as the __trimmed__ configuration with the difference the pixel tracks, used as seeding for InitialStep, are reconstructed with Patatrack pixel tracks. Once the Patatrack CMSSW environment is set up you would need only to run:
 
-```
-cmsDriver.py step3 --geometry Extended2026D49 --era Phase2C9 --conditions 111X_mcRun4_realistic_T15_v2 \
---processName RECO2 --step RAW2DIGI,RECO --eventcontent RECO --datatier RECO \
---dasquery="file dataset=/TT_TuneCP5_14TeV-powheg-pythia8/Phase2HLTTDRSummer20ReRECOMiniAOD-PU200_111X_mcRun4_realistic_T15_v1-v2/FEVT" \
---mc --nThreads 4 --nStreams 4 --no_exec -n 10 \
---customise SLHCUpgradeSimulations/Configuration/aging.customise_aging_1000,Configuration/DataProcessing/Utils.addMonitoring \
---customise CMS_HLT_Phase2_Tracking/Configs/phase2_tracking.customise_hltPhase2_TRKv06_1 \
---no_exec --python_filename hlt_phase2_tracking_v6p1.py
-```
+```cmsRun step3.py n=N patatrack=True wf=-4```
 
-for __v6_1__ and with 
+Or to use the 
 
-```--customise CMS_HLT_Phase2_Tracking/Configs/phase2_tracking.customise_hltPhase2_TRKv07```
+```customizePixelTracksSoAonCPU(process,vertex=False)```
 
-for __v7_1__. Note that these customizer will add to the process new modules named with the scheme *hltPhase2ModuleName* and will ovverwrite the __globalreco_tracking__ Task.  
+where the vertex flag indicates if the vertices has to be Patatrack-like (not the default option).
+
+#### V7_3 (baseline with seeding only from patatrack pixel tracks)
+
+The __v7_3__ configuration has the same iterations as the __trimmed__ configuration with the difference the pixel tracks are reconstructed with Patatrack pixel tracks and the further used both to seed the initial step iteration (being filtered to have > 3 hits) and the high pT triplet (being filtered to have exactly 3 hits)
+
+```cmsRun step3.py allpata=True patatrack=True pixtrip=True wf=-4```
+
+### V8 (Single Iteration - WIP)
+
+The __v8__ is a configuration with a single iteration seeded by Patatrack pixel tracks [WIP]
+
+
