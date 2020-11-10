@@ -18,7 +18,7 @@ then to run the various tracking sequence import the customization functions
 
 ### Patatrack configurations
 
-If you want to run a configuration including Patatrack pixel tracks (see (the wiki)[https://patatrack.web.cern.ch/patatrack/wiki/]), you would need to set up your release to be 11_1_3_Patatrack adding on top of that what is needed to run with Phase2 tracker.
+If you want to run a configuration including Patatrack pixel tracks (see [the wiki](https://patatrack.web.cern.ch/patatrack/wiki/)), you would need to set up your release to be 11_1_3_Patatrack adding on top of that what is needed to run with Phase2 tracker.
 
 ```
 cmsrel CMSSW_11_1_3_Patatrack
