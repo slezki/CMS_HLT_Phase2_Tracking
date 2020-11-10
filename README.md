@@ -82,7 +82,7 @@ The __v6_3__ configuration has the same iterations as the __baseline__ configura
 
 #### V7_1 (trimmed)
 
-The __v7_2__ configuration is the configuration __trimmed__ around the vertices reconstructed as pixel vertices with pixel tracks. It consists of two main iterations running after pixel tracks building.
+The __v7_1__ configuration is the configuration __trimmed__ around the vertices reconstructed as pixel vertices with pixel tracks. It consists of two main iterations running after pixel tracks building.
 
 1. PixelTracks and PixelVertices (Run2 like set up to have high PV tagging) production; 
 2. Pixel Vertices Trimming with: max number of vertices==10, min SumPt2 fraction w.r.t. leading = 0.1 and min SumPt2==10GeV;
