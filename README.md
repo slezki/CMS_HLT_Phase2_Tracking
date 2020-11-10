@@ -1,28 +1,7 @@
-## CMS_HLT_Phase2_Tracking 
-
-### CMSSW_11_1_0, CMSSW_11_1_0_patch2 CMSSW_11_2_0_pre2
-
-##### L1 Hitless Seeding Tracking 
-In case you are working on a release wich has not included the L1 Hitless Seeding you would need to add L1Tracking thourgh merging the dedicated PR:
-
-- 11_2_X : https://github.com/cms-sw/cmssw/pull/30342 
-- 11_1_X : https://github.com/cms-sw/cmssw/pull/30574
-
-e.g.
-```
-cmsrel CMSSW_11_1_0
-cd CMSSW_11_1_0/src/
-git cms-init
-git cms-merge-topic 30342
-scram b -j 8
-```
-
-and eventyally following instructions here (depending if L1 Tracking PR has already been integrated, who knows)
-
-https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1TrackSoftware
+# CMS HLT@Phase2 Tracking Confgurations 
 
 
-#### Adding tracking sequence to your process
+### Adding tracking sequence to your process
 
 All the required modules are in `/wfs/` directory. First you need the raw2digi, tracking, validation, prevalidation, dqm sequences to be loaded
 ```
