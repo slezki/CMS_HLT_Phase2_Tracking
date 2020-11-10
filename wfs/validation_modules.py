@@ -1066,74 +1066,28 @@ hltPhase2TrackValidatorAllTPEfficStandalone = cms.EDProducer("MultiTrackValidato
     vertexAssociator = cms.untracked.InputTag("hltPhase2VertexAssociatorByPositionAndTracks")
 )
 
-hltPhase2TrackValidatorBHadronTrackingOnly = cms.EDProducer("MultiTrackValidator", #cmssw_11_1 previous cms.EDAnalyzer
-    cores = cms.InputTag("highPtJetsForTrk"), #cmssw_10_6 #cmssw_11_1
-    UseAssociators = cms.bool(False),
-    associators = cms.untracked.VInputTag("hltPhase2TrackingParticleRecoTrackAsssociation"),
-    beamSpot = cms.InputTag("offlineBeamSpot"),
-    calculateDrSingleCollection = cms.untracked.bool(True),
-    chargedOnlyTP = cms.bool(True),
-    dEdx1Tag = cms.InputTag("dedxHarmonic2"),
-    dEdx2Tag = cms.InputTag("dedxTruncated40"),
-    dirName = cms.string('Tracking/TrackBHadron/'),
-    doMVAPlots = cms.untracked.bool(False),
-    doPVAssociationPlots = cms.untracked.bool(True),
-    doPlotsOnlyForTruePV = cms.untracked.bool(False),
-    doRecoTrackPlots = cms.untracked.bool(False),
-    doResolutionPlotsForLabels = cms.VInputTag("hltPhase2GeneralTracks", "hltPhase2CutsRecoTracksHp", "hltPhase2GeneralTracksPt09", "hltPhase2CutsRecoTracksBtvLike"),
-    doSeedPlots = cms.untracked.bool(False),
-    doSimPlots = cms.untracked.bool(True),
-    doSimTrackPlots = cms.untracked.bool(True),
-    doSummaryPlots = cms.untracked.bool(True),
-    dodEdxPlots = cms.untracked.bool(False),
-    histoProducerAlgoBlock = hltPhase2HistoProducer,
-    ignoremissingtrackcollection = cms.untracked.bool(False),
-    intimeOnlyTP = cms.bool(True),
-    invertRapidityCutTP = cms.bool(False), # cmssw_11_1
-    label = cms.VInputTag(
-        "hltPhase2GeneralTracks", "hltPhase2CutsRecoTracksHp", "hltPhase2CutsRecoTracksInitialStep", "hltPhase2CutsRecoTracksHighPtTripletStep",
-        "hltPhase2CutsRecoTracksInitialStepHp", "hltPhase2CutsRecoTracksHighPtTripletStepHp",
-        "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo", "hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgo",  "hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
-        "hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgoHp",
-        "hltPhase2CutsRecoTracksBtvLike", "hltPhase2CutsRecoTracksInitialStepByAlgoMask", "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMask",
-        "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp", "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMaskHp"
-    ),
-    label_pileupinfo = cms.InputTag("addPileupInfo"),
+hltPhase2TrackValidatorBHadronTrackingOnly = hltPhase2TrackValidatorTrackingOnly.clone(
     label_tp_effic = cms.InputTag("trackingParticlesBHadron"),
     label_tp_effic_refvector = cms.bool(True),
-    label_tp_fake = cms.InputTag("mix","MergedTrackTruth"),
-    label_tp_fake_refvector = cms.bool(False),
-    label_tp_nlayers = cms.InputTag("trackingParticleNumberOfLayersProducer","trackerLayers"),
-    label_tp_npixellayers = cms.InputTag("trackingParticleNumberOfLayersProducer","pixelLayers"),
-    label_tp_nstripstereolayers = cms.InputTag("trackingParticleNumberOfLayersProducer","stripStereoLayers"),
-    label_tv = cms.InputTag("mix","MergedTrackTruth"),
-    label_vertex = cms.untracked.InputTag("hltPhase2SelectedPixelVertices"), #("hltPhase2OfflinePrimaryVertices")
-    lipTP = cms.double(30.0),
-    maxRapidityTP = cms.double(4.5),
-    minHitTP = cms.int32(0),
-    minRapidityTP = cms.double(-4.5),
-    mvaLabels = cms.untracked.PSet(
-
-    ),
-    parametersDefiner = cms.string('LhcParametersDefinerForTP'),
-    pdgIdTP = cms.vint32(),
-    ptMaxTP = cms.double(1e+100),
-    ptMinTP = cms.double(0.9), # previous 0.005
-    signalOnlyTP = cms.bool(False),
-    sim = cms.VInputTag(
-        cms.InputTag("g4SimHits","TrackerHitsPixelBarrelLowTof"), cms.InputTag("g4SimHits","TrackerHitsPixelBarrelHighTof"), cms.InputTag("g4SimHits","TrackerHitsPixelEndcapLowTof"), cms.InputTag("g4SimHits","TrackerHitsPixelEndcapHighTof"), cms.InputTag("g4SimHits","TrackerHitsTIBLowTof"),
-        cms.InputTag("g4SimHits","TrackerHitsTIBHighTof"), cms.InputTag("g4SimHits","TrackerHitsTIDLowTof"), cms.InputTag("g4SimHits","TrackerHitsTIDHighTof"), cms.InputTag("g4SimHits","TrackerHitsTOBLowTof"), cms.InputTag("g4SimHits","TrackerHitsTOBHighTof"),
-        cms.InputTag("g4SimHits","TrackerHitsTECLowTof"), cms.InputTag("g4SimHits","TrackerHitsTECHighTof")
-    ),
-    simHitTpMapTag = cms.InputTag("simHitTPAssocProducer"),
-    simPVMaxZ = cms.untracked.double(-1),
-    stableOnlyTP = cms.bool(False),
-    tipTP = cms.double(60.0),
-    trackCollectionForDrCalculation = cms.InputTag("hltPhase2GeneralTracks"),
-    useGsf = cms.bool(False),
-    useLogPt = cms.untracked.bool(True),
-    vertexAssociator = cms.untracked.InputTag("hltPhase2VertexAssociatorByPositionAndTracks")
-)
+    label = cms.VInputTag(
+    "hltPhase2GeneralTracks", "hltPhase2CutsRecoTracksInitialStep",
+    "hltPhase2CutsRecoTracksHighPtTripletStep","hltPhase2CutsRecoTracksInitialStepHp",
+    "hltPhase2CutsRecoTracksHighPtTripletStepHp",
+    "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo",
+    "hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgo",
+    "hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
+    "hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgoHp",
+    "hltPhase2GeneralTracksPt09", "hltPhase2CutsRecoTracksPt09Hp",
+    "hltPhase2CutsRecoTracksBtvLike", "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
+    "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMask",
+    "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp",
+    "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMaskHp",
+    "hltPhase2CutsRecoTracksPt09InitialStep",
+    "hltPhase2CutsRecoTracksPt09HighPtTripletStep",
+    "hltPhase2CutsRecoTracksPt09InitialStepHp",
+    "hltPhase2CutsRecoTracksPt09HighPtTripletStepHp"),
+    dirName = cms.string('Tracking/TrackBHadron/')
+  )
 
 hltPhase2TrackValidatorSeedingTrackingOnly = cms.EDProducer("MultiTrackValidator", #cmssw_11_1 previous cms.EDAnalyzer
     cores = cms.InputTag("highPtJetsForTrk"), #cmssw_10_6 #cmssw_11_1
