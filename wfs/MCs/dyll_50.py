@@ -1,4 +1,4 @@
-"file:/eos/cms/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/DYToLL_M-50_TuneCP5_14TeV-pythia8/FEVT/PU200_pilot_111X_mcRun4_realistic_T15_v1-v1/100000/EC73B486-4FEE-9E4C-BFF2-6153D58F6D9D.root",
+dyll = ["file:/eos/cms/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/DYToLL_M-50_TuneCP5_14TeV-pythia8/FEVT/PU200_pilot_111X_mcRun4_realistic_T15_v1-v1/100000/EC73B486-4FEE-9E4C-BFF2-6153D58F6D9D.root",
 "file:/eos/cms/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/DYToLL_M-50_TuneCP5_14TeV-pythia8/FEVT/PU200_pilot_111X_mcRun4_realistic_T15_v1-v1/100000/ECF14393-64FA-774B-B65E-EDA2CD162BDF.root",
 "file:/eos/cms/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/DYToLL_M-50_TuneCP5_14TeV-pythia8/FEVT/PU200_pilot_111X_mcRun4_realistic_T15_v1-v1/100000/EDE47AFB-B2F3-154E-94DA-59CC62714A0F.root",
 "file:/eos/cms/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/DYToLL_M-50_TuneCP5_14TeV-pythia8/FEVT/PU200_pilot_111X_mcRun4_realistic_T15_v1-v1/100000/EE0D04B1-9B46-7640-BAE4-55C6EB13A78F.root",
@@ -27,4 +27,4 @@
 "file:/eos/cms/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/DYToLL_M-50_TuneCP5_14TeV-pythia8/FEVT/PU200_pilot_111X_mcRun4_realistic_T15_v1-v1/100000/FC10B0CE-89EB-6B4C-B1EB-C4F94CF25FE6.root",
 "file:/eos/cms/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/DYToLL_M-50_TuneCP5_14TeV-pythia8/FEVT/PU200_pilot_111X_mcRun4_realistic_T15_v1-v1/100000/FC42E50D-8113-2D49-ABEE-8F64245A265F.root",
 "file:/eos/cms/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/DYToLL_M-50_TuneCP5_14TeV-pythia8/FEVT/PU200_pilot_111X_mcRun4_realistic_T15_v1-v1/100000/FDF49BCE-C725-2F47-B64A-50B54A0B6C1C.root",
-"file:/eos/cms/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/DYToLL_M-50_TuneCP5_14TeV-pythia8/FEVT/PU200_pilot_111X_mcRun4_realistic_T15_v1-v1/100000/FEAC9D85-0A8E-B449-A805-8D45766AA185.root",
+"file:/eos/cms/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/DYToLL_M-50_TuneCP5_14TeV-pythia8/FEVT/PU200_pilot_111X_mcRun4_realistic_T15_v1-v1/100000/FEAC9D85-0A8E-B449-A805-8D45766AA185.root"]

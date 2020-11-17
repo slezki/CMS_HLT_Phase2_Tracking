@@ -76,6 +76,8 @@ options.register('sumpt',10 ,VarParsing.VarParsing.multiplicity.singleton,VarPar
 options.register('zsep',5,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"z_sep (x1000)")
 options.register('fromPV',True,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"fromPV for ininitial step")
 #MCs
+options.register('susy',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Susy")
+options.register('dyll',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"DY ll")
 options.register('ztt',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"ZTT MC")
 options.register('dstmmm',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"DsTau3M MC")
 options.register('bdksmm',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"BdToKstarMuMu MC")
@@ -129,7 +131,12 @@ if options.withl1:
 if options.muons:
     from MCs.muons import muon_files
     filelist = muon_files
-
+if options.dyll:
+    from MCs.dyll_50 import * 
+    filelist = dyll
+if options.susy:
+    from MCs.susy import *
+    filelist = susy
 
 if not options.T2:
     filelist = ["/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FBF7F649-BDF7-4147-922E-5A8B67377742.root",
@@ -170,7 +177,7 @@ if options.noPU:
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/FFD62905-0181-D44F-8BEF-2557BFF9F040.root"]
 #print(filelist)
 
-if options.susy:
+#if options.susy:
    
 # filelist=["/store/mc/Phase2HLTTDRWinter20DIGI/DoubleElectron_FlatPt-1To100/GEN-SIM-DIGI-RAW/PU200_110X_mcRun4_realistic_v3-v2/20000/6BF09AEE-5B7E-1340-9529-9A0E5E0F9442.root"]
 #filelist=["/store/relval/CMSSW_11_1_0_patch1/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW-RECO/110X_mcRun4_realistic_v3_2026D49PU200_raw1100_ProdType1-v1/10000/AFD88583-675F-C14D-B057-6DD8121634D5.root"]
@@ -200,7 +207,7 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, '111X_mcRun4_realistic_T15_v2', '')
 
 process.load('raw2digi_step_cff')
-process.load("RecoJets.JetProducers.caloJetsForTrk_cff"
+process.load("RecoJets.JetProducers.caloJetsForTrk_cff")
 process.load("tracking_sequences")
 
 if not options.timing:
@@ -271,7 +278,17 @@ if options.wf == -5:
     # customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.05,numVertex=30,minSumPt2=20)
     #process.hltPhase2PixelVertices.ZSeparation = float(options.zsep) / 1000.0
     if options.clean:
+        suff = suff + "_clean"
 	process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksMerger")
+    #process.hltPhase2PixelVertices.TrackCollection = cms.InputTag("hltPhase2PixelQuadrupletsSelector")
+if options.wf == -8:
+    customizeL1SingleIt(process,timing)
+    suff = "m8"
+    # customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.05,numVertex=30,minSumPt2=20)
+    #process.hltPhase2PixelVertices.ZSeparation = float(options.zsep) / 1000.0
+    if options.clean:
+        suff = suff + "_clean"
+        process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksMerger")
     #process.hltPhase2PixelVertices.TrackCollection = cms.InputTag("hltPhase2PixelQuadrupletsSelector")
 
 if options.wf == -6:
@@ -322,6 +339,10 @@ if options.wf == -1:
         process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksCleaner")#hltPhase2PixelQuadrupletsSelector")
         process.hltPhase2HighPtTripletStepSeeds = process.hltPhase2InitialStepSeeds.clone()
 	process.hltPhase2HighPtTripletStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTripletsCleaner")
+    
+    if options.patatrack and options.clean:
+	suff = suff + "_clean"
+	process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksMerger")
 #L1 Customizing
 if options.wf == 0:
     suff = "purel1"
@@ -361,8 +382,10 @@ elif options.b0ksmm:
     suff = suff + "_b0ksmm"
 elif options.bskkkk:
     suff = suff + "_bskkkk"
-elif optiions.susy:
+elif options.susy:
     suff = suff + "_susy"
+elif options.dyll:
+    suff = suff + "_dyll"
 else:
     suff = suff + "_ttb"
 
@@ -392,12 +415,14 @@ if options.patavertex:
 if options.patatrack:
     customizePixelTracksSoAonCPU(process,options.patavertex)
     if options.doregion:
-	process.hltPhase2PixelTrackSoA.doRegion = True
-	suff = suff + "_region"	
-    if options.wf == 7 or options.wf==-7 or options.wf==-6:
-	suff = suff + "_regionFomL1"
+	#process.hltPhase2PixelTrackSoA.doRegion = True
+	#suff = suff + "_region"	
+    	if options.wf==8 or options.wf == 7 or options.wf==-7 or options.wf==-6:
+		suff = suff + "_regionFomL1"
 	##process.pixelVertexCoordinates.src = "hltPhase2L1PrimaryVertex"
-
+		#process.pixelVertexCoordinates.src = "hltPhase2L1PrimaryVertex"
+    	else:
+		suff = suff + "_region"
     if options.pixtrip:
         process.hltPhase2PixelTrackSoA.minHitsPerNtuplet = 3
     suff = suff + "_pata"

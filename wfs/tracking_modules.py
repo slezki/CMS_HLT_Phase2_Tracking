@@ -234,7 +234,7 @@ hltPhase2L1TrackStepChi2Est = cms.ESProducer("Chi2ChargeMeasurementEstimatorESPr
     pTChargeCutThreshold = cms.double(15.0)
 )
 
-hltPhase2L1TrackCandidates = cms.EDProducer("CkfTrackCandidateMaker",
+hltPhase2L1TrackCandidates= cms.EDProducer("CkfTrackCandidateMaker",
     MeasurementTrackerEvent = cms.InputTag("MeasurementTrackerEvent"),
     NavigationSchool = cms.string('SimpleNavigationSchool'),
     # During tracking, eliminate seeds used by an already found track
@@ -771,7 +771,7 @@ hltPhase2L1PrimaryVertex = cms.EDProducer("RecoChargedRefCandidatePrimaryVertexS
         preferHighRanked = cms.bool(False),
         useTiming = cms.bool(False)
     ),
-    jets = cms.InputTag("hltPhase2Ak4CaloJetsForTrk"),
+    jets = cms.InputTag("hltPhase2Ak4CaloJetsForTrkL1"),
     particles = cms.InputTag("hltPhase2TrackRefsForJetsBeforeSortingL1"),
     produceAssociationToOriginalVertices = cms.bool(False),
     produceNoPileUpCollection = cms.bool(False),
@@ -866,6 +866,37 @@ hltPhase2Ak4CaloJetsForTrk = cms.EDProducer("FastjetJetProducer",
     voronoiRfact = cms.double(-0.9)
 )
 
+hltPhase2Ak4CaloJetsForTrkL1 = cms.EDProducer("FastjetJetProducer",
+    Active_Area_Repeats = cms.int32(1),
+    GhostArea = cms.double(0.01),
+    Ghost_EtaMax = cms.double(5.0),
+    Rho_EtaMax = cms.double(4.4),
+    doAreaDiskApprox = cms.bool(False),
+    doAreaFastjet = cms.bool(False),
+    doPUOffsetCorr = cms.bool(False),
+    doPVCorrection = cms.bool(True),
+    doRhoFastjet = cms.bool(False),
+    inputEMin = cms.double(0.0),
+    inputEtMin = cms.double(0.3),
+    jetAlgorithm = cms.string('AntiKt'),
+    jetPtMin = cms.double(10.0),
+    jetType = cms.string('CaloJet'),
+    maxBadEcalCells = cms.uint32(9999999),
+    maxBadHcalCells = cms.uint32(9999999),
+    maxProblematicEcalCells = cms.uint32(9999999),
+    maxProblematicHcalCells = cms.uint32(9999999),
+    maxRecoveredEcalCells = cms.uint32(9999999),
+    maxRecoveredHcalCells = cms.uint32(9999999),
+    minSeed = cms.uint32(14327),
+    nSigmaPU = cms.double(1.0),
+    puPtMin = cms.double(10),
+    rParam = cms.double(0.4),
+    radiusPU = cms.double(0.5),
+    src = cms.InputTag("caloTowerForTrk"),
+    srcPVs = cms.InputTag("hltPhase2L1PrimaryVertexUnsorted"),
+    useDeterministicSeed = cms.bool(True),
+    voronoiRfact = cms.double(-0.9)
+)
 hltPhase2InclusiveVertexFinder = cms.EDProducer("InclusiveVertexFinder",
     beamSpot = cms.InputTag("offlineBeamSpot"),
     clusterizer = cms.PSet(

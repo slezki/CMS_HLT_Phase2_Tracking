@@ -22,7 +22,7 @@ If you want to run a configuration including Patatrack pixel tracks (see [the wi
 
 ```
 cmsrel CMSSW_11_1_3_Patatrack
-cd CMSSW_11_1_3/src/
+cd CMSSW_11_1_3_Patatrack/src/
 cmsenv
 git cms-init -x cms-patatrack
 git branch CMSSW_11_1_X_Patatrack --track cms-patatrack/CMSSW_11_1_X_Patatrack
@@ -62,7 +62,7 @@ on your process. Note that this will overwrite your schedule and you would need 
 
 #### V6_2 (baseline with patatrack pixel tracks)
 
-The __v6_2__ configuration has the same iterations as the __baseline__ configuration with the difference the pixel tracks, used as seeding for InitialStep, are reconstructed with Patatrack pixel tracks. Once the Patatrack CMSSW environment is set up you would need only to run:
+The __v6_2__ configuration has the same iterations as the __baseline__ configuration with the difference that the pixel tracks, used as seeding for InitialStep, are reconstructed with Patatrack pixel tracks. Once the Patatrack CMSSW environment is set up you would need only to run:
 
 ```cmsRun step3.py n=N patatrack=True```
 
@@ -74,7 +74,7 @@ where the vertex flag indicates if the vertices has to be Patatrack-like (not th
 
 #### V6_3 (baseline with seeding only from patatrack pixel tracks)
 
-The __v6_3__ configuration has the same iterations as the __baseline__ configuration with the difference the pixel tracks are reconstructed with Patatrack pixel tracks and the further used both to seed the initial step iteration (being filtered to have > 3 hits) and the high pT triplet (being filtered to have exactly 3 hits)
+The __v6_3__ configuration has the same iterations as the __baseline__ configuration with the difference that the pixel tracks are reconstructed with Patatrack pixel tracks and the further used both to seed the initial step iteration (being filtered to have > 3 hits) and the high pT triplet (being filtered to have exactly 3 hits)
 
 ```cmsRun step3.py allpata=True patatrack=True pixtrip=True```
 
@@ -114,7 +114,7 @@ on your process where the suggested cuts are the above mentioned:
 
 #### V7_2 (baseline with patatrack pixel tracks)
 
-The __v7_2__ configuration has the same iterations as the __trimmed__ configuration with the difference the pixel tracks, used as seeding for InitialStep, are reconstructed with Patatrack pixel tracks. Once the Patatrack CMSSW environment is set up you would need only to run:
+The __v7_2__ configuration has the same iterations as the __trimmed__ configuration with the difference that the pixel tracks, used as seeding for InitialStep, are reconstructed with Patatrack pixel tracks. Once the Patatrack CMSSW environment is set up you would need only to run:
 
 ```cmsRun step3.py n=N patatrack=True wf=-4```
 
@@ -126,7 +126,7 @@ where the vertex flag indicates if the vertices has to be Patatrack-like (not th
 
 #### V7_3 (baseline with seeding only from patatrack pixel tracks)
 
-The __v7_3__ configuration has the same iterations as the __trimmed__ configuration with the difference the pixel tracks are reconstructed with Patatrack pixel tracks and the further used both to seed the initial step iteration (being filtered to have > 3 hits) and the high pT triplet (being filtered to have exactly 3 hits)
+The __v7_3__ configuration has the same iterations as the __trimmed__ configuration with the difference that the pixel tracks are reconstructed with Patatrack pixel tracks and the further used both to seed the initial step iteration (being filtered to have > 3 hits) and the high pT triplet (being filtered to have exactly 3 hits)
 
 ```cmsRun step3.py allpata=True patatrack=True pixtrip=True wf=-4```
 
