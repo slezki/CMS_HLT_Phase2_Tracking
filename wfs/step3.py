@@ -166,6 +166,8 @@ if options.noPU:
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/FFD62905-0181-D44F-8BEF-2557BFF9F040.root"]
 #print(filelist)
 
+if options.susy:
+   
 # filelist=["/store/mc/Phase2HLTTDRWinter20DIGI/DoubleElectron_FlatPt-1To100/GEN-SIM-DIGI-RAW/PU200_110X_mcRun4_realistic_v3-v2/20000/6BF09AEE-5B7E-1340-9529-9A0E5E0F9442.root"]
 #filelist=["/store/relval/CMSSW_11_1_0_patch1/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW-RECO/110X_mcRun4_realistic_v3_2026D49PU200_raw1100_ProdType1-v1/10000/AFD88583-675F-C14D-B057-6DD8121634D5.root"]
 
@@ -352,8 +354,11 @@ elif options.b0ksmm:
     suff = suff + "_b0ksmm"
 elif options.bskkkk:
     suff = suff + "_bskkkk"
+elif optiions.susy:
+    suff = suff + "_susy"
 else:
     suff = suff + "_ttb"
+
     # if not timing and not options.onlypixel:
     #     process.prevalidation_startup = process.prevalidation_startup_offline
     #     process.dqm_vertex = process.dqm_vertex_offline
