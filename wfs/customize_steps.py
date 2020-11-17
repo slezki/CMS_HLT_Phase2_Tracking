@@ -84,7 +84,7 @@ def customizePixelTracksSoAonCPU(process,vertex=True) :
   process.hltPhase2PixelTrackSoA.trackQualityCuts.tripletMinPt = 0.5
   process.hltPhase2PixelTrackSoA.trackQualityCuts.tripletMaxTip = 0.22
   process.hltPhase2PixelTrackSoA.trackQualityCuts.tripletMaxZip = 11.5
-	
+
   process.hltPhase2PixelTrackSoA.trackQualityCuts.quadrupletMinPt = 0.5
   process.hltPhase2PixelTrackSoA.trackQualityCuts.quadrupletMaxTip = 0.15
   process.hltPhase2PixelTrackSoA.trackQualityCuts.quadrupletMaxZip = 11.5
@@ -114,11 +114,11 @@ def customizePixelTracksSoAonCPU(process,vertex=True) :
 
   process.hltPhase2PixelTracksSequence = cms.Sequence(
       process.vertexFromL1 +
-      process.pixelVertexCoordinates + 
+      process.pixelVertexCoordinates +
       process.hltPhase2PixelTrackSoA +
-      process.hltPhase2PixelTracks 
+      process.hltPhase2PixelTracks
   )
-  
+
   if vertex:
       process.hltPhase2PixelVerticesSequence = cms.Sequence(
           process.hltPhase2PixelVertexSoA +
@@ -127,22 +127,22 @@ def customizePixelTracksSoAonCPU(process,vertex=True) :
           process.hltPhase2PixelTracksCleaner +
       process.hltPhase2PixelTripletsCleaner +
       process.hltPhase2PixelTripletsSelector +
-      process.hltPhase2PixelQuadrupletsSelector +  
+      process.hltPhase2PixelQuadrupletsSelector +
       process.hltPhase2PixelTracksMerger
 
       )
   else:
       process.hltPhase2PixelVerticesSequence = cms.Sequence(
- 
+
           process.hltPhase2PixelVertices +
           process.hltPhase2TrimmedPixelVertices +
           process.hltPhase2PixelTracksCleaner +
       process.hltPhase2PixelTripletsCleaner +
       process.hltPhase2PixelTripletsSelector +
-      process.hltPhase2PixelQuadrupletsSelector +  
+      process.hltPhase2PixelQuadrupletsSelector +
       process.hltPhase2PixelTracksMerger
 
-      ) 
+      )
   return process
 
 def pixelQuadrupletsEta4(process):
@@ -419,7 +419,7 @@ def l1_pixel_recovery(process,timing):
     "hltPhase2GeneralTracksPt09", "hltPhase2CutsRecoTracksPt09Hp", "hltPhase2CutsRecoTracksBtvLike", "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
     "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp", "hltPhase2CutsRecoTracksPt09InitialStep", "hltPhase2CutsRecoTracksPt09InitialStepHp",
     "hltPhase2CutsRecoTracksL1StepByOriginalAlgo","hltPhase2CutsRecoTracksL1StepByOriginalAlgoHp")
-    
+
     return process
 
 def customizePixelOnly(process,timing):
@@ -442,7 +442,7 @@ def l1_pixel_recovery_triplets(process,timing):
 #    process.hltPhase2PixelTrackClusters.trajectories = cms.InputTag("hltPhase2L1CtfTracks")
 #    process.hltPhase2PixelTracksSeedLayers.FPix.skipClusters = cms.InputTag("hltPhase2PixelTrackClusters")
 #    process.hltPhase2PixelTracksSeedLayers.BPix.skipClusters = cms.InputTag("hltPhase2PixelTrackClusters")
-    
+
     process.hltPhase2L1TracksCutClassifier.vertices = cms.InputTag("hltPhase2VertexFromL1")
     ##masking with l1 tracks
     process.hltPhase2InitialStepClusters.trajectories = cms.InputTag("hltPhase2L1CtfTracks")
@@ -580,29 +580,36 @@ def customizeOriginal_v6(process,timing):
 def customizeSingleIt(process,timing):
 
         process.schedule = cms.Schedule(*[process.raw2digi_step,process.single_it])
-	
-	
-        process.hltPhase2TrackValidatorTrackingOnly.cores = cms.InputTag("highPtJetsForTrk")
-        process.hltPhase2TrackValidatorTrackingOnly.associators = cms.untracked.VInputTag("hltPhase2TrackingParticleRecoTrackAsssociation")
-        process.hltPhase2TrackValidatorTrackingOnly.dirName = cms.string('Tracking/Track/')
-        process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag("hltPhase2GeneralTracks",
-        "hltPhase2CutsRecoTracksInitialStep","hltPhase2CutsRecoTracksInitialStepHp",
-        "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo",	"hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
-        "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
-        "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp",
-        "hltPhase2CutsRecoTracksPt09InitialStep","hltPhase2CutsRecoTracksPt09InitialStepHp")
-        process.hltPhase2TrackValidatorBHadronTrackingOnly.label = cms.VInputTag("hltPhase2GeneralTracks",
-        "hltPhase2CutsRecoTracksInitialStep","hltPhase2CutsRecoTracksInitialStepHp",
-        "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo",     "hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
-        "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
-        "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp",
-        "hltPhase2CutsRecoTracksPt09InitialStep","hltPhase2CutsRecoTracksPt09InitialStepHp")
+
+	    if not timing:
+            process.hltPhase2TrackValidatorTrackingOnly.cores = cms.InputTag("highPtJetsForTrk")
+            process.hltPhase2TrackValidatorTrackingOnly.associators = cms.untracked.VInputTag("hltPhase2TrackingParticleRecoTrackAsssociation")
+            process.hltPhase2TrackValidatorTrackingOnly.dirName = cms.string('Tracking/Track/')
+            process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag("hltPhase2GeneralTracks",
+            "hltPhase2CutsRecoTracksInitialStep","hltPhase2CutsRecoTracksInitialStepHp",
+            "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo",	"hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
+            "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
+            "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp",
+            "hltPhase2CutsRecoTracksPt09InitialStep","hltPhase2CutsRecoTracksPt09InitialStepHp")
+            process.hltPhase2TrackValidatorBHadronTrackingOnly.label = cms.VInputTag("hltPhase2GeneralTracks",
+            "hltPhase2CutsRecoTracksInitialStep","hltPhase2CutsRecoTracksInitialStepHp",
+            "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo",     "hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
+            "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
+            "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp",
+            "hltPhase2CutsRecoTracksPt09InitialStep","hltPhase2CutsRecoTracksPt09InitialStepHp")
+
+            process.hltPhase2TrackValidatorTrackingOnly.trackCollectionForDrCalculation = cms.InputTag("hltPhase2GeneralTracks")
+            process.hltPhase2TrackValidatorTrackingOnly.vertexAssociator = cms.untracked.InputTag("hltPhase2VertexAssociatorByPositionAndTracks")
+            process.hltPhase2TrackValidatorTrackingOnly.label_vertex = cms.untracked.InputTag("hltPhase2PixelVertices")process.hltPhase2TrackValidatorTrackingOnly.trackCollectionForDrCalculation = cms.InputTag("hltPhase2GeneralTracks")
+            process.hltPhase2TrackValidatorTrackingOnly.vertexAssociator = cms.untracked.InputTag("hltPhase2VertexAssociatorByPositionAndTracks")
+            process.hltPhase2TrackValidatorTrackingOnly.label_vertex = cms.untracked.InputTag("hltPhase2PixelVertices")
+
         process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2InitialStepTracks")
         process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0)
         process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0)
         process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2InitialStepTracksSelectionHighPurity"))
         process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0)
-	
+
         # process.hltPhase2CutsRecoTracksInitialStep.src = cms.InputTag("hltPhase2InitialStepTracks")
         # process.hltPhase2CutsRecoTracksInitialStepHp.src = cms.InputTag("hltPhase2InitialStepTracks")
         # process.hltPhase2CutsRecoTracksInitialStepByOriginalAlgo.src = cms.InputTag("hltPhase2InitialStepTracks")
@@ -612,13 +619,62 @@ def customizeSingleIt(process,timing):
         # process.hltPhase2CutsRecoTracksPt09InitialStep.src = cms.InputTag("hltPhase2InitialStepTracks")
         # process.hltPhase2CutsRecoTracksPt09InitialStepHp.src = cms.InputTag("hltPhase2InitialStepTracks")
 
-        process.hltPhase2TrackValidatorTrackingOnly.trackCollectionForDrCalculation = cms.InputTag("hltPhase2GeneralTracks")
-        process.hltPhase2TrackValidatorTrackingOnly.vertexAssociator = cms.untracked.InputTag("hltPhase2VertexAssociatorByPositionAndTracks")
-        process.hltPhase2TrackValidatorTrackingOnly.label_vertex = cms.untracked.InputTag("hltPhase2PixelVertices")
 
         if not timing:
             process.schedule.extend([process.prevalidation_onestep,
                 process.validation_original, process.dqm_onestep])
+
+def customizeL1SingleIt(process,timing):
+
+        process.schedule = cms.Schedule(*[process.raw2digi_step,process.single_it_l1])
+
+        process.hltPhase2InitialStepClusters.trajectories = cms.InputTag("hltPhase2L1CtfTracks")
+        process.hltPhase2InitialStepTrackCandidates.phase2clustersToSkip = cms.InputTag("hltPhase2InitialStepClusters")
+
+	    if not timing:
+            process.hltPhase2TrackValidatorTrackingOnly.cores = cms.InputTag("highPtJetsForTrk")
+            process.hltPhase2TrackValidatorTrackingOnly.associators = cms.untracked.VInputTag("hltPhase2TrackingParticleRecoTrackAsssociation")
+            process.hltPhase2TrackValidatorTrackingOnly.dirName = cms.string('Tracking/Track/')
+            process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag("hltPhase2GeneralTracks",
+            "hltPhase2CutsRecoTracksInitialStep","hltPhase2CutsRecoTracksInitialStepHp",
+            "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo",	"hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
+            "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
+            "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp",
+            "hltPhase2CutsRecoTracksPt09InitialStep","hltPhase2CutsRecoTracksPt09InitialStepHp")
+            process.hltPhase2TrackValidatorBHadronTrackingOnly.label = cms.VInputTag("hltPhase2GeneralTracks",
+            "hltPhase2CutsRecoTracksInitialStep","hltPhase2CutsRecoTracksInitialStepHp",
+            "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo",     "hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
+            "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
+            "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp",
+            "hltPhase2CutsRecoTracksPt09InitialStep","hltPhase2CutsRecoTracksPt09InitialStepHp")
+
+            process.hltPhase2TrackValidatorTrackingOnly.trackCollectionForDrCalculation = cms.InputTag("hltPhase2GeneralTracks")
+            process.hltPhase2TrackValidatorTrackingOnly.vertexAssociator = cms.untracked.InputTag("hltPhase2VertexAssociatorByPositionAndTracks")
+            process.hltPhase2TrackValidatorTrackingOnly.label_vertex = cms.untracked.InputTag("hltPhase2PixelVertices")process.hltPhase2TrackValidatorTrackingOnly.trackCollectionForDrCalculation = cms.InputTag("hltPhase2GeneralTracks")
+            process.hltPhase2TrackValidatorTrackingOnly.vertexAssociator = cms.untracked.InputTag("hltPhase2VertexAssociatorByPositionAndTracks")
+            process.hltPhase2TrackValidatorTrackingOnly.label_vertex = cms.untracked.InputTag("hltPhase2PixelVertices")
+
+        process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2InitialStepTracks")
+        process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0)
+        process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0)
+        process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2InitialStepTracksSelectionHighPurity"))
+        process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0)
+
+        # process.hltPhase2CutsRecoTracksInitialStep.src = cms.InputTag("hltPhase2InitialStepTracks")
+        # process.hltPhase2CutsRecoTracksInitialStepHp.src = cms.InputTag("hltPhase2InitialStepTracks")
+        # process.hltPhase2CutsRecoTracksInitialStepByOriginalAlgo.src = cms.InputTag("hltPhase2InitialStepTracks")
+        # process.hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp.src = cms.InputTag("hltPhase2InitialStepTracks")
+        # process.hltPhase2CutsRecoTracksInitialStepByAlgoMask.src = cms.InputTag("hltPhase2InitialStepTracks")
+        # process.hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp.src = cms.InputTag("hltPhase2InitialStepTracks")
+        # process.hltPhase2CutsRecoTracksPt09InitialStep.src = cms.InputTag("hltPhase2InitialStepTracks")
+        # process.hltPhase2CutsRecoTracksPt09InitialStepHp.src = cms.InputTag("hltPhase2InitialStepTracks")
+
+
+        if not timing:
+            process.schedule.extend([process.prevalidation_onestepl1,
+                process.validation_original, process.validation_purel1, process.dqm_onestep])
+
+
 
 def customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.3,numVertex=20,minSumPt2=20):
 

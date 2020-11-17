@@ -71,6 +71,12 @@ prevalidation_onestep = cms.Path(prevalidation_startup,
                                   prevalidation_initial,
                                   prevalidation_general)
 
+prevalidation_onestepl1 = cms.Path(prevalidation_startup,
+                                  prevalidation_v0,
+                                  prevalidation_initial,
+                                  prevalidation_l1,
+                                  prevalidation_general)
+
 prevalidation_purel1 = cms.Path(prevalidation_startup,
                                  prevalidation_l1,
                                  prevalidation_general)

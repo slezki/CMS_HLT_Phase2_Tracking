@@ -88,12 +88,12 @@ hltPhase2PixelTracksSequence = cms.Sequence(
     hltPhase2PixelTracksSeedLayers +
     hltPhase2PixelTracksHitDoublets +
     hltPhase2PixelTracksHitSeeds +
-    hltPhase2PixelTracks + 
+    hltPhase2PixelTracks +
     #hltPhase2PixelTracksCleaner +
     #hltPhase2PixelTripletsCleaner +
     hltPhase2PixelTripletsSelector +
-    hltPhase2PixelQuadrupletsSelector  
-#    hltPhase2PixelTracksMerger 
+    hltPhase2PixelQuadrupletsSelector
+#    hltPhase2PixelTracksMerger
 )
 
 hltPhase2PixelTracksSequenceL1 = cms.Sequence(
@@ -112,7 +112,7 @@ hltPhase2PixelVerticesSequence = cms.Sequence(
     hltPhase2PixelTracksCleaner +
     hltPhase2PixelTripletsCleaner +
     hltPhase2PixelTripletsSelector +
-    hltPhase2PixelQuadrupletsSelector +  
+    hltPhase2PixelQuadrupletsSelector +
     hltPhase2PixelTracksMerger
 
 )
@@ -142,7 +142,7 @@ hltPhase2HighPtTripletStepSequence = cms.Sequence(
 original_v6 = cms.Path(
     hltPhase2StartUp +
     hltPhase2PixelTracksSequence + # pixeltracks
-    hltPhase2PixelVerticesSequence + 
+    hltPhase2PixelVerticesSequence +
 ##############################################
     hltPhase2InitialStepSequence +
     hltPhase2HighPtTripletStepSequence +
@@ -158,6 +158,17 @@ single_it = cms.Path(
     hltPhase2InitialStepSequence +
     hltPhase2GeneralTracks
 )
+
+single_it_l1 = cms.Path(
+    hltPhase2StartUp +
+    hltPhase2L1TracksSequence +
+    hltPhase2PixelTracksSequence + # pixeltracks
+    hltPhase2PixelVerticesSequence + # pixelvertices
+##############################################
+    hltPhase2InitialStepSequence +
+    hltPhase2GeneralTracks
+)
+
 
 original_v7 = cms.Path(
     hltPhase2StartUp +
@@ -219,7 +230,7 @@ hltPhase2L1TracksSequence = cms.Sequence(
     hltPhase2L1TracksSequenceClassification +
     hltPhase2L1PrimaryVertex +
     hltPhase2L1CtfTracks +
-    hltPhase2InitialStepClusters 
+    hltPhase2InitialStepClusters
 )
 
 pure_l1tracks = cms.Path(
@@ -316,8 +327,8 @@ pixeltriplet_l1 = cms.Path(
 
 l1_pixel_reco = cms.Path(
     hltPhase2StartUp +
-    hltPhase2L1TracksSequence +   
-    hltPhase2PixelTracksSequence + 
+    hltPhase2L1TracksSequence +
+    hltPhase2PixelTracksSequence +
     hltPhase2PixelVerticesSequence +
     hltPhase2L1TracksSequenceClassification +
     hltPhase2InitialStepSequence +
@@ -327,7 +338,7 @@ l1_pixel_reco = cms.Path(
 
 l1_pixel_reco_triplets = cms.Path(
     hltPhase2StartUp +
-    hltPhase2L1TracksSequence + 
+    hltPhase2L1TracksSequence +
     hltPhase2PixelTracksSequence +
     hltPhase2PixelVerticesSequence +
     hltPhase2L1TracksSequenceClassification +
