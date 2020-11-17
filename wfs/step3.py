@@ -271,6 +271,7 @@ if options.wf == -5:
     # customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.05,numVertex=30,minSumPt2=20)
     #process.hltPhase2PixelVertices.ZSeparation = float(options.zsep) / 1000.0
     if options.clean:
+        suff = suff + "_clean"
 	process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksMerger")
     #process.hltPhase2PixelVertices.TrackCollection = cms.InputTag("hltPhase2PixelQuadrupletsSelector")
 
