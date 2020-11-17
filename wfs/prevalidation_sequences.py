@@ -2,11 +2,13 @@ import FWCore.ParameterSet.Config as cms
 from prevalidation_modules import *
 
 
+#########################################################################
 
-prevalidation_commons = cms.Task(
-                                quickTrackAssociatorByHits,
+prevalidation_commons =  cms.Task(
+                                quickTrackAssociatorByHits,quickTrackAssociatorByHits,
                                 tpClusterProducer,trackingParticlesBHadron,simHitTPAssocProducer,
                                 trackingParticlesConversion,trackingParticleNumberOfLayersProducer,
+
                                 hltPhase2TrackingParticlesSignal,hltPhase2TrackingParticlesElectron)
 
 prevalidation_highpt = cms.Task(hltPhase2CutsRecoTracksFromPVHighPtTripletStep,hltPhase2CutsRecoTracksFromPVHighPtTripletStepHp,hltPhase2SeedTrackshighPtTripletStepSeeds,
@@ -47,15 +49,9 @@ prevalidation_pixelvertex = cms.Task(
                                 hltPhase2SelectedPixelVertices,
                                 hltPhase2PixelVertexAnalysisTrackingOnly)
 
-prevalidation_v0 = cms.Task(hltPhase2V0Validator)
-prevalidation_v0L1 = cms.Task(hltPhase2V0ValidatorL1)
-
-prevalidation_startup = cms.Task(prevalidation_commons,prevalidation_associators,prevalidation_associators_pixel,prevalidation_pixelvertex)
-
-#########################################################################
-
 prevalidation_l1 = cms.Task(hltPhase2TrackingParticleL1TrackAsssociation,hltPhase2CutsRecoTracksL1Step,hltPhase2CutsRecoTracksL1,hltPhase2CutsRecoTracksL1StepByOriginalAlgo,hltPhase2CutsRecoTracksL1StepByOriginalAlgoHp,hltPhase2VertexAnalysisL1)
 
+prevalidation_v0 = cms.Task(hltPhase2V0Validator)
 
 ####################################################
 ########################## Pixel Tracks
@@ -77,7 +73,6 @@ prevalidation_onestep = cms.Path(prevalidation_startup,
 
 prevalidation_purel1 = cms.Path(prevalidation_startup,
                                  prevalidation_l1,
-                                 prevalidation_v0,
                                  prevalidation_general)
 
 prevalidation_l1initial = cms.Path(prevalidation_startup,

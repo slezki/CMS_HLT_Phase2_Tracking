@@ -18,59 +18,95 @@ hltPhase2PixelVertexAssociatorByPositionAndTracks = cms.EDProducer("VertexAssoci
     trackAssociation = cms.InputTag("hltPhase2TrackingParticlePixelTrackAsssociation")
 )
 
-hltPhase2VertexAssociatorByPositionAndTracks = hltPhase2PixelVertexAssociatorByPositionAndTracks.clone(
+hltPhase2TrackingParticlePixelTrackAsssociation = cms.EDProducer("TrackAssociatorEDProducer",
+    associator = cms.InputTag("quickTrackAssociatorByHits"),#PreSplitting"),
+    ignoremissingtrackcollection = cms.untracked.bool(False),
+    label_tp = cms.InputTag("mix","MergedTrackTruth"),
+    label_tr = cms.InputTag("hltPhase2PixelTracks")
+)
+
+hltPhase2TrackingParticleL1TrackAsssociation = cms.EDProducer("TrackAssociatorEDProducer",
+    associator = cms.InputTag("quickTrackAssociatorByHits"),
+    ignoremissingtrackcollection = cms.untracked.bool(False),
+    label_tp = cms.InputTag("mix","MergedTrackTruth"),
+    label_tr = cms.InputTag("hltPhase2L1CtfTracks"),
+)
+
+hltPhase2VertexAssociatorByPositionAndTracks = cms.EDProducer("VertexAssociatorByPositionAndTracksProducer",
+    absT = cms.double(-1),
+    absZ = cms.double(0.1),
+    maxRecoT = cms.double(-1),
+    maxRecoZ = cms.double(1000),
+    sharedTrackFraction = cms.double(-1),
+    sigmaT = cms.double(-1),
+    sigmaZ = cms.double(3),
     trackAssociation = cms.InputTag("hltPhase2TrackingParticleRecoTrackAsssociation")
 )
 
-hltPhase2VertexAssociatorByPositionAndL1Tracks = hltPhase2PixelVertexAssociatorByPositionAndTracks.clone(
+hltPhase2VertexAssociatorByPositionAndL1Tracks = cms.EDProducer("VertexAssociatorByPositionAndTracksProducer",
+    absT = cms.double(-1),
+    absZ = cms.double(0.1),
+    maxRecoT = cms.double(-1),
+    maxRecoZ = cms.double(1000),
+    sharedTrackFraction = cms.double(-1),
+    sigmaT = cms.double(-1),
+    sigmaZ = cms.double(3),
     trackAssociation = cms.InputTag("hltPhase2TrackingParticleL1TrackAsssociation")
 )
 
-##Tracks selectors
-from CommonTools.RecoAlgos.recoTrackViewRefSelector_cfi import recoTrackViewRefSelector
 
-hltPhase2CutsRecoTracksHp = cms.EDProducer("RecoTrackViewRefSelector",
+hltPhase2CutsRecoTracksBtvLike = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring(),
+    algorithmMaskContains = cms.vstring(),
+    beamSpot = cms.InputTag("offlineBeamSpot"),
+    invertRapidityCut = cms.bool(False), # cmssw_11_1
+    lip = cms.double(17.0),
+    maxChi2 = cms.double(5.0),
+    maxPhi = cms.double(3.2),
+    maxRapidity = cms.double(9),
+    min3DLayer = cms.int32(0),
+    minHit = cms.int32(0),
+    minLayer = cms.int32(0),
+    minPhi = cms.double(-3.2),
+    minPixelHit = cms.int32(1), maxPixelHit = cms.int32(99),
+    minRapidity = cms.double(-9),
+    originalAlgorithm = cms.vstring(),
+    ptMin = cms.double(1.0),
+    quality = cms.vstring(),
+    src = cms.InputTag("hltPhase2GeneralTracks"),
+    tip = cms.double(0.2),
+    usePV = cms.bool(True),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
+)
+
+
+hltPhase2CutsRecoTracksFromPVHighPtTripletStep = cms.EDProducer("RecoTrackViewRefSelector",
+    algorithm = cms.vstring('highPtTripletStep'),
     algorithmMaskContains = cms.vstring(),
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
     lip = cms.double(300.0),
     maxChi2 = cms.double(10000.0),
     maxPhi = cms.double(3.2),
-    maxRapidity = cms.double(9),
+    maxRapidity = cms.double(4.5),
     min3DLayer = cms.int32(0),
     minHit = cms.int32(0),
     minLayer = cms.int32(3),
     minPhi = cms.double(-3.2),
-    minPixelHit = cms.int32(1), maxPixelHit = cms.int32(99),
-    minRapidity = cms.double(-9),
+    minPixelHit = cms.int32(0), maxPixelHit = cms.int32(99),
+    minRapidity = cms.double(-4.5),
     originalAlgorithm = cms.vstring(),
     ptMin = cms.double(0.9), # previous 0.1
-    quality = cms.vstring('highPurity'),
-    src = cms.InputTag("hltPhase2GeneralTracks"),
+    quality = cms.vstring('loose'),
+    src = cms.InputTag("hltPhase2GeneralTracksFromPV"),
     tip = cms.double(120),
     usePV = cms.bool(False),
     vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
-hltPhase2CutsRecoTracksBtvLike = hltPhase2CutsRecoTracksHp.clone(
-    lip = cms.double(17.0),
-    maxChi2 = cms.double(5.0),
-    maxPhi = cms.double(3.2),
-    maxRapidity = cms.double(9),
-    minLayer = cms.int32(0),
-    minPixelHit = cms.int32(1),
-    ptMin = cms.double(0.9),
-    quality = cms.vstring(''),
-    src = cms.InputTag("hltPhase2GeneralTracks"),
-    tip = cms.double(0.2),
-    usePV = cms.bool(True),
-)
 
-
-hltPhase2CutsRecoTracksFromPVHighPtTripletStep = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksFromPVHighPtTripletStepHp = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring('highPtTripletStep'),
-
     algorithmMaskContains = cms.vstring(),
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
@@ -86,35 +122,11 @@ hltPhase2CutsRecoTracksFromPVHighPtTripletStep = hltPhase2CutsRecoTracksHp.clone
     minRapidity = cms.double(-4.5),
     originalAlgorithm = cms.vstring(),
     ptMin = cms.double(0.9), # previous 0.1
-
-
-    quality = cms.vstring('loose'),
-    src = cms.InputTag("hltPhase2GeneralTracksFromPV"),
-)
-
-
-hltPhase2CutsRecoTracksFromPVHighPtTripletStepHp = hltPhase2CutsRecoTracksHp.clone(
-    algorithm = cms.vstring('highPtTripletStep'),
-
-    algorithmMaskContains = cms.vstring(),
-    beamSpot = cms.InputTag("offlineBeamSpot"),
-    invertRapidityCut = cms.bool(False), # cmssw_11_1
-    lip = cms.double(300.0),
-    maxChi2 = cms.double(10000.0),
-    maxPhi = cms.double(3.2),
-    maxRapidity = cms.double(4.5),
-    min3DLayer = cms.int32(0),
-    minHit = cms.int32(0),
-    minLayer = cms.int32(3),
-    minPhi = cms.double(-3.2),
-    minPixelHit = cms.int32(0), maxPixelHit = cms.int32(99),
-    minRapidity = cms.double(-4.5),
-    originalAlgorithm = cms.vstring(),
-    ptMin = cms.double(0.9), # previous 0.1
-
-
     quality = cms.vstring('highPurity'),
     src = cms.InputTag("hltPhase2GeneralTracksFromPV"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 hltPhase2CutsRecoTracksFromPVHp = cms.EDProducer("RecoTrackViewRefSelector",
@@ -136,12 +148,14 @@ hltPhase2CutsRecoTracksFromPVHp = cms.EDProducer("RecoTrackViewRefSelector",
     ptMin = cms.double(0.9), # previous 0.1
     quality = cms.vstring('highPurity'),
     src = cms.InputTag("hltPhase2GeneralTracksFromPV"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
-hltPhase2CutsRecoTracksFromPVInitialStep = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksFromPVInitialStep = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring('initialStep'),
-
     algorithmMaskContains = cms.vstring(),
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
@@ -157,16 +171,16 @@ hltPhase2CutsRecoTracksFromPVInitialStep = hltPhase2CutsRecoTracksHp.clone(
     minRapidity = cms.double(-4.5),
     originalAlgorithm = cms.vstring(),
     ptMin = cms.double(0.9), # previous 0.1
-
-
     quality = cms.vstring('loose'),
     src = cms.InputTag("hltPhase2GeneralTracksFromPV"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
-hltPhase2CutsRecoTracksFromPVInitialStepHp = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksFromPVInitialStepHp = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring('initialStep'),
-
     algorithmMaskContains = cms.vstring(),
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
@@ -182,15 +196,15 @@ hltPhase2CutsRecoTracksFromPVInitialStepHp = hltPhase2CutsRecoTracksHp.clone(
     minRapidity = cms.double(-4.5),
     originalAlgorithm = cms.vstring(),
     ptMin = cms.double(0.9), # previous 0.1
-
-
     quality = cms.vstring('highPurity'),
     src = cms.InputTag("hltPhase2GeneralTracksFromPV"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
-hltPhase2CutsRecoTracksFromPVPt09HighPtTripletStep = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksFromPVPt09HighPtTripletStep = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring('highPtTripletStep'),
-
     algorithmMaskContains = cms.vstring(),
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
@@ -206,16 +220,16 @@ hltPhase2CutsRecoTracksFromPVPt09HighPtTripletStep = hltPhase2CutsRecoTracksHp.c
     minRapidity = cms.double(-4.5),
     originalAlgorithm = cms.vstring(),
     ptMin = cms.double(0.9), # previous 0.1
-
-
     quality = cms.vstring('loose'),
     src = cms.InputTag("hltPhase2GeneralTracksFromPVPt09"),
+    tip = cms.double(120.0),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
-hltPhase2CutsRecoTracksFromPVPt09HighPtTripletStepHp = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksFromPVPt09HighPtTripletStepHp = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring('highPtTripletStep'),
-
     algorithmMaskContains = cms.vstring(),
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
@@ -231,12 +245,12 @@ hltPhase2CutsRecoTracksFromPVPt09HighPtTripletStepHp = hltPhase2CutsRecoTracksHp
     minRapidity = cms.double(-4.5),
     originalAlgorithm = cms.vstring(),
     ptMin = cms.double(0.9), # previous 0.1
-
-
     quality = cms.vstring('highPurity'),
     src = cms.InputTag("hltPhase2GeneralTracksFromPVPt09"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
-
 
 hltPhase2CutsRecoTracksFromPVPt09Hp = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring(),
@@ -255,16 +269,15 @@ hltPhase2CutsRecoTracksFromPVPt09Hp = cms.EDProducer("RecoTrackViewRefSelector",
     minRapidity = cms.double(-4.5),
     originalAlgorithm = cms.vstring(),
     ptMin = cms.double(0.9), # previous 0.1
-
-
-
     quality = cms.vstring('highPurity'),
     src = cms.InputTag("hltPhase2GeneralTracksFromPVPt09"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
-hltPhase2CutsRecoTracksFromPVPt09InitialStep = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksFromPVPt09InitialStep = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring('initialStep'),
-
     algorithmMaskContains = cms.vstring(),
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
@@ -280,16 +293,16 @@ hltPhase2CutsRecoTracksFromPVPt09InitialStep = hltPhase2CutsRecoTracksHp.clone(
     minRapidity = cms.double(-4.5),
     originalAlgorithm = cms.vstring(),
     ptMin = cms.double(0.9), # previous 0.1
-
-
     quality = cms.vstring('loose'),
     src = cms.InputTag("hltPhase2GeneralTracksFromPVPt09"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
-hltPhase2CutsRecoTracksFromPVPt09InitialStepHp = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksFromPVPt09InitialStepHp = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring('initialStep'),
-
     algorithmMaskContains = cms.vstring(),
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
@@ -305,16 +318,16 @@ hltPhase2CutsRecoTracksFromPVPt09InitialStepHp = hltPhase2CutsRecoTracksHp.clone
     minRapidity = cms.double(-4.5),
     originalAlgorithm = cms.vstring(),
     ptMin = cms.double(0.9), #previous 0.1
-
-
     quality = cms.vstring('highPurity'),
     src = cms.InputTag("hltPhase2GeneralTracksFromPVPt09"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
-hltPhase2CutsRecoTracksHighPtTripletStep = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksHighPtTripletStep = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring('highPtTripletStep'),
-
     algorithmMaskContains = cms.vstring(),
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
@@ -330,16 +343,17 @@ hltPhase2CutsRecoTracksHighPtTripletStep = hltPhase2CutsRecoTracksHp.clone(
     minRapidity = cms.double(-4.5),
     originalAlgorithm = cms.vstring(),
     ptMin = cms.double(0.9), # previous 0.1
-
-
     quality = cms.vstring('loose'),
+    src = cms.InputTag("hltPhase2GeneralTracks"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
-hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMask = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMask = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring(),
     algorithmMaskContains = cms.vstring('highPtTripletStep'),
-
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
     lip = cms.double(300.0),
@@ -355,13 +369,16 @@ hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMask = hltPhase2CutsRecoTracksHp.c
     originalAlgorithm = cms.vstring(),
     ptMin = cms.double(0.9), # previous 0.1
     quality = cms.vstring('loose'),
+    src = cms.InputTag("hltPhase2GeneralTracks"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
-hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMaskHp = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMaskHp = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring(),
     algorithmMaskContains = cms.vstring('highPtTripletStep'),
-
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
     lip = cms.double(300.0),
@@ -377,13 +394,16 @@ hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMaskHp = hltPhase2CutsRecoTracksHp
     originalAlgorithm = cms.vstring(),
     ptMin = cms.double(0.9), # previous 0.1
     quality = cms.vstring('highPurity'),
+    src = cms.InputTag("hltPhase2GeneralTracks"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+        vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
-hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgo = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgo = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring(),
     algorithmMaskContains = cms.vstring(),
-
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
     lip = cms.double(300.0),
@@ -397,14 +417,18 @@ hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgo = hltPhase2CutsRecoTracks
     minPixelHit = cms.int32(0), maxPixelHit = cms.int32(99),
     minRapidity = cms.double(-4.5),
     originalAlgorithm = cms.vstring('highPtTripletStep'),
+    ptMin = cms.double(0.9), # previous 0.1
     quality = cms.vstring('loose'),
+    src = cms.InputTag("hltPhase2GeneralTracks"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
-hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgoHp = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgoHp = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring(''),
     algorithmMaskContains = cms.vstring(),
-
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
     lip = cms.double(300.0),
@@ -417,14 +441,18 @@ hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgoHp = hltPhase2CutsRecoTrac
     minPhi = cms.double(-3.2),
     minPixelHit = cms.int32(0), maxPixelHit = cms.int32(99),
     minRapidity = cms.double(-4.5),
-   originalAlgorithm = cms.vstring('highPtTripletStep'),
+    originalAlgorithm = cms.vstring('highPtTripletStep'),
+    ptMin = cms.double(0.9), # previous 0.1
     quality = cms.vstring('highPurity'),
+    src = cms.InputTag("hltPhase2GeneralTracks"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
-hltPhase2CutsRecoTracksL1StepByOriginalAlgo  = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksL1StepByOriginalAlgo  = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring(''),
     algorithmMaskContains = cms.vstring(),
-
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
     lip = cms.double(300.0),
@@ -438,13 +466,17 @@ hltPhase2CutsRecoTracksL1StepByOriginalAlgo  = hltPhase2CutsRecoTracksHp.clone(
     minPixelHit = cms.int32(0), maxPixelHit = cms.int32(99),
     minRapidity = cms.double(-4.5),
     originalAlgorithm = cms.vstring('hltIter0'),
+    ptMin = cms.double(0.9), # previous 0.1
     quality = cms.vstring(''),
+    src = cms.InputTag("hltPhase2GeneralTracks"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
-hltPhase2CutsRecoTracksL1StepByOriginalAlgoHp = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksL1StepByOriginalAlgoHp = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring(""),
     algorithmMaskContains = cms.vstring(),
-
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
     lip = cms.double(300.0),
@@ -456,15 +488,19 @@ hltPhase2CutsRecoTracksL1StepByOriginalAlgoHp = hltPhase2CutsRecoTracksHp.clone(
     minLayer = cms.int32(3),
     minPhi = cms.double(-3.2),
     minPixelHit = cms.int32(0), maxPixelHit = cms.int32(99),
-    minRapidity = cms.double(-4.5)
+    minRapidity = cms.double(-4.5),
     originalAlgorithm = cms.vstring('hltIter0'),
+    ptMin = cms.double(0.9), # previous 0.1
     quality = cms.vstring('highPurity'),
+    src = cms.InputTag("hltPhase2GeneralTracks"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
-hltPhase2CutsRecoTracksHighPtTripletStepHp = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksHighPtTripletStepHp = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring('highPtTripletStep'),
-
     algorithmMaskContains = cms.vstring(),
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
@@ -505,12 +541,15 @@ hltPhase2CutsRecoTracksHp = cms.EDProducer("RecoTrackViewRefSelector",
     originalAlgorithm = cms.vstring(),
     ptMin = cms.double(0.9), # previous 0.1
     quality = cms.vstring('highPurity'),
+    src = cms.InputTag("hltPhase2GeneralTracks"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
-hltPhase2CutsRecoTracksInitialStep = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksInitialStep = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring('initialStep'),
-
     algorithmMaskContains = cms.vstring(),
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
@@ -530,14 +569,12 @@ hltPhase2CutsRecoTracksInitialStep = hltPhase2CutsRecoTracksHp.clone(
     src = cms.InputTag("hltPhase2GeneralTracks"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2PixelVertices") #z("hltPhase2OfflinePrimaryVertices"
-
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #z("hltPhase2OfflinePrimaryVertices")
 )
 
 
-hltPhase2CutsRecoTracksL1 = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksL1 = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring('hltIter0'),
-
     algorithmMaskContains = cms.vstring(),
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
@@ -560,10 +597,9 @@ hltPhase2CutsRecoTracksL1 = hltPhase2CutsRecoTracksHp.clone(
     vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
-hltPhase2CutsRecoTracksInitialStepByAlgoMask = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksInitialStepByAlgoMask = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring(),
     algorithmMaskContains = cms.vstring('initialStep'),
-
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
     lip = cms.double(300.0),
@@ -583,14 +619,12 @@ hltPhase2CutsRecoTracksInitialStepByAlgoMask = hltPhase2CutsRecoTracksHp.clone(
     tip = cms.double(120),
     usePV = cms.bool(False),
     vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
-
 )
 
 
-hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring(),
     algorithmMaskContains = cms.vstring('initialStep'),
-
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
     lip = cms.double(300.0),
@@ -607,34 +641,15 @@ hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp = hltPhase2CutsRecoTracksHp.clone
     ptMin = cms.double(0.9), # previous 0.1
     quality = cms.vstring('highPurity'),
     src = cms.InputTag("hltPhase2GeneralTracks"),
+    tip = cms.double(120.0),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
-hltPhase2CutsRecoTracksInitialStepByOriginalAlgo = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksInitialStepByOriginalAlgo = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring(),
     algorithmMaskContains = cms.vstring(),
-
-    beamSpot = cms.InputTag("offlineBeamSpot"),
-    invertRapidityCut = cms.bool(False), # cmssw_11_1
-    lip = cms.double(300.0),
-    maxChi2 = cms.double(10000.0),
-    maxPhi = cms.double(3.2),
-    maxRapidity = cms.double(4.5),
-    min3DLayer = cms.int32(0),
-    minHit = cms.int32(0),
-    minLayer = cms.int32(3),
-    minPhi = cms.double(-3.2),
-    minPixelHit = cms.int32(0), maxPixelHit = cms.int32(99),
-    minRapidity = cms.double(-4.5),
-
-    originalAlgorithm = cms.vstring('initialStep'),
-)
-
-
-hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp = hltPhase2CutsRecoTracksHp.clone(
-    algorithm = cms.vstring(),
-    algorithmMaskContains = cms.vstring(),
-
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
     lip = cms.double(300.0),
@@ -648,13 +663,43 @@ hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp = hltPhase2CutsRecoTracksHp.c
     minPixelHit = cms.int32(0), maxPixelHit = cms.int32(99),
     minRapidity = cms.double(-4.5),
     originalAlgorithm = cms.vstring('initialStep'),
+    ptMin = cms.double(0.9), # previous 0.1
+    quality = cms.vstring(),
+    src = cms.InputTag("hltPhase2GeneralTracks"),
+    tip = cms.double(120.0),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
-hltPhase2CutsRecoTracksInitialStepHp = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp = cms.EDProducer("RecoTrackViewRefSelector",
+    algorithm = cms.vstring(),
+    algorithmMaskContains = cms.vstring(),
+    beamSpot = cms.InputTag("offlineBeamSpot"),
+    invertRapidityCut = cms.bool(False), # cmssw_11_1
+    lip = cms.double(300.0),
+    maxChi2 = cms.double(10000.0),
+    maxPhi = cms.double(3.2),
+    maxRapidity = cms.double(4.5),
+    min3DLayer = cms.int32(0),
+    minHit = cms.int32(0),
+    minLayer = cms.int32(3),
+    minPhi = cms.double(-3.2),
+    minPixelHit = cms.int32(0), maxPixelHit = cms.int32(99),
+    minRapidity = cms.double(-4.5),
+    originalAlgorithm = cms.vstring('initialStep'),
+    ptMin = cms.double(0.9), # previous 0.1
+    quality = cms.vstring('highPurity'),
+    src = cms.InputTag("hltPhase2GeneralTracks"),
+    tip = cms.double(120.0),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
+)
+
+
+hltPhase2CutsRecoTracksInitialStepHp = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring('initialStep'),
     algorithmMaskContains = cms.vstring(),
-
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
     lip = cms.double(300.0),
@@ -670,8 +715,11 @@ hltPhase2CutsRecoTracksInitialStepHp = hltPhase2CutsRecoTracksHp.clone(
     originalAlgorithm = cms.vstring(),
     ptMin = cms.double(0.9), # previous 0.1
     quality = cms.vstring('highPurity'),
+    src = cms.InputTag("hltPhase2GeneralTracks"),
+    tip = cms.double(120.0),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
-
 
 hltPhase2L1CtfTracksPt09 = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring(),
@@ -691,10 +739,11 @@ hltPhase2L1CtfTracksPt09 = cms.EDProducer("RecoTrackViewRefSelector",
     originalAlgorithm = cms.vstring(),
     ptMin = cms.double(0.9),
     quality = cms.vstring(),
-
     src = cms.InputTag("hltPhase2L1CtfTracks"),
+    tip = cms.double(120.0),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
-
 
 hltPhase2CutsRecoTracksL1Step = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring(''),
@@ -712,14 +761,13 @@ hltPhase2CutsRecoTracksL1Step = cms.EDProducer("RecoTrackViewRefSelector",
     minPixelHit = cms.int32(0), maxPixelHit = cms.int32(99),
     minRapidity = cms.double(-4.5),
     originalAlgorithm = cms.vstring(),
-
-    maxRapidity = cms.double(2),
-    minRapidity = cms.double(-2),
-
     ptMin = cms.double(2.0), # previous 0.1
+    quality = cms.vstring(''), #'loose'),
     src = cms.InputTag("hltPhase2L1CtfTracks"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
-
 
 hltPhase2CutsRecoTracksL1StepHp = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring(''),
@@ -740,8 +788,10 @@ hltPhase2CutsRecoTracksL1StepHp = cms.EDProducer("RecoTrackViewRefSelector",
     ptMin = cms.double(0.9), # previous 0.1
     quality = cms.vstring('highPurity'),
     src = cms.InputTag("hltPhase2L1CtfTracks"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
-
 
 hltPhase2CutsRecoTracksPt09L1StepHp = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring(),
@@ -762,35 +812,13 @@ hltPhase2CutsRecoTracksPt09L1StepHp = cms.EDProducer("RecoTrackViewRefSelector",
     ptMin = cms.double(0.9), # previous 0.1
     quality = cms.vstring('highPurity'),
     src = cms.InputTag("hltPhase2L1CtfTracksPt09"),
+    tip = cms.double(120.0),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
-hltPhase2CutsRecoTracksPt09HighPtTripletStep = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksPt09HighPtTripletStep = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring('highPtTripletStep'),
-
-    algorithmMaskContains = cms.vstring(),
-    beamSpot = cms.InputTag("offlineBeamSpot"),
-    invertRapidityCut = cms.bool(False), # cmssw_11_1
-    lip = cms.double(300.0),
-    maxChi2 = cms.double(10000.0),
-    maxPhi = cms.double(3.2),
-    maxRapidity = cms.double(4.5),
-    min3DLayer = cms.int32(0),
-    minHit = cms.int32(0),
-    minLayer = cms.int32(3),
-    minPhi = cms.double(-3.2),
-    minPixelHit = cms.int32(0), maxPixelHit = cms.int32(99),
-    minRapidity = cms.double(-4.5),
-    originalAlgorithm = cms.vstring(),
-    ptMin = cms.double(0.9), # previous 0.
-
-    quality = cms.vstring('loose'),
-    src = cms.InputTag("hltPhase2GeneralTracksPt09"),
-)
-
-
-hltPhase2CutsRecoTracksPt09HighPtTripletStepHp = hltPhase2CutsRecoTracksHp.clone(
-    algorithm = cms.vstring('highPtTripletStep'),
-
     algorithmMaskContains = cms.vstring(),
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
@@ -806,11 +834,37 @@ hltPhase2CutsRecoTracksPt09HighPtTripletStepHp = hltPhase2CutsRecoTracksHp.clone
     minRapidity = cms.double(-4.5),
     originalAlgorithm = cms.vstring(),
     ptMin = cms.double(0.9), # previous 0.1
-
-    quality = cms.vstring('highPurity'),
+    quality = cms.vstring('loose'),
     src = cms.InputTag("hltPhase2GeneralTracksPt09"),
+    tip = cms.double(120.0),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
+
+hltPhase2CutsRecoTracksPt09HighPtTripletStepHp = cms.EDProducer("RecoTrackViewRefSelector",
+    algorithm = cms.vstring('highPtTripletStep'),
+    algorithmMaskContains = cms.vstring(),
+    beamSpot = cms.InputTag("offlineBeamSpot"),
+    invertRapidityCut = cms.bool(False), # cmssw_11_1
+    lip = cms.double(300.0),
+    maxChi2 = cms.double(10000.0),
+    maxPhi = cms.double(3.2),
+    maxRapidity = cms.double(4.5),
+    min3DLayer = cms.int32(0),
+    minHit = cms.int32(0),
+    minLayer = cms.int32(3),
+    minPhi = cms.double(-3.2),
+    minPixelHit = cms.int32(0), maxPixelHit = cms.int32(99),
+    minRapidity = cms.double(-4.5),
+    originalAlgorithm = cms.vstring(),
+    ptMin = cms.double(0.9), # previous 0.1
+    quality = cms.vstring('highPurity'),
+    src = cms.InputTag("hltPhase2GeneralTracksPt09"),
+    tip = cms.double(120.0),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
+)
 
 hltPhase2CutsRecoTracksPt09Hp = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring(),
@@ -831,12 +885,14 @@ hltPhase2CutsRecoTracksPt09Hp = cms.EDProducer("RecoTrackViewRefSelector",
     ptMin = cms.double(0.9), # previous 0.1
     quality = cms.vstring('highPurity'),
     src = cms.InputTag("hltPhase2GeneralTracksPt09"),
+    tip = cms.double(120.0),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
-hltPhase2CutsRecoTracksPt09InitialStep = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksPt09InitialStep = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring('initialStep'),
-
     algorithmMaskContains = cms.vstring(),
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
@@ -854,12 +910,14 @@ hltPhase2CutsRecoTracksPt09InitialStep = hltPhase2CutsRecoTracksHp.clone(
     ptMin = cms.double(0.9), # previous 0.1
     quality = cms.vstring('loose'),
     src = cms.InputTag("hltPhase2GeneralTracksPt09"),
+    tip = cms.double(120.0),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
 
-hltPhase2CutsRecoTracksPt09InitialStepHp = hltPhase2CutsRecoTracksHp.clone(
+hltPhase2CutsRecoTracksPt09InitialStepHp = cms.EDProducer("RecoTrackViewRefSelector",
     algorithm = cms.vstring('initialStep'),
-
     algorithmMaskContains = cms.vstring(),
     beamSpot = cms.InputTag("offlineBeamSpot"),
     invertRapidityCut = cms.bool(False), # cmssw_11_1
@@ -877,20 +935,11 @@ hltPhase2CutsRecoTracksPt09InitialStepHp = hltPhase2CutsRecoTracksHp.clone(
     ptMin = cms.double(0.9), #previous 0.1
     quality = cms.vstring('highPurity'),
     src = cms.InputTag("hltPhase2GeneralTracksPt09"),
+    tip = cms.double(120.0),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
-hltPhase2GeneralTracksFromPVPt09 = hltPhase2CutsRecoTracksHp.clone(
-    quality = cms.vstring('loose'),
-    src = cms.InputTag("hltPhase2GeneralTracksFromPV"),
-)
-
-
-hltPhase2GeneralTracksPt09 = hltPhase2CutsRecoTracksHp.clone(
-    quality = cms.vstring('loose'),
-    src = cms.InputTag("hltPhase2GeneralTracks"),
-)
-
-## Track From Vertex
 hltPhase2GeneralTracksFromPV = cms.EDProducer("TrackWithVertexRefSelector",
     copyExtras = cms.untracked.bool(False),
     copyTrajectories = cms.untracked.bool(False),
@@ -918,7 +967,6 @@ hltPhase2GeneralTracksFromPV = cms.EDProducer("TrackWithVertexRefSelector",
     vtxFallback = cms.bool(False),
     zetaVtx = cms.double(0.1)
 )
-
 
 
 hltPhase2GeneralTracksFromPVPt09 = cms.EDProducer("RecoTrackViewRefSelector",
@@ -970,9 +1018,6 @@ hltPhase2GeneralTracksPt09 = cms.EDProducer("RecoTrackViewRefSelector",
     vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
-
-
-
 hltPhase2SeedTrackshighPtTripletStepSeeds = cms.EDProducer("TrackFromSeedProducer",
     TTRHBuilder = cms.string('WithoutRefit'),
     beamSpot = cms.InputTag("offlineBeamSpot"),
@@ -986,7 +1031,6 @@ hltPhase2SeedTracksinitialStepSeeds = cms.EDProducer("TrackFromSeedProducer",
     src = cms.InputTag("hltPhase2InitialStepSeeds")
 )
 
-##Track Associators
 hltPhase2TrackingParticleRecoTrackAsssociation = cms.EDProducer("TrackAssociatorEDProducer",
     associator = cms.InputTag("quickTrackAssociatorByHits"),
     ignoremissingtrackcollection = cms.untracked.bool(False),
@@ -994,15 +1038,26 @@ hltPhase2TrackingParticleRecoTrackAsssociation = cms.EDProducer("TrackAssociator
     label_tr = cms.InputTag("hltPhase2GeneralTracks")
 )
 
-hltPhase2TrackingParticlePixelTrackAsssociation = hltPhase2TrackingParticleRecoTrackAsssociation.clone(
-    label_tr = cms.InputTag("hltPhase2PixelTracks")
+
+hltPhase2TrackingParticlesElectron = cms.EDFilter("TrackingParticleRefSelector",
+    chargedOnly = cms.bool(True),
+    intimeOnly = cms.bool(False),
+    invertRapidityCut = cms.bool(False), # cmssw_11_1
+    lip = cms.double(100000.0),
+    maxPhi = cms.double(3.2),
+    maxRapidity = cms.double(4.5), #10
+    minHit = cms.int32(0),
+    minPhi = cms.double(-3.2),
+    minRapidity = cms.double(-4.5), #-10
+    pdgId = cms.vint32(-11, 11),
+    ptMax = cms.double(1e+100),
+    ptMin = cms.double(0),
+    signalOnly = cms.bool(False),
+    src = cms.InputTag("mix","MergedTrackTruth"),
+    stableOnly = cms.bool(False),
+    tip = cms.double(100000.0)
 )
 
-hltPhase2TrackingParticleL1TrackAsssociation = hltPhase2TrackingParticleRecoTrackAsssociation.clone(
-    label_tr = cms.InputTag("hltPhase2L1CtfTracks")
-)
-
-##TP Selection
 hltPhase2TrackingParticlesSignal = cms.EDFilter("TrackingParticleRefSelector",
     chargedOnly = cms.bool(False),
     intimeOnly = cms.bool(False),
@@ -1022,14 +1077,13 @@ hltPhase2TrackingParticlesSignal = cms.EDFilter("TrackingParticleRefSelector",
     tip = cms.double(100000.0)
 )
 
-hltPhase2TrackingParticlesElectron = hltPhase2TrackingParticlesSignal.clone(
-    pdgId = cms.vint32(-11, 11),
-)
-
-from Validation.RecoVertex.v0validator_cfi import v0Validator
-
-hltPhase2V0Validator = v0Validator.clone(
+hltPhase2V0Validator = cms.EDProducer("V0Validator",
+    DQMRootFileName = cms.untracked.string(''),
+    dirName = cms.untracked.string('Vertexing/V0V'),
+    kShortCollection = cms.untracked.InputTag("generalV0Candidates","Kshort"),
+    lambdaCollection = cms.untracked.InputTag("generalV0Candidates","Lambda"),
     trackAssociatorMap = cms.untracked.InputTag("hltPhase2TrackingParticleRecoTrackAsssociation"),
+    trackingVertexCollection = cms.untracked.InputTag("mix","MergedTrackTruth"),
     vertexCollection = cms.untracked.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 
@@ -1051,28 +1105,38 @@ hltPhase2SelectedPixelVertices = cms.EDFilter("VertexSelector",
     src = cms.InputTag("hltPhase2PixelVertices")
 )
 
-from Validation.RecoVertex.PrimaryVertexAnalyzer4PUSlimmed_cfi import vertexAnalysis
-
-hltPhase2VertexAnalysisTrackingOnly = vertexAnalysis.clone(
+hltPhase2VertexAnalysisTrackingOnly = cms.EDProducer("PrimaryVertexAnalyzer4PUSlimmed",
+    do_generic_sim_plots = cms.untracked.bool(True),
+    root_folder = cms.untracked.string('Vertexing/PrimaryVertexV'),
     trackAssociatorMap = cms.untracked.InputTag("hltPhase2TrackingParticleRecoTrackAsssociation"),
+    trackingParticleCollection = cms.untracked.InputTag("mix","MergedTrackTruth"),
+    trackingVertexCollection = cms.untracked.InputTag("mix","MergedTrackTruth"),
+    use_only_charged_tracks = cms.untracked.bool(True),
+    verbose = cms.untracked.bool(False),
     vertexAssociator = cms.untracked.InputTag("hltPhase2VertexAssociatorByPositionAndTracks"),
     vertexRecoCollections = cms.VInputTag("hltPhase2OfflinePrimaryVertices", "hltPhase2OfflinePrimaryVerticesWithBS", "hltPhase2SelectedOfflinePrimaryVertices", "hltPhase2SelectedOfflinePrimaryVerticesWithBS")#, "hltPhase2FirstStepPrimaryVertices")
 )
 
-hltPhase2VertexAnalysisL1 = vertexAnalysis.clone(
-    trackAssociatorMafp = cms.untracked.InputTag("hltPhase2TrackingParticleL1TrackAsssociation"),
-    vertexAssociator = cms.untracked.InputTag("hltPhase2VertexAssociatorByPositionAndL1Tracks"),
-    vertexRecoCollections = cms.VInputTag("hltPhase2L1PrimaryVertex")#
+hltPhase2VertexAnalysisL1 = cms.EDProducer("PrimaryVertexAnalyzer4PUSlimmed",
+    do_generic_sim_plots = cms.untracked.bool(True),
+    root_folder = cms.untracked.string('Vertexing/PrimaryVertexV'),
+    trackAssociatorMap = cms.untracked.InputTag("hltPhase2TrackingParticleRecoTrackAsssociation"),
+    trackingParticleCollection = cms.untracked.InputTag("mix","MergedTrackTruth"),
+    trackingVertexCollection = cms.untracked.InputTag("mix","MergedTrackTruth"),
+    use_only_charged_tracks = cms.untracked.bool(True),
+    verbose = cms.untracked.bool(False),
+    vertexAssociator = cms.untracked.InputTag("hltPhase2VertexAssociatorByPositionAndTracks"),
+    vertexRecoCollections = cms.VInputTag("hltPhase2L1PrimaryVertex")#, "hltPhase2FirstStepPrimaryVertices")
 )
 
-hltPhase2V0ValidatorL1 = v0Validator.clone(
-    trackAssociatorMap = cms.untracked.InputTag("hltPhase2TrackingParticleL1TrackAsssociation"),
-    vertexCollection = cms.untracked.InputTag("hltPhase2L1PrimaryVertex") #("hltPhase2OfflinePrimaryVertices")
-)
-
-hltPhase2PixelVertexAnalysisTrackingOnly = vertexAnalysis.clone(
-    trackAssociatorMap = cms.untracked.InputTag("hltPhase2TrackingParticlePixelTrackAsssociation"),
+hltPhase2PixelVertexAnalysisTrackingOnly = cms.EDProducer("PrimaryVertexAnalyzer4PUSlimmed",
     do_generic_sim_plots = cms.untracked.bool(False),
+    root_folder = cms.untracked.string('Vertexing/PrimaryVertexV'),
+    trackAssociatorMap = cms.untracked.InputTag("hltPhase2TrackingParticlePixelTrackAsssociation"),
+    trackingParticleCollection = cms.untracked.InputTag("mix","MergedTrackTruth"),
+    trackingVertexCollection = cms.untracked.InputTag("mix","MergedTrackTruth"),
+    use_only_charged_tracks = cms.untracked.bool(True),
+    verbose = cms.untracked.bool(False),
     vertexAssociator = cms.untracked.InputTag("hltPhase2PixelVertexAssociatorByPositionAndTracks"),
     vertexRecoCollections = cms.VInputTag("hltPhase2PixelVertices", "hltPhase2SelectedPixelVertices")#,"hltPhase2TrimmedPixelVertices")#,"offlinePrimaryVertices")
 )
