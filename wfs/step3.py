@@ -42,6 +42,8 @@ options.register('n',1,VarParsing.VarParsing.multiplicity.singleton,VarParsing.V
 options.register('skip',0,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"events to skip")
 options.register('threads',16,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"num of threads")
 
+options.register('l1extended',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"l1 extended")
+
 #Pixel setups
 options.register('pixtrip',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"pixel Triplets")
 options.register('onlypixel',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"onlypixel")
@@ -59,7 +61,7 @@ options.register('fullvertex',True,VarParsing.VarParsing.multiplicity.singleton,
 options.register('patavertex',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"pata vertexing")
 options.register('fastl1',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"fastl1 vertexing")
 options.register('froml1',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"froml1 vertexing")
-options.register('minPt',1000,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"min pt in MeV")
+
 #Files
 options.register('T2',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"running on T2_Bari")
 
@@ -127,6 +129,8 @@ if options.withl1:
 if options.muons:
     from MCs.muons import muon_files
     filelist = muon_files
+
+
 if not options.T2:
     filelist = ["/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FBF7F649-BDF7-4147-922E-5A8B67377742.root",
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FC1BA259-9788-6549-99ED-79CE138052B4.root",
@@ -196,12 +200,16 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, '111X_mcRun4_realistic_T15_v2', '')
 
 process.load('raw2digi_step_cff')
-#if options.wf<=-1:
-#    process.load("tracking_sequences_nol1")
-#else:
+process.load("RecoJets.JetProducers.caloJetsForTrk_cff"
 process.load("tracking_sequences")
 
 if not options.timing:
+    process.load("SimTracker.TrackAssociatorProducers.quickTrackAssociatorByHits_cfi")# import quickTrackAssociatorByHits
+    process.load("SimTracker.TrackerHitAssociation.tpClusterProducer_cfi")# import tpClusterProducer
+    process.load("Validation.RecoTrack.TrackValidation_cff")# import trackingParticlesBHadron,trackingParticlesConversion,trackingParticleNumberOfLayersProducer
+    process.load("SimGeneral.TrackingAnalysis.simHitTPAssociation_cfi")# import simHitTPAssocProducer
+    process.load("Validation.RecoTrack.associators_cff")
+
     process.load('validation_sequences')
     process.load('prevalidation_sequences')
     process.load('dqm_sequences')
@@ -237,11 +245,11 @@ suff = str(options.wf)
 
 #TRIMMING OPTIONS
 if options.wf < -1:
-	
+
     if not options.timing:
     	process.hltPhase2PixelVertexAnalysisTrackingOnly.vertexRecoCollections = cms.VInputTag("hltPhase2PixelVertices", "hltPhase2SelectedPixelVertices","hltPhase2TrimmedPixelVertices")
-   
-    process.hltPhase2InitialStepSeeds.usePV = cms.bool(options.fromPV) 
+
+    process.hltPhase2InitialStepSeeds.usePV = cms.bool(options.fromPV)
     process.hltPhase2PixelVerticesSequence = cms.Sequence(
         process.hltPhase2PixelVertices +
         process.hltPhase2TrimmedPixelVertices
@@ -252,7 +260,6 @@ if options.wf < -1:
     process.hltPhase2TrimmedPixelVertices.maxVtx = cms.uint32( 100 ) # > 200 # previous 100
 
 
-process.hltPhase2PixelVertices.PtMin=options.minPt/1000.0 
 
 if options.onlypixel:
     options.wf = -100
@@ -368,6 +375,8 @@ else:
 
 suff = suff + "_skip_" + str(options.skip) + "_n_" + str(options.n)
 
+if options.l1extended:
+    process.hltPhase2L1TrackSeedsFromL1Tracks.InputCollection = cms.InputTag("TTTracksFromExtendedTrackletEmulation","Level1TTTracks")
 if options.fullvertex or not options.timing:
     process.schedule.extend([process.vertexing])
     suff = suff + "_fullvertexing"
@@ -571,7 +580,7 @@ from FWCore.ParameterSet.Utilities import convertToUnscheduled
 if options.timing:
    open('step3_dump.py', 'w').write(process.dumpPython())
 # Customisation from command line
-process = customise_aging_1000(process) 
+process = customise_aging_1000(process)
 
 #Have logErrorHarvester wait for the same EDProducers to finish as those providing data for the OutputModule
 from FWCore.Modules.logErrorHarvester_cff import customiseLogErrorHarvesterUsingOutputCommands
@@ -580,4 +589,3 @@ process = customiseLogErrorHarvesterUsingOutputCommands(process)
 # Add early deletion of temporary data products to reduce peak memory need
 from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete
 process = customiseEarlyDelete(process)
-
