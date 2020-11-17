@@ -50,7 +50,10 @@ options.register('onlypixel',False,VarParsing.VarParsing.multiplicity.singleton,
 
 #Patatrack
 options.register('mkfit',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"running mkfit")
-options.register('patatrack',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"patatrack Pixel Tracks")
+options.register('patatrack',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Patatrack Pixel Tracks")
+options.register('clean',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Use Cleaned Patatrack Pixel Tracks")
+options.register('allpata',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Seeding only from Patatrack Pixel Tracks")
+options.register('doregion',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Seeding only from Patatrack Pixel Tracks")
 
 #Vetexing
 options.register('davertex',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"da pixel vertexing")
@@ -80,6 +83,7 @@ options.register('b0ksmm',False,VarParsing.VarParsing.multiplicity.singleton,Var
 options.register('bskkkk',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"BsToPhiPhi_KKKK MC")
 options.register('withl1',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"loading files with l1 tracks already produced")
 options.register('muons',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"DYMM MC")
+options.register('noPU',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"noPU events")
 
 #Miscs
 options.register ('note','',VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string, "noting")
@@ -102,6 +106,7 @@ process.MessageLogger = cms.Service("MessageLogger",
 
 from MCs.ttbar import ttbar
 filelist = ttbar
+
 
 if options.ztt:
     from MCs.b0kstarmumu import b0kstarmumu
@@ -144,8 +149,29 @@ if not options.T2:
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FF5230B3-138E-5345-9C29-23945BBC0519.root",
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FFAF8045-404D-464C-9BDB-73B0AF032A55.root"]#[f[5:] for f in filelist]
 
-print(filelist)
+if options.noPU:
+   filelist = ["/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/DAF55EAB-0B6F-C646-B7DE-2D54C8A62073.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/DF27D727-5F91-5748-B83B-9DB5CD85604E.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/DFE96256-6096-3741-8739-0EB64AB681C1.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/E21DD179-F13E-E543-A0B2-C1ABDAAAD7F8.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/E30D1362-CED7-974F-8930-782B23F11751.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/E486070C-A1D5-8B41-BA9A-686077807269.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/E5437AA8-386B-DB43-8B35-B6690CD5DD19.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/E7BA8C7B-A811-CA49-9582-33226BD76252.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/EEF49391-A7E3-9C41-AC3F-6B1A0F1B9DA0.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/F0932A00-A9EB-1E42-A56F-C0C89754E73E.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/F14A1F9D-BA98-1D43-9130-D66073D43469.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/F3AABCB2-269C-644C-A09A-FBF7124D5B7E.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/F6B21094-64EE-DD41-839A-28B159129F80.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/F7E3C394-24D7-4046-989F-B7075DCB0BB0.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/F7ECC566-E0F5-754A-9465-FA24A4D67734.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/FE308DD9-D66F-4545-B0F2-9E44880D0054.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/FF0494EC-DE4E-3C46-BC68-2AEE51390533.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/FFD62905-0181-D44F-8BEF-2557BFF9F040.root"]
+#print(filelist)
 
+if options.susy:
+   
 # filelist=["/store/mc/Phase2HLTTDRWinter20DIGI/DoubleElectron_FlatPt-1To100/GEN-SIM-DIGI-RAW/PU200_110X_mcRun4_realistic_v3-v2/20000/6BF09AEE-5B7E-1340-9529-9A0E5E0F9442.root"]
 #filelist=["/store/relval/CMSSW_11_1_0_patch1/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW-RECO/110X_mcRun4_realistic_v3_2026D49PU200_raw1100_ProdType1-v1/10000/AFD88583-675F-C14D-B057-6DD8121634D5.root"]
 
@@ -174,11 +200,7 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, '111X_mcRun4_realistic_T15_v2', '')
 
 process.load('raw2digi_step_cff')
-process.load("RecoJets.JetProducers.caloJetsForTrk_cff")
-
-# if options.wf<=-1:
-#     process.load("tracking_sequences_nol1")
-# else:
+process.load("RecoJets.JetProducers.caloJetsForTrk_cff"
 process.load("tracking_sequences")
 
 if not options.timing:
@@ -247,8 +269,24 @@ if options.wf == -5:
     customizeSingleIt(process,timing)
     suff = "m5"
     # customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.05,numVertex=30,minSumPt2=20)
-    process.hltPhase2PixelVertices.ZSeparation = float(options.zsep) / 1000.0
+    #process.hltPhase2PixelVertices.ZSeparation = float(options.zsep) / 1000.0
+    if options.clean:
+	process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksMerger")
+    #process.hltPhase2PixelVertices.TrackCollection = cms.InputTag("hltPhase2PixelQuadrupletsSelector")
 
+if options.wf == -6:
+    l1_pixel_recovery_triplets(process,timing)
+    customizeOriginalTrimmingInitial_v6(process,timing,fraction=options.frac/100.,numVertex=options.nvtx,minSumPt2=options.sumpt)
+    customizeOriginalTrimmingTriplet_v6(process,timing,fraction=options.frac/100.,numVertex=options.nvtx,minSumPt2=options.sumpt)
+    suff = "m6_0p%d_%d_%d"%(options.frac,options.nvtx,options.sumpt)
+if options.wf == -7:
+    l1_pixel_recovery_triplets(process,timing)
+    customizeOriginalTrimmingInitial_v6(process,timing,fraction=options.frac/100.,numVertex=options.nvtx,minSumPt2=options.sumpt)
+    customizeOriginalTrimmingTriplet_v6(process,timing,fraction=options.frac/100.,numVertex=options.nvtx,minSumPt2=options.sumpt)
+    suff = "m7_0p%d_%d_%d"%(options.frac,options.nvtx,options.sumpt)
+    process.hltPhase2InitialStepSeeds.InputVertexCollection = cms.InputTag("hltPhase2L1PrimaryVertex")
+    hltPhase2TrimmedVertexTrackingRegions.VertexCollection = cms.InputTag( "hltPhase2L1PrimaryVertex" )
+ 
 if options.wf == -4:
     suff = "m4_0p%d_%d_%d"%(options.frac,options.nvtx,options.sumpt)
     customizeOriginal_v6(process,timing)
@@ -271,7 +309,19 @@ if options.wf == -1:
     suff = "m1"
     customizeOriginal_v6(process,timing)
     process.hltPhase2TrimmedPixelVertices = process.MeasurementTrackerEvent.clone()
+    if options.allpata and options.patatrack:
+ 	suff = suff + "_tripFromTracks"
+	process.hltPhase2PixelTracksCleaner.rhoVtx = 100.0 
+	process.hltPhase2PixelTracksCleaner.useVtx = False
+	process.hltPhase2PixelTracksCleaner.zetaVtx = 100.0
+	
+	process.hltPhase2PixelTripletsCleaner.rhoVtx = 100.0 
+        process.hltPhase2PixelTripletsCleaner.useVtx = False
+        process.hltPhase2PixelTripletsCleaner.zetaVtx = 100.0
 
+        process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksCleaner")#hltPhase2PixelQuadrupletsSelector")
+        process.hltPhase2HighPtTripletStepSeeds = process.hltPhase2InitialStepSeeds.clone()
+	process.hltPhase2HighPtTripletStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTripletsCleaner")
 #L1 Customizing
 if options.wf == 0:
     suff = "purel1"
@@ -290,7 +340,7 @@ if options.wf == 6:
     l1_pixel_recovery(process,timing)
 if options.wf == 7:
     l1_pixel_recovery_triplets(process,timing)
-
+    
 if options.mkfit:
     customizeHighPtTripletForMkFit(process)
 # if options.pixtrip:
@@ -311,8 +361,11 @@ elif options.b0ksmm:
     suff = suff + "_b0ksmm"
 elif options.bskkkk:
     suff = suff + "_bskkkk"
+elif optiions.susy:
+    suff = suff + "_susy"
 else:
     suff = suff + "_ttb"
+
     # if not timing and not options.onlypixel:
     #     process.prevalidation_startup = process.prevalidation_startup_offline
     #     process.dqm_vertex = process.dqm_vertex_offline
@@ -338,6 +391,12 @@ if options.patavertex:
     suff = suff + "_patavertex"
 if options.patatrack:
     customizePixelTracksSoAonCPU(process,options.patavertex)
+    if options.doregion:
+	process.hltPhase2PixelTrackSoA.doRegion = True
+	suff = suff + "_region"	
+    if options.wf == 7 or options.wf==-7 or options.wf==-6:
+	suff = suff + "_regionFomL1"
+	##process.pixelVertexCoordinates.src = "hltPhase2L1PrimaryVertex"
 
     if options.pixtrip:
         process.hltPhase2PixelTrackSoA.minHitsPerNtuplet = 3

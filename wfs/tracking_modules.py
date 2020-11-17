@@ -611,15 +611,15 @@ hltPhase2PixelTracksTrackingRegions = cms.EDProducer( "GlobalTrackingRegionFromB
 hltPhase2TrimmedVertexTrackingRegions = cms.EDProducer( "GlobalTrackingRegionWithVerticesEDProducer",
     RegionPSet = cms.PSet(
       useFixedError = cms.bool( True ),
-      nSigmaZ = cms.double( 4.0 ),
+      nSigmaZ = cms.double( 5.0 ),
       VertexCollection = cms.InputTag( "hltPhase2TrimmedPixelVertices" ), # hltPhase2TrimmedPixelVertices
       beamSpot = cms.InputTag( "offlineBeamSpot" ),
       useFoundVertices = cms.bool( True ),
-      fixedError = cms.double( 0.2 ),
+      fixedError = cms.double( 0.6 ),
       sigmaZVertex = cms.double( 3.0 ),
       useFakeVertices = cms.bool( False ),
       ptMin = cms.double( 0.9 ), # previous 0.4
-      originRadius = cms.double( 0.02 ), # previous 0.05
+      originRadius = cms.double( 0.05 ), # previous 0.05
       precise = cms.bool( True ),
       useMultipleScattering = cms.bool( False )
     ),
@@ -755,6 +755,37 @@ hltPhase2OfflinePrimaryVertices = cms.EDProducer("RecoChargedRefCandidatePrimary
     vertices = cms.InputTag("hltPhase2UnsortedOfflinePrimaryVertices")
 )
 
+hltPhase2L1PrimaryVertex = cms.EDProducer("RecoChargedRefCandidatePrimaryVertexSorter",
+    assignment = cms.PSet(
+        maxDistanceToJetAxis = cms.double(0.07),
+        maxDtSigForPrimaryAssignment = cms.double(4.0),
+        maxDxyForJetAxisAssigment = cms.double(0.1),
+        maxDxyForNotReconstructedPrimary = cms.double(0.01),
+        maxDxySigForNotReconstructedPrimary = cms.double(2),
+        maxDzErrorForPrimaryAssignment = cms.double(0.05),
+        maxDzForJetAxisAssigment = cms.double(0.1),
+        maxDzForPrimaryAssignment = cms.double(0.1),
+        maxDzSigForPrimaryAssignment = cms.double(5.0),
+        maxJetDeltaR = cms.double(0.5),
+        minJetPt = cms.double(25),
+        preferHighRanked = cms.bool(False),
+        useTiming = cms.bool(False)
+    ),
+    jets = cms.InputTag("hltPhase2Ak4CaloJetsForTrk"),
+    particles = cms.InputTag("hltPhase2TrackRefsForJetsBeforeSortingL1"),
+    produceAssociationToOriginalVertices = cms.bool(False),
+    produceNoPileUpCollection = cms.bool(False),
+    producePileUpCollection = cms.bool(False),
+    produceSortedVertices = cms.bool(True),
+    qualityForPrimary = cms.int32(3),
+    sorting = cms.PSet(
+
+    ),
+    trackTimeResoTag = cms.InputTag(""),
+    trackTimeTag = cms.InputTag(""),
+    usePVMET = cms.bool(True),
+    vertices = cms.InputTag("hltPhase2L1PrimaryVertexUnsorted")
+)
 hltPhase2OfflinePrimaryVerticesWithBS = cms.EDProducer("RecoChargedRefCandidatePrimaryVertexSorter",
     assignment = cms.PSet(
         maxDistanceToJetAxis = cms.double(0.07),
@@ -796,6 +827,11 @@ hltPhase2InclusiveSecondaryVertices = cms.EDProducer("VertexMerger",
 hltPhase2TrackRefsForJetsBeforeSorting = cms.EDProducer("ChargedRefCandidateProducer",
     particleType = cms.string('pi+'),
     src = cms.InputTag("hltPhase2TrackWithVertexRefSelectorBeforeSorting")
+)
+
+hltPhase2TrackRefsForJetsBeforeSortingL1 = cms.EDProducer("ChargedRefCandidateProducer",
+    particleType = cms.string('pi+'),
+    src = cms.InputTag("hltPhase2TrackWithVertexRefSelectorBeforeSortingL1")
 )
 
 hltPhase2Ak4CaloJetsForTrk = cms.EDProducer("FastjetJetProducer",
@@ -897,6 +933,8 @@ hltPhase2TrackWithVertexRefSelectorBeforeSorting = cms.EDProducer("TrackWithVert
     numberOfLostHits = cms.uint32(999),
     numberOfValidHits = cms.uint32(0),
     numberOfValidPixelHits = cms.uint32(0),
+    maxOfValidPixelHits = cms.uint32(999),
+
     ptErrorCut = cms.double(9e+99),
     ptMax = cms.double(9e+99),
     ptMin = cms.double(0.9), # ptcut previous 0.3
@@ -911,7 +949,37 @@ hltPhase2TrackWithVertexRefSelectorBeforeSorting = cms.EDProducer("TrackWithVert
     zetaVtx = cms.double(1.0)
 )
 
-hltPhase2L1PrimaryVertex = cms.EDProducer("PrimaryVertexProducer",
+
+hltPhase2TrackWithVertexRefSelectorBeforeSortingL1 = cms.EDProducer("TrackWithVertexRefSelector",
+    copyExtras = cms.untracked.bool(False),
+    copyTrajectories = cms.untracked.bool(False),
+    d0Max = cms.double(999.0),
+    dzMax = cms.double(999.0),
+    etaMax = cms.double(5.0),
+    etaMin = cms.double(0.0),
+    nSigmaDtVertex = cms.double(0),
+    nVertices = cms.uint32(0),
+    normalizedChi2 = cms.double(999999.0),
+    numberOfLostHits = cms.uint32(999),
+    numberOfValidHits = cms.uint32(0),
+    numberOfValidPixelHits = cms.uint32(0),
+    maxOfValidPixelHits = cms.uint32(999),
+
+    ptErrorCut = cms.double(9e+99),
+    ptMax = cms.double(9e+99),
+    ptMin = cms.double(0.9), # ptcut previous 0.3
+    quality = cms.string('highPurity'),
+    rhoVtx = cms.double(0.2),
+    src = cms.InputTag("hltPhase2L1CtfTracks"), ## hltPhase2
+    timeResosTag = cms.InputTag(""),
+    timesTag = cms.InputTag(""),
+    useVtx = cms.bool(True),
+    vertexTag = cms.InputTag("hltPhase2L1PrimaryVertexUnsorted"),
+    vtxFallback = cms.bool(True),
+    zetaVtx = cms.double(1.0)
+)
+
+hltPhase2L1PrimaryVertexUnsorted = cms.EDProducer("PrimaryVertexProducer",
     TkClusParameters = cms.PSet(
         TkDAClusParameters = cms.PSet(
             Tmin = cms.double(2.0),
@@ -1138,6 +1206,46 @@ hltPhase2GeneralTracks = cms.EDProducer("TrackListMerger",
     trackAlgoPriorityOrder = cms.string('hltPhase2TrackAlgoPriorityOrder'),
     writeOnlyTrkQuals = cms.bool(False)
 )
+
+hltPhase2PixelTracksMerger = cms.EDProducer("TrackListMerger",
+    Epsilon = cms.double(-0.001),
+    FoundHitBonus = cms.double(5.0),
+    LostHitPenalty = cms.double(5.0),
+    MaxNormalizedChisq = cms.double(1000.0),
+    MinFound = cms.int32(3),
+    MinPT = cms.double(0.9), # ptcut previous 0.05
+    ShareFrac = cms.double(0.19),
+    TrackProducers = cms.VInputTag( 
+     cms.InputTag("hltPhase2PixelTracksCleaner"),
+cms.InputTag("hltPhase2PixelTripletsCleaner")
+
+    ),
+    allowFirstHitShare = cms.bool(True),
+    copyExtras = cms.untracked.bool(True),
+    copyMVA = cms.bool(False), # trackcutclassifier before True
+    hasSelector = cms.vint32(
+        0, 0#, 1#, 1, 1,  ### v2 # trackcutclassifier 
+    ),
+    indivShareFrac = cms.vdouble( 
+        1.0, 1.0 # trackcutclassifier
+    ),
+    makeReKeyedSeeds = cms.untracked.bool(False),
+    newQuality = cms.string('confirmed'),
+    selectedTrackQuals = cms.VInputTag(
+      cms.InputTag("hltPhase2PixelTracksCleaner"),
+cms.InputTag("hltPhase2PixelTripletsCleaner") 
+    ),
+    setsToMerge = cms.VPSet(cms.PSet(
+        pQual = cms.bool(True),
+        tLists = cms.vint32(
+            0, 1#, 2#, 3, 4, ### v2
+            #5
+        )
+    )),
+    trackAlgoPriorityOrder = cms.string('hltPhase2TrackAlgoPriorityOrder'),
+    writeOnlyTrkQuals = cms.bool(False)
+)
+
 
 hltPhase2L1InitialMerger = cms.EDProducer("TrackListMerger",
     Epsilon = cms.double(-0.001),
@@ -1880,3 +1988,110 @@ algorithm = cms.string('DA_vect')
         useBeamConstraint = cms.bool(False)
     ))
 )
+
+
+
+hltPhase2PixelTracksCleaner = cms.EDProducer("TrackWithVertexSelector",
+    copyExtras = cms.untracked.bool(True),
+    copyTrajectories = cms.untracked.bool(False),
+    d0Max = cms.double(999.0),
+    dzMax = cms.double(999.0),
+    etaMax = cms.double(5.0),
+    etaMin = cms.double(0.0),
+    nSigmaDtVertex = cms.double(0),
+    nVertices = cms.uint32(20),
+    normalizedChi2 = cms.double(999999.0),
+    numberOfLostHits = cms.uint32(999),
+    numberOfValidHits = cms.uint32(0),
+    numberOfValidPixelHits = cms.uint32(4),
+    maxOfValidPixelHits = cms.uint32(99),
+    ptErrorCut = cms.double(9999999.0),
+    ptMax = cms.double(100000.0),
+    ptMin = cms.double(0.0),
+    quality = cms.string('any'),
+    rhoVtx = cms.double(0.1),
+    src = cms.InputTag("hltPhase2PixelTracks"),
+    timeResosTag = cms.InputTag(""),
+    timesTag = cms.InputTag(""),
+    useVtx = cms.bool(True),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices"),
+    vtxFallback = cms.bool(True),
+    zetaVtx = cms.double(0.3)
+)
+
+hltPhase2PixelTripletsCleaner = cms.EDProducer("TrackWithVertexSelector",
+    copyExtras = cms.untracked.bool(True),
+    copyTrajectories = cms.untracked.bool(False),
+    d0Max = cms.double(999.0),
+    dzMax = cms.double(999.0),
+    etaMax = cms.double(5.0),
+    etaMin = cms.double(0.0),
+    nSigmaDtVertex = cms.double(0),
+    nVertices = cms.uint32(20),
+    normalizedChi2 = cms.double(999999.0),
+    numberOfLostHits = cms.uint32(999),
+    numberOfValidHits = cms.uint32(0),
+    numberOfValidPixelHits = cms.uint32(3),
+    maxOfValidPixelHits = cms.uint32(3),
+    ptErrorCut = cms.double(9999999.0),
+    ptMax = cms.double(100000.0),
+    ptMin = cms.double(0.0),
+    quality = cms.string('any'),
+    rhoVtx = cms.double(0.1),
+    src = cms.InputTag("hltPhase2PixelTracks"),
+    timeResosTag = cms.InputTag(""),
+    timesTag = cms.InputTag(""),
+    useVtx = cms.bool(True),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices"),
+    vtxFallback = cms.bool(True),
+    zetaVtx = cms.double(0.3)
+)
+
+hltPhase2PixelTripletsSelector= cms.EDProducer("RecoTrackViewRefSelector",
+    algorithm = cms.vstring(),
+    algorithmMaskContains = cms.vstring(),
+    beamSpot = cms.InputTag("offlineBeamSpot"),
+    invertRapidityCut = cms.bool(False), # cmssw_11_1
+    lip = cms.double(300.0),
+    maxChi2 = cms.double(10000.0),
+    maxPhi = cms.double(3.2),
+    maxRapidity = cms.double(4.5),
+    min3DLayer = cms.int32(0),
+    minHit = cms.int32(0),
+    minLayer = cms.int32(3),
+    minPhi = cms.double(-3.2),
+    minPixelHit = cms.int32(3), maxPixelHit = cms.int32(3),
+    minRapidity = cms.double(-4.5),
+    originalAlgorithm = cms.vstring(),
+    ptMin = cms.double(0.9), # previous 0.1
+    quality = cms.vstring('any'),
+    src = cms.InputTag("hltPhase2PixelTracks"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
+)
+
+hltPhase2PixelQuadrupletsSelector= cms.EDProducer("RecoTrackViewRefSelector",
+    algorithm = cms.vstring(),
+    algorithmMaskContains = cms.vstring(),
+    beamSpot = cms.InputTag("offlineBeamSpot"),
+    invertRapidityCut = cms.bool(False), # cmssw_11_1
+    lip = cms.double(300.0),
+    maxChi2 = cms.double(10000.0),
+    maxPhi = cms.double(3.2),
+    maxRapidity = cms.double(4.5),
+    min3DLayer = cms.int32(0),
+    minHit = cms.int32(0),
+    minLayer = cms.int32(3),
+    minPhi = cms.double(-3.2),
+    minPixelHit = cms.int32(4), maxPixelHit = cms.int32(99),
+    minRapidity = cms.double(-4.5),
+    originalAlgorithm = cms.vstring(),
+    ptMin = cms.double(0.9), # previous 0.1
+    quality = cms.vstring('any'),
+    src = cms.InputTag("hltPhase2PixelTracks"),
+    tip = cms.double(120),
+    usePV = cms.bool(False),
+    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
+)
+
