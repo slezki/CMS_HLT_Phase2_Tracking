@@ -112,7 +112,7 @@ on your process where the suggested cuts are the above mentioned:
 - `SUMPT2 = 10`
 
 
-#### V7_2 (baseline with patatrack pixel tracks)
+#### V7_2 (trimmed with patatrack pixel tracks)
 
 The __v7_2__ configuration has the same iterations as the __trimmed__ configuration with the difference that the pixel tracks, used as seeding for InitialStep, are reconstructed with Patatrack pixel tracks. Once the Patatrack CMSSW environment is set up you would need only to run:
 
@@ -120,11 +120,15 @@ The __v7_2__ configuration has the same iterations as the __trimmed__ configurat
 
 Or to use the 
 
-```customizePixelTracksSoAonCPU(process,vertex=False)```
+```
+customizePixelTracksSoAonCPU(process,vertex=False)
+customizeOriginalTrimmingInitial_v6(process,timing,fraction=FRAC,numVertex=NVTX,minSumPt2=SUMPT2)
+customizeOriginalTrimmingTriplet_v6(process,timing,fraction=FRAC,numVertex=NVTX,minSumPt2=SUMPT2)
+```
 
 where the vertex flag indicates if the vertices has to be Patatrack-like (not the default option).
 
-#### V7_3 (baseline with seeding only from patatrack pixel tracks)
+#### V7_3 (trimmed with seeding only from patatrack pixel tracks)
 
 The __v7_3__ configuration has the same iterations as the __trimmed__ configuration with the difference that the pixel tracks are reconstructed with Patatrack pixel tracks and the further used both to seed the initial step iteration (being filtered to have > 3 hits) and the high pT triplet (being filtered to have exactly 3 hits)
 
