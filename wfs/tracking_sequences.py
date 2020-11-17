@@ -53,7 +53,8 @@ hltPhase2StartUp = cms.Sequence(
      #cmssw_10_6
     otLocalReco +
     #caloLocalReco +
-    trackerClusterCheck
+    trackerClusterCheck +
+    caloTowerForTrk  
     )
 
 hltPhase2InitialStepPVSequence = cms.Sequence(
@@ -159,17 +160,6 @@ single_it = cms.Path(
     hltPhase2GeneralTracks
 )
 
-single_it_l1 = cms.Path(
-    hltPhase2StartUp +
-    hltPhase2L1TracksSequence +
-    hltPhase2PixelTracksSequence + # pixeltracks
-    hltPhase2PixelVerticesSequence + # pixelvertices
-##############################################
-    hltPhase2InitialStepSequence +
-    hltPhase2GeneralTracks
-)
-
-
 original_v7 = cms.Path(
     hltPhase2StartUp +
     hltPhase2PixelTracksSequence + # pixeltracks
@@ -183,26 +173,25 @@ original_v7 = cms.Path(
 ########################## Pure L1 setup (\w vertexing)
 #############
 
-hltPhase2L1TracksStepPrimaryVerticesUnsorted = hltPhase2FirstStepPrimaryVerticesUnsorted.clone()
-hltPhase2L1TracksStepPrimaryVerticesUnsorted.TrackLabel = cms.InputTag("hltPhase2L1CtfTracks")
+
 
 hltPhase2L1TracksStepTrackRefsForJets = hltPhase2InitialStepTrackRefsForJets.clone()
 hltPhase2L1TracksStepTrackRefsForJets.src = cms.InputTag("hltPhase2L1CtfTracks")
 
-hltPhase2Ak4CaloJetsForTrkL1 = hltPhase2Ak4CaloJetsForTrk.clone()
-hltPhase2Ak4CaloJetsForTrkL1.srcPVs = cms.InputTag("hltPhase2L1TracksStepPrimaryVerticesUnsorted")
+#hltPhase2Ak4CaloJetsForTrkL1 = hltPhase2Ak4CaloJetsForTrk.clone()
+#hltPhase2Ak4CaloJetsForTrkL1.srcPVs = cms.InputTag("hltPhase2L1TracksStepPrimaryVerticesUnsorted")
 
-hltPhase2L1TracksStepPrimaryVertices = hltPhase2FirstStepPrimaryVertices.clone()
-hltPhase2L1TracksStepPrimaryVertices.jets = cms.InputTag("hltPhase2Ak4CaloJetsForTrkL1")
-hltPhase2L1TracksStepPrimaryVertices.particles = cms.InputTag("hltPhase2L1TracksStepTrackRefsForJets")
+#hltPhase2L1TracksStepPrimaryVertices = hltPhase2FirstStepPrimaryVertices.clone()
+#hltPhase2L1TracksStepPrimaryVertices.jets = cms.InputTag("hltPhase2Ak4CaloJetsForTrkL1")
+#hltPhase2L1TracksStepPrimaryVertices.particles = cms.InputTag("hltPhase2L1TracksStepTrackRefsForJets")
 
-hltPhase2L1PVSequence = cms.Sequence(
-    hltPhase2L1TracksStepPrimaryVerticesUnsorted +
-    hltPhase2L1TracksStepTrackRefsForJets +
-    caloTowerForTrk + # uses hbhereco, hfreco, horeco, ecalRecHit
-    hltPhase2Ak4CaloJetsForTrkL1 +  # uses caloTowerForTrk
-    hltPhase2L1TracksStepPrimaryVertices
-)
+#hltPhase2L1PVSequence = cms.Sequence(
+#    hltPhase2L1TracksStepPrimaryVerticesUnsorted +
+#    hltPhase2L1TracksStepTrackRefsForJets +
+#    caloTowerForTrk + # uses hbhereco, hfreco, horeco, ecalRecHit
+#    hltPhase2Ak4CaloJetsForTrkL1 +  # uses caloTowerForTrk
+#    hltPhase2L1TracksStepPrimaryVertices
+#)
 
 
 hltPhase2L1TracksTaskSeed = cms.Task(
@@ -226,10 +215,14 @@ hltPhase2L1TracksSequence = cms.Sequence(
     hltPhase2VertexFromL1 +
     # hltPhase2TrackFromL1 +
     hltPhase2L1TracksSeqSeed +
-    hltPhase2L1TracksSeqPattern +
-    hltPhase2L1TracksSequenceClassification +
-    hltPhase2L1PrimaryVertex +
+    hltPhase2L1TracksSeqPattern + 
     hltPhase2L1CtfTracks +
+    hltPhase2L1PrimaryVertexUnsorted +  
+    hltPhase2TrackWithVertexRefSelectorBeforeSortingL1 +
+    hltPhase2TrackRefsForJetsBeforeSortingL1 +
+    hltPhase2Ak4CaloJetsForTrkL1 +
+    hltPhase2L1PrimaryVertex +
+    hltPhase2L1TracksSequenceClassification +
     hltPhase2InitialStepClusters
 )
 
@@ -247,7 +240,15 @@ pixel_tracks = cms.Path(
     hltPhase2PixelTracksSequence + # pixeltracks
     hltPhase2PixelVerticesSequence)
 
-
+single_it_l1 = cms.Path(
+    hltPhase2StartUp +
+    hltPhase2L1TracksSequence +
+    hltPhase2PixelTracksSequence + # pixeltracks
+    hltPhase2PixelVerticesSequence + # pixelvertices
+##############################################
+    hltPhase2InitialStepSequence +
+    hltPhase2GeneralTracks
+)
 
 
 hltPhase2InitialStepSequenceL1 = cms.Sequence(
@@ -269,8 +270,8 @@ hltPhase2InitialStepSequenceL1 = cms.Sequence(
 vertexReco = cms.Sequence(
     hltPhase2UnsortedOfflinePrimaryVertices +
     hltPhase2TrackWithVertexRefSelectorBeforeSorting +
-    hltPhase2TrackRefsForJetsBeforeSorting +
-    caloTowerForTrk +
+    hltPhase2TrackRefsForJetsBeforeSorting + 
+    #caloTowerForTrk +
     hltPhase2Ak4CaloJetsForTrk + # uses caloTowerForTrk
     hltPhase2OfflinePrimaryVertices +
     hltPhase2OfflinePrimaryVerticesWithBS +

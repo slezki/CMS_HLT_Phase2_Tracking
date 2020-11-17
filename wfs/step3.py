@@ -76,6 +76,7 @@ options.register('sumpt',10 ,VarParsing.VarParsing.multiplicity.singleton,VarPar
 options.register('zsep',5,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"z_sep (x1000)")
 options.register('fromPV',True,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"fromPV for ininitial step")
 #MCs
+options.register('dyll',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"DY ll")
 options.register('ztt',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"ZTT MC")
 options.register('dstmmm',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"DsTau3M MC")
 options.register('bdksmm',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"BdToKstarMuMu MC")
@@ -129,7 +130,9 @@ if options.withl1:
 if options.muons:
     from MCs.muons import muon_files
     filelist = muon_files
-
+if options.dyll:
+    from MCs.dyll_50 import * 
+    filelist = dyll
 
 if not options.T2:
     filelist = ["/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FBF7F649-BDF7-4147-922E-5A8B67377742.root",
@@ -274,6 +277,15 @@ if options.wf == -5:
         suff = suff + "_clean"
 	process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksMerger")
     #process.hltPhase2PixelVertices.TrackCollection = cms.InputTag("hltPhase2PixelQuadrupletsSelector")
+if options.wf == -8:
+    customizeL1SingleIt(process,timing)
+    suff = "m8"
+    # customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.05,numVertex=30,minSumPt2=20)
+    #process.hltPhase2PixelVertices.ZSeparation = float(options.zsep) / 1000.0
+    if options.clean:
+        suff = suff + "_clean"
+        process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksMerger")
+    #process.hltPhase2PixelVertices.TrackCollection = cms.InputTag("hltPhase2PixelQuadrupletsSelector")
 
 if options.wf == -6:
     l1_pixel_recovery_triplets(process,timing)
@@ -323,6 +335,10 @@ if options.wf == -1:
         process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksCleaner")#hltPhase2PixelQuadrupletsSelector")
         process.hltPhase2HighPtTripletStepSeeds = process.hltPhase2InitialStepSeeds.clone()
 	process.hltPhase2HighPtTripletStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTripletsCleaner")
+    
+    if options.patatrack and options.clean:
+	suff = suff + "_clean"
+	process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksMerger")
 #L1 Customizing
 if options.wf == 0:
     suff = "purel1"
@@ -364,6 +380,8 @@ elif options.bskkkk:
     suff = suff + "_bskkkk"
 #elif options.susy:
 #    suff = suff + "_susy"
+elif options.dyll:
+    suff = suff + "_dyll"
 else:
     suff = suff + "_ttb"
 
