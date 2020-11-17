@@ -657,12 +657,15 @@ def customizeL1SingleIt(process,timing):
   	    process.hltPhase2TrackValidatorTrackingOnly.trackCollectionForDrCalculation = cms.InputTag("hltPhase2GeneralTracks")
             process.hltPhase2TrackValidatorTrackingOnly.vertexAssociator = cms.untracked.InputTag("hltPhase2VertexAssociatorByPositionAndTracks")
             process.hltPhase2TrackValidatorTrackingOnly.label_vertex = cms.untracked.InputTag("hltPhase2PixelVertices")
-
-        process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2InitialStepTracks")
-        process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0)
-        process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0)
-        process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2InitialStepTracksSelectionHighPurity"))
-        process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0)
+        
+	process.trackAlgoPriorityOrder.algoOrder = cms.vstring('hltIter0','initialStep')
+  	process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1CtfTracks","hltPhase2InitialStepTracksSelectionHighPurity")
+    	process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0)
+    	process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,1.0)
+    	process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag(""),
+                                                                     cms.InputTag("hltPhase2InitialStepTracksSelectionHighPurity"))
+    	process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1)
+ 
 
         # process.hltPhase2CutsRecoTracksInitialStep.src = cms.InputTag("hltPhase2InitialStepTracks")
         # process.hltPhase2CutsRecoTracksInitialStepHp.src = cms.InputTag("hltPhase2InitialStepTracks")

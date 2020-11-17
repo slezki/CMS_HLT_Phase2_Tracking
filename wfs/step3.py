@@ -289,8 +289,6 @@ if options.wf == -8:
     if options.clean:
         suff = suff + "_clean"
         process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksMerger")
-    if options.patatrack:
-	process.pixelVertexCoordinates.src = "hltPhase2L1PrimaryVertex"
     #process.hltPhase2PixelVertices.TrackCollection = cms.InputTag("hltPhase2PixelQuadrupletsSelector")
 
 if options.wf == -6:
@@ -417,12 +415,14 @@ if options.patavertex:
 if options.patatrack:
     customizePixelTracksSoAonCPU(process,options.patavertex)
     if options.doregion:
-	process.hltPhase2PixelTrackSoA.doRegion = True
-	suff = suff + "_region"	
-    if options.wf == 7 or options.wf==-7 or options.wf==-6:
-	suff = suff + "_regionFomL1"
+	#process.hltPhase2PixelTrackSoA.doRegion = True
+	#suff = suff + "_region"	
+    	if options.wf==8 or options.wf == 7 or options.wf==-7 or options.wf==-6:
+		suff = suff + "_regionFomL1"
 	##process.pixelVertexCoordinates.src = "hltPhase2L1PrimaryVertex"
-
+		#process.pixelVertexCoordinates.src = "hltPhase2L1PrimaryVertex"
+    	else:
+		suff = suff + "_region"
     if options.pixtrip:
         process.hltPhase2PixelTrackSoA.minHitsPerNtuplet = 3
     suff = suff + "_pata"
