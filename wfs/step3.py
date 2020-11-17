@@ -76,6 +76,7 @@ options.register('sumpt',10 ,VarParsing.VarParsing.multiplicity.singleton,VarPar
 options.register('zsep',5,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"z_sep (x1000)")
 options.register('fromPV',True,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"fromPV for ininitial step")
 #MCs
+options.register('susy',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Susy")
 options.register('dyll',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"DY ll")
 options.register('ztt',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"ZTT MC")
 options.register('dstmmm',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"DsTau3M MC")
@@ -133,6 +134,9 @@ if options.muons:
 if options.dyll:
     from MCs.dyll_50 import * 
     filelist = dyll
+if options.susy:
+    from MCs.susy import *
+    filelist = susy
 
 if not options.T2:
     filelist = ["/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FBF7F649-BDF7-4147-922E-5A8B67377742.root",
@@ -285,6 +289,8 @@ if options.wf == -8:
     if options.clean:
         suff = suff + "_clean"
         process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksMerger")
+    if options.patatrack:
+	process.pixelVertexCoordinates.src = "hltPhase2L1PrimaryVertex"
     #process.hltPhase2PixelVertices.TrackCollection = cms.InputTag("hltPhase2PixelQuadrupletsSelector")
 
 if options.wf == -6:
@@ -378,8 +384,8 @@ elif options.b0ksmm:
     suff = suff + "_b0ksmm"
 elif options.bskkkk:
     suff = suff + "_bskkkk"
-#elif options.susy:
-#    suff = suff + "_susy"
+elif options.susy:
+    suff = suff + "_susy"
 elif options.dyll:
     suff = suff + "_dyll"
 else:
