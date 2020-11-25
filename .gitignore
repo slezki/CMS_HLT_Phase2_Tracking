@@ -1,3 +1,5 @@
+*.pdf
+*.gv
 *.root
 *.json
 *.pyc
