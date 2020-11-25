@@ -61,6 +61,7 @@ def customizePixelTracksSoAonCPU(process,vertex=True) :
 
   from RecoLocalTracker.SiPixelRecHits.siPixelRecHitHostSoA_cfi import siPixelRecHitHostSoA as _siPixelRecHitFromSOA
   from RecoPixelVertexing.PixelVertexFinding.pixelVertexCoordinates_cfi import pixelVertexCoordinates as _pixelVertexCoordinates
+  from RecoTracker.TkSeedGenerator.seedProducerFromSoA_cfi import seedProducerFromSoA as _seedProducerFromSoA
 
   process.load("HeterogeneousCore.CUDAServices.CUDAService_cfi")
   process.load('RecoLocalTracker.SiPixelRecHits.siPixelRecHitHostSoA_cfi')
@@ -80,18 +81,20 @@ def customizePixelTracksSoAonCPU(process,vertex=True) :
   process.hltPhase2PixelTrackSoA.onGPU = False
   process.hltPhase2PixelTrackSoA.pixelRecHitSrc = 'siPixelRecHits'#'siPixelRecHitHostSoA'
   process.hltPhase2PixelTrackSoA.isUpgrade = True
+ 
+  process.hltPhase2PixelTrackSoA.doClusterCut = False
 
-  process.hltPhase2PixelTrackSoA.trackQualityCuts.tripletMinPt = 0.5
+  process.hltPhase2PixelTrackSoA.trackQualityCuts.tripletMinPt = 0.8
   process.hltPhase2PixelTrackSoA.trackQualityCuts.tripletMaxTip = 0.22
   process.hltPhase2PixelTrackSoA.trackQualityCuts.tripletMaxZip = 11.5
 
-  process.hltPhase2PixelTrackSoA.trackQualityCuts.quadrupletMinPt = 0.5
-  process.hltPhase2PixelTrackSoA.trackQualityCuts.quadrupletMaxTip = 0.15
-  process.hltPhase2PixelTrackSoA.trackQualityCuts.quadrupletMaxZip = 11.5
+  process.hltPhase2PixelTrackSoA.trackQualityCuts.quadrupletMinPt = 0.8
+  process.hltPhase2PixelTrackSoA.trackQualityCuts.quadrupletMaxTip = 0.25
+  process.hltPhase2PixelTrackSoA.trackQualityCuts.quadrupletMaxZip = 12.0
 
   process.hltPhase2PixelTrackSoA.trackQualityCuts.upgrade = True
   process.hltPhase2PixelTrackSoA.trackQualityCuts.tripletChi2MaxPt = 2.5
-  process.hltPhase2PixelTrackSoA.trackQualityCuts.chi2MaxPt = 2.5
+  process.hltPhase2PixelTrackSoA.trackQualityCuts.chi2MaxPt = 3.5
 
   process.hltPhase2PixelTracks = process.pixelTrackProducerFromSoA.clone()
   process.hltPhase2PixelTracks.trackSrc = cms.InputTag("hltPhase2PixelTrackSoA")
@@ -111,12 +114,15 @@ def customizePixelTracksSoAonCPU(process,vertex=True) :
 
   process.hltPhase2PixelTracks.pixelRecHitLegacySrc = 'siPixelRecHits'#'siPixelRecHitHostSoA'
   process.hltPhase2PixelVertices.TrackCollection = 'hltPhase2PixelTracks'
-
+  
+  #process.hltPhase2SoAPixelSeeds = _seedProducerFromSoA.clone()
+  #process.hltPhase2SoAPixelSeeds.src = cms.InputTag("hltPhase2PixelTrackSoA")
+   
   process.hltPhase2PixelTracksSequence = cms.Sequence(
       process.vertexFromL1 +
       process.pixelVertexCoordinates +
       process.hltPhase2PixelTrackSoA +
-      process.hltPhase2PixelTracks
+      process.hltPhase2PixelTracks 
   )
 
   if vertex:
@@ -659,12 +665,12 @@ def customizeL1SingleIt(process,timing):
             process.hltPhase2TrackValidatorTrackingOnly.label_vertex = cms.untracked.InputTag("hltPhase2PixelVertices")
         
 	process.trackAlgoPriorityOrder.algoOrder = cms.vstring('hltIter0','initialStep')
-  	process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1CtfTracks","hltPhase2InitialStepTracksSelectionHighPurity")
+  	process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2L1CtfTracks","hltPhase2InitialStepTracks")
     	process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0)
     	process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,1.0)
     	process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag(""),
-                                                                     cms.InputTag("hltPhase2InitialStepTracksSelectionHighPurity"))
-    	process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1)
+                                                                     cms.InputTag(""))
+    	process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(1,0)
  
 
         # process.hltPhase2CutsRecoTracksInitialStep.src = cms.InputTag("hltPhase2InitialStepTracks")

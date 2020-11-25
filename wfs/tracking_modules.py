@@ -16,7 +16,7 @@ hltPhase2SeedFromProtoTracks = cms.PSet(
   magneticField = cms.string( ""), # previous ParabolicMf" ),
   OriginTransverseErrorMultiplier = cms.double( 1.0 ),
   ComponentName = cms.string( "SeedFromConsecutiveHitsCreator" ),
-  MinOneOverPtError = cms.double( 1.0 )
+  MinOneOverPtError = cms.double( 1.0 ) 
 )
 
 hltPhase2PSetPvClusterComparerForIT = cms.PSet(
@@ -1203,12 +1203,12 @@ hltPhase2GeneralTracks = cms.EDProducer("TrackListMerger",
     MaxNormalizedChisq = cms.double(1000.0),
     MinFound = cms.int32(3),
     MinPT = cms.double(0.9), # ptcut previous 0.05
-    ShareFrac = cms.double(0.19),
+    ShareFrac = cms.double(0.2),
     TrackProducers = cms.VInputTag(
         #"hltPhase2InitialStepTracks", "hltPhase2HighPtTripletStepTracks" ### v2
 	"hltPhase2InitialStepTracksSelectionHighPurity", "hltPhase2HighPtTripletStepTracksSelectionHighPurity" ### v2 # trackcutclassifier
     ),
-    allowFirstHitShare = cms.bool(True),
+    allowFirstHitShare = cms.bool(False),
     copyExtras = cms.untracked.bool(True),
     copyMVA = cms.bool(False), # trackcutclassifier before True
     hasSelector = cms.vint32(
@@ -1790,6 +1790,7 @@ hltPhase2InitialStepSeeds = cms.EDProducer( "SeedGeneratorFromProtoTracksEDProdu
     originHalfLength = cms.double(0.3), #10 1  previous 0.3 ),
     useProtoTrackKinematics = cms.bool( False ),
     usePV = cms.bool( False ),
+    includeFourthHit = cms.bool(True),
     SeedCreatorPSet = cms.PSet(  refToPSet_ = cms.string( "hltPhase2SeedFromProtoTracks" ) ),
     InputVertexCollection = cms.InputTag(""),
     TTRHBuilder = cms.string( "WithTrackAngle"), #hltESPTTRHBuilderPixelOnly" ),
@@ -1927,7 +1928,7 @@ hltPhase2InitialStepTrackCandidates = cms.EDProducer("CkfTrackCandidateMaker",
     ),
     TrajectoryCleaner = cms.string('TrajectoryCleanerBySharedHits'),
     TransientInitialStateEstimatorParameters = cms.PSet(
-        numberMeasurementsForFit = cms.int32(4),
+        numberMeasurementsForFit = cms.int32(16),
         propagatorAlongTISE = cms.string('PropagatorWithMaterialParabolicMf'), # previous PropagatorWithMaterial
         propagatorOppositeTISE = cms.string('PropagatorWithMaterialParabolicMfOpposite') # previous PropagatorWithMaterialOpposite
     ),
@@ -2068,14 +2069,14 @@ hltPhase2PixelTripletsCleaner = cms.EDProducer("TrackWithVertexSelector",
     ptMax = cms.double(100000.0),
     ptMin = cms.double(0.0),
     quality = cms.string('any'),
-    rhoVtx = cms.double(0.1),
+    rhoVtx = cms.double(0.06),
     src = cms.InputTag("hltPhase2PixelTracks"),
     timeResosTag = cms.InputTag(""),
     timesTag = cms.InputTag(""),
     useVtx = cms.bool(True),
     vertexTag = cms.InputTag("hltPhase2PixelVertices"),
     vtxFallback = cms.bool(True),
-    zetaVtx = cms.double(0.3)
+    zetaVtx = cms.double(0.18)
 )
 
 hltPhase2PixelTripletsSelector= cms.EDProducer("RecoTrackViewRefSelector",
@@ -2091,7 +2092,7 @@ hltPhase2PixelTripletsSelector= cms.EDProducer("RecoTrackViewRefSelector",
     minHit = cms.int32(0),
     minLayer = cms.int32(3),
     minPhi = cms.double(-3.2),
-    minPixelHit = cms.int32(3), maxPixelHit = cms.int32(3),
+    minPixelHit = cms.int32(2), maxPixelHit = cms.int32(3),
     minRapidity = cms.double(-4.5),
     originalAlgorithm = cms.vstring(),
     ptMin = cms.double(0.9), # previous 0.1
@@ -2099,7 +2100,7 @@ hltPhase2PixelTripletsSelector= cms.EDProducer("RecoTrackViewRefSelector",
     src = cms.InputTag("hltPhase2PixelTracks"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("")
 )
 
 hltPhase2PixelQuadrupletsSelector= cms.EDProducer("RecoTrackViewRefSelector",
@@ -2113,7 +2114,7 @@ hltPhase2PixelQuadrupletsSelector= cms.EDProducer("RecoTrackViewRefSelector",
     maxRapidity = cms.double(4.5),
     min3DLayer = cms.int32(0),
     minHit = cms.int32(0),
-    minLayer = cms.int32(3),
+    minLayer = cms.int32(2),
     minPhi = cms.double(-3.2),
     minPixelHit = cms.int32(4), maxPixelHit = cms.int32(99),
     minRapidity = cms.double(-4.5),
@@ -2123,6 +2124,6 @@ hltPhase2PixelQuadrupletsSelector= cms.EDProducer("RecoTrackViewRefSelector",
     src = cms.InputTag("hltPhase2PixelTracks"),
     tip = cms.double(120),
     usePV = cms.bool(False),
-    vertexTag = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
+    vertexTag = cms.InputTag("")#hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 )
 

@@ -47,6 +47,7 @@ options.register('l1extended',False,VarParsing.VarParsing.multiplicity.singleton
 #Pixel setups
 options.register('pixtrip',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"pixel Triplets")
 options.register('onlypixel',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"onlypixel")
+options.register('protokin',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"using proto tracks kinematics")
 
 #Patatrack
 options.register('mkfit',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"running mkfit")
@@ -75,6 +76,7 @@ options.register('nvtx',10,VarParsing.VarParsing.multiplicity.singleton,VarParsi
 options.register('sumpt',10 ,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"minsumpt2 vtx")
 options.register('zsep',5,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"z_sep (x1000)")
 options.register('fromPV',True,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"fromPV for ininitial step")
+
 #MCs
 options.register('susy',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Susy")
 options.register('dyll',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"DY ll")
@@ -108,35 +110,6 @@ process.MessageLogger = cms.Service("MessageLogger",
 
 from MCs.ttbar import ttbar
 filelist = ttbar
-
-
-if options.ztt:
-    from MCs.b0kstarmumu import b0kstarmumu
-    filelist = b0kstarmumu
-if options.dstmmm:
-    from MCs.dstmmm import dstmmm #bdksmm import bdksmm
-    filelist = dstmmm
-if options.bdksmm:
-    from MCs.bdksmm import bdksmm #bsphikkkk import bsphikkkk
-    filelist = bdksmm
-if options.b0ksmm:
-    from MCs.b0ksmm import b0ksmm #dstaumumumu import dstaumumumu
-    filelist = b0ksmm
-if options.bskkkk:
-    from MCs.bskkkk import bskkkk
-    filelist = bskkkk
-if options.withl1:
-    from MCs.ttbarl1 import ttbarl1
-    filelist = ttbarl1
-if options.muons:
-    from MCs.muons import muon_files
-    filelist = muon_files
-if options.dyll:
-    from MCs.dyll_50 import * 
-    filelist = dyll
-if options.susy:
-    from MCs.susy import *
-    filelist = susy
 
 if not options.T2:
     filelist = ["/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FBF7F649-BDF7-4147-922E-5A8B67377742.root",
@@ -175,7 +148,34 @@ if options.noPU:
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/FE308DD9-D66F-4545-B0F2-9E44880D0054.root",
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/FF0494EC-DE4E-3C46-BC68-2AEE51390533.root",
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/FFD62905-0181-D44F-8BEF-2557BFF9F040.root"]
-#print(filelist)
+
+if options.ztt:
+    from MCs.b0kstarmumu import b0kstarmumu
+    filelist = b0kstarmumu
+if options.dstmmm:
+    from MCs.dstmmm import dstmmm #bdksmm import bdksmm
+    filelist = dstmmm
+if options.bdksmm:
+    from MCs.bdksmm import bdksmm #bsphikkkk import bsphikkkk
+    filelist = bdksmm
+if options.b0ksmm:
+    from MCs.b0ksmm import b0ksmm #dstaumumumu import dstaumumumu
+    filelist = b0ksmm
+if options.bskkkk:
+    from MCs.bskkkk import bskkkk
+    filelist = bskkkk
+if options.withl1:
+    from MCs.ttbarl1 import ttbarl1
+    filelist = ttbarl1
+if options.muons:
+    from MCs.muons import muon_files
+    filelist = muon_files
+if options.dyll:
+    from MCs.dyll_50 import * 
+    filelist = dyll
+if options.susy:
+    from MCs.susy import *
+    filelist = susy
 
 #if options.susy:
    
@@ -250,6 +250,7 @@ timing = options.timing
 
 suff = str(options.wf)
 
+
 #TRIMMING OPTIONS
 if options.wf < -1:
 
@@ -275,12 +276,13 @@ if options.onlypixel:
 if options.wf == -5:
     customizeSingleIt(process,timing)
     suff = "m5"
+  
     # customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.05,numVertex=30,minSumPt2=20)
     #process.hltPhase2PixelVertices.ZSeparation = float(options.zsep) / 1000.0
     if options.clean:
         suff = suff + "_clean"
-	process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksMerger")
-    #process.hltPhase2PixelVertices.TrackCollection = cms.InputTag("hltPhase2PixelQuadrupletsSelector")
+	process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksMerger") 
+   #process.hltPhase2PixelVertices.TrackCollection = cms.InputTag("hltPhase2PixelQuadrupletsSelector")
 if options.wf == -8:
     customizeL1SingleIt(process,timing)
     suff = "m8"
@@ -336,13 +338,16 @@ if options.wf == -1:
         process.hltPhase2PixelTripletsCleaner.useVtx = False
         process.hltPhase2PixelTripletsCleaner.zetaVtx = 100.0
 
-        process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksCleaner")#hltPhase2PixelQuadrupletsSelector")
+        process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksCleaner")#hltPhase2PixelQuadrupletsSelector")#hltPhase2PixelTracksCleaner")#hltPhase2PixelQuadrupletsSelector")
         process.hltPhase2HighPtTripletStepSeeds = process.hltPhase2InitialStepSeeds.clone()
 	process.hltPhase2HighPtTripletStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTripletsCleaner")
-    
-    if options.patatrack and options.clean:
-	suff = suff + "_clean"
-	process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksMerger")
+        
+	
+        if hasattr(process,"hltPhase2HighPtTripletStepHitDoublets"):
+		delattr(process,"hltPhase2HighPtTripletStepHitDoublets")
+	if hasattr(process,"hltPhase2HighPtTripletStepHitTriplets"):
+		delattr(process,"hltPhase2HighPtTripletStepHitTriplets")
+	
 #L1 Customizing
 if options.wf == 0:
     suff = "purel1"
@@ -414,9 +419,11 @@ if options.patavertex:
     suff = suff + "_patavertex"
 if options.patatrack:
     customizePixelTracksSoAonCPU(process,options.patavertex)
-    if options.doregion:
-	#process.hltPhase2PixelTrackSoA.doRegion = True
-	#suff = suff + "_region"	
+#    if options.wf == -5:
+ #       process.hltPhase2InitialStepSeeds = process.hltPhase2SoAPixelSeeds.clone()
+    process.hltPhase2PixelTrackSoA.doRegion = options.doregion
+    if options.doregion: 
+	suff = suff + "_region"	
     	if options.wf==8 or options.wf == 7 or options.wf==-7 or options.wf==-6:
 		suff = suff + "_regionFomL1"
 	##process.pixelVertexCoordinates.src = "hltPhase2L1PrimaryVertex"
@@ -432,6 +439,15 @@ if options.davertex:
     suff = suff + "_da"
 elif not options.patavertex:
     process.hltPhase2PixelVertices.ZSeparation = float(options.zsep) / 1000.0
+
+if hasattr(process,"hltPhase2InitialStepSeeds"):	
+	process.hltPhase2InitialStepSeeds.useProtoTrackKinematics = cms.bool(options.protokin)
+if hasattr(process,"hltPhase2HighPtTripletStepSeeds"):
+	if options.allpata==True or options.wf <=-5:
+		process.hltPhase2HighPtTripletStepSeeds.useProtoTrackKinematics = cms.bool(options.protokin)
+	
+if options.protokin:
+	suff = suff + "_protokin"
 
 suff = suff + "_zsep_" + str(options.zsep)
 
