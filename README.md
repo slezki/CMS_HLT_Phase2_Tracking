@@ -76,7 +76,21 @@ where the vertex flag indicates if the vertices has to be Patatrack-like (not th
 
 The __v6_3__ configuration has the same iterations as the __baseline__ configuration with the difference that the pixel tracks are reconstructed with Patatrack pixel tracks and the further used both to seed the initial step iteration (being filtered to have > 3 hits) and the high pT triplet (being filtered to have exactly 3 hits)
 
-```cmsRun step3.py allpata=True patatrack=True pixtrip=True```
+```cmsRun step3.py allpata=True patatrack=True pixtrip=True keepBad=2 keepDup=2```
+
+the `keepBad` and `keepDup` flags allow to keep pixelTracks that has been marked as fakes or duplicates so that they may be used as seeds for the next steps.
+
+
+##### Adding L1Vertex Region For PixelTracks
+
+For __v6_2__ and __v6_2__ one may activate the region definition around the L1 vertex for pixel track seeds as
+
+- __v6_2__ : `cmsRun step3.py n=N patatrack=True doregion=True`
+- __v6_3__ : `cmsRun step3.py allpata=True patatrack=True pixtrip=True keepBad=2 keepDup=2 doregion=True`
+
+Or one may direclty act on the Pixel Tracks SoA producer (if defined in the process) with
+
+```process.hltPhase2PixelTrackSoA.doRegion = True ```
 
 ### V7s
 
