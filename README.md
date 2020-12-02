@@ -90,7 +90,7 @@ For __v6_2__ and __v6_2__ one may activate the region definition around the L1 v
 
 Or one may direclty act on the Pixel Tracks SoA producer (if defined in the process) with
 
-```process.hltPhase2PixelTrackSoA.doRegion = True ```
+```process.hltPhase2PixelTrackSoA.doregion = True ```
 
 ### V7s
 
