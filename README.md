@@ -83,7 +83,7 @@ the `keepBad` and `keepDup` flags allow to keep pixelTracks that has been marked
 
 ##### Adding L1Vertex Region For PixelTracks
 
-For __v6_2__ and __v6_2__ one may activate the region definition around the L1 vertex for pixel track seeds as
+For __v6_2__ and __v6_3__ one may activate the region definition around the L1 vertex for pixel track seeds as
 
 - __v6_2__ : `cmsRun step3.py n=N patatrack=True doregion=True`
 - __v6_3__ : `cmsRun step3.py allpata=True patatrack=True pixtrip=True keepBad=2 keepDup=2 doregion=True`
