@@ -83,9 +83,13 @@ the `keepBad` and `keepDup` flags allow to keep pixelTracks that has been marked
 
 ### V7s
 
-#### V7_1 (trimmed)
+#### V7_1
 
-The __v7_1__ configuration is the configuration __trimmed__ around the vertices reconstructed as pixel vertices with pixel tracks. It consists of two main iterations running after pixel tracks building.
+Historically was jumped for some mysterious reason ...
+
+#### V7_2 (trimmed)
+
+The __v7_2__ configuration is the configuration __trimmed__ around the vertices reconstructed as pixel vertices with pixel tracks. It consists of two main iterations running after pixel tracks building.
 
 1. PixelTracks and PixelVertices (Run2 like set up to have high PV tagging) production; 
 2. Pixel Vertices Trimming with: max number of vertices==10, min SumPt2 fraction w.r.t. leading = 0.1 and min SumPt2==10GeV;
@@ -115,9 +119,9 @@ on your process where the suggested cuts are the above mentioned:
 - `SUMPT2 = 10`
 
 
-#### V7_2 (trimmed with patatrack pixel tracks)
+#### V7_3 (trimmed with patatrack pixel tracks)
 
-The __v7_2__ configuration has the same iterations as the __trimmed__ configuration with the difference that the pixel tracks, used as seeding for InitialStep, are reconstructed with Patatrack pixel tracks. Once the Patatrack CMSSW environment is set up you would need only to run:
+The __v7_3__ configuration has the same iterations as the __trimmed__ configuration with the difference that the pixel tracks, used as seeding for InitialStep, are reconstructed with Patatrack pixel tracks. Once the Patatrack CMSSW environment is set up you would need only to run:
 
 ```cmsRun step3.py n=N patatrack=True wf=-4```
 
@@ -131,20 +135,20 @@ customizeOriginalTrimmingTriplet_v6(process,timing,fraction=FRAC,numVertex=NVTX,
 
 where the vertex flag indicates if the vertices has to be Patatrack-like (not the default option).
 
-#### V7_3 (trimmed with seeding only from patatrack pixel tracks)
+#### V7_4 (trimmed with seeding only from patatrack pixel tracks)
 
-The __v7_3__ configuration has the same iterations as the __trimmed__ configuration with the difference that the pixel tracks are reconstructed with Patatrack pixel tracks and the further used both to seed the initial step iteration (being filtered to have > 3 hits) and the high pT triplet (being filtered to have exactly 3 hits)
+The __v7_4__ configuration has the same iterations as the __trimmed__ configuration with the difference that the pixel tracks are reconstructed with Patatrack pixel tracks and the further used both to seed the initial step iteration (being filtered to have > 3 hits) and the high pT triplet (being filtered to have exactly 3 hits)
 
 ```cmsRun step3.py allpata=True patatrack=True pixtrip=True wf=-4 keepBad=2 keepDup=2```
 
 ### Adding L1Vertex Region For PixelTracks
 
-For __v6_2__, __v6_3__, __v7_2__ and __v7_3__ one may activate the region definition around the L1 vertex for pixel track seeds as
+For __v6_2__, __v6_3__, __v7_3__ and __v7_4__ one may activate the region definition around the L1 vertex for pixel track seeds as
 
 - __v6_2__ : `cmsRun step3.py n=N patatrack=True doregion=True`
 - __v6_3__ : `cmsRun step3.py allpata=True patatrack=True pixtrip=True keepBad=2 keepDup=2 doregion=True`
-- __v7_2__ : `cmsRun step3.py wf=-4 n=N patatrack=True doregion=True`
-- __v7_3__ : `cmsRun step3.py wf=-4 allpata=True patatrack=True pixtrip=True keepBad=2 keepDup=2 doregion=True`
+- __v7_3__ : `cmsRun step3.py wf=-4 n=N patatrack=True doregion=True`
+- __v7_4__ : `cmsRun step3.py wf=-4 allpata=True patatrack=True pixtrip=True keepBad=2 keepDup=2 doregion=True`
 
 Or one may direclty act on the Pixel Tracks SoA producer (if defined in the process) with
 
