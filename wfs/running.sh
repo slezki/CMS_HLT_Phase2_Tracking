@@ -4,85 +4,238 @@ njobs=12
 #6_1
 A=0
 
-for((i=0;i<${njobs};i++)); 
-	do  
-	A=$(($i*$N)); 
-	cmsRun step3.py wf=-1 n=$N threads=8 skip=$A timing=False patatrack=False doregion=False pixtrip=False allpata=False nol1=False keepDup=99 keepBad=99 & 
-done
+WFS="-1 -4 7 5 -8"
+THREADS="4 8 16"
 
-wait 
+################################################################
+#v6_1
+PATA=False
+REGION=False
+WF=-1
+PIXTRIP=False
+ALLPATA=False
+NOL1=False
+KEEPDUP=99
+KEEPBAD=99
+TIMING=False
 
-cmsRun step3.py wf=-1 n=$N threads=4 skip=$A timing=True patatrack=False doregion=False pixtrip=False allpata=False nol1=False keepDup=99 keepBad=99 &&
-
-wait
-
-cmsRun step3.py wf=-1 n=$N threads=8 skip=$A timing=True patatrack=False doregion=False pixtrip=False allpata=False nol1=False keepDup=99 keepBad=99 && 
-
-wait
-
-cmsRun step3.py wf=-1 n=$N threads=16 skip=$A timing=True patatrack=False doregion=False pixtrip=False allpata=False nol1=False keepDup=99 keepBad=99 && 
-
-
-#6_2
 for((i=0;i<${njobs};i++));
-        do
-        A=$(($i*$N));
-        cmsRun step3.py wf=-1 n=$N threads=8 skip=$A timing=False patatrack=True doregion=False pixtrip=False allpata=False nol1=False keepDup=99 keepBad=99 &
+	do
+	A=$(($i*$N));
+	cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD &
 done
 
-wait
-
+#Timings
 A=0
-
-cmsRun step3.py wf=-1 n=$N threads=4 skip=$A timing=True patatrack=True doregion=False pixtrip=False allpata=False nol1=False keepDup=99 keepBad=99 &&
-
-wait
-
-cmsRun step3.py wf=-1 n=$N threads=8 skip=$A timing=True patatrack=True doregion=False pixtrip=False allpata=False nol1=False keepDup=99 keepBad=99 &&
-
-wait
-
-cmsRun step3.py wf=-1 n=$N threads=16 skip=$A timing=True patatrack=True doregion=False pixtrip=False allpata=False nol1=False keepDup=99 keepBad=99 &&
-
-
-
-#6_3 no dup
-for((i=0;i<${njobs};i++));
-        do
-        A=$(($i*$N));
-        cmsRun step3.py wf=-1 n=$N threads=8 skip=$A timing=False patatrack=True doregion=False pixtrip=True allpata=True nol1=False keepDup=99 keepBad=99 &
+for T in 4 8 16;
+  do
+    cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD
 done
 
-wait
 
-A=0
+################################################################
+#v6_2
+PATA=True
 
-cmsRun step3.py wf=-1 n=$N threads=8 skip=$A timing=True patatrack=True doregion=False pixtrip=True allpata=True nol1=False keepDup=99 keepBad=99 &
+###Base v6_2
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
 
-wait
+#with triplets
+PIXTRIP=True
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+#Timings
+wait && A=0
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
 
-cmsRun step3.py wf=-1 n=$N threads=8 skip=$A timing=True patatrack=True doregion=False pixtrip=True allpata=True nol1=False keepDup=99 keepBad=99 &
+#without triplets & with region
+PIXTRIP=False
+REGION=True
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
 
-wait
+#with triplets & region
+PIXTRIP=True
+REGION=True
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
 
-cmsRun step3.py wf=-1 n=$N threads=8 skip=$A timing=True patatrack=True doregion=False pixtrip=True allpata=True nol1=False keepDup=99 keepBad=99 &
+###################################
+##### Keep duplicates
+KEEPDUP=2
+PIXTRIP=False
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
 
-#6_3 
-for((i=0;i<${njobs};i++));
-        do
-        A=$(($i*$N));
-        cmsRun step3.py wf=-1 n=$N threads=8 skip=$A timing=False patatrack=True doregion=False pixtrip=True allpata=True nol1=False keepDup=2 keepBad=2 &
-done
+#with triplets
+PIXTRIP=True
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+#Timings
+wait && A=0
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
 
-wait
+#without triplets & with region
+PIXTRIP=False
+REGION=True
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
 
-cmsRun step3.py wf=-1 n=$N threads=4 skip=0 timing=True patatrack=True doregion=False pixtrip=True allpata=True nol1=False keepDup=2 keepBad=2 &
+#with triplets & region
+PIXTRIP=True
+REGION=True
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
 
-wait
+###################################
+##### Keep bads
+KEEPDUP=99
+KEEPBAD=2
+PIXTRIP=False
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
 
-cmsRun step3.py wf=-1 n=$N threads=8 skip=0 timing=True patatrack=True doregion=False pixtrip=True allpata=True nol1=False keepDup=2 keepBad=2 &
+#with triplets
+PIXTRIP=True
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+#Timings
+wait && A=0
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
 
-wait
+#without triplets & with region
+PIXTRIP=False
+REGION=True
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
 
-cmsRun step3.py wf=-1 n=$N threads=16 skip=0 timing=True patatrack=True doregion=False pixtrip=True allpata=True nol1=False keepDup=2 keepBad=2 &
+#with triplets & region
+PIXTRIP=True
+REGION=True
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
 
+
+###################################
+##### Keep bads & dup
+KEEPDUP=2
+KEEPBAD=2
+PIXTRIP=False
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
+
+#with triplets
+PIXTRIP=True
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+#Timings
+wait && A=0
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
+
+#without triplets & with region
+PIXTRIP=False
+REGION=True
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
+
+#with triplets & region
+PIXTRIP=True
+REGION=True
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
+
+
+
+
+
+################################################################
+#v6_3
+PATA=True
+ALLPATA=True
+PIXTRIP=True
+
+###Base v6_2
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
+
+#with triplets & region
+PIXTRIP=True
+REGION=True
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
+
+###################################
+##### Keep duplicates
+KEEPDUP=2
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
+
+#with triplets & region
+PIXTRIP=True
+REGION=True
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
+
+###################################
+##### Keep bads
+KEEPDUP=99
+KEEPBAD=2
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
+
+#with triplets & region
+PIXTRIP=True
+REGION=True
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
+
+
+###################################
+##### Keep bads & dup
+KEEPDUP=2
+KEEPBAD=2
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
+
+#with triplets & region
+PIXTRIP=True
+REGION=True
+for((i=0;i<${njobs};i++)); do A=$(($i*$N)); cmsRun step3.py wf=$WF n=$N threads=8 skip=$A timing=$TIMING patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD & done
+wait && A=0
+#Timings
+for T in 4 8 16; do cmsRun step3.py wf=$WF n=$N threads=$T skip=$A timing=True patatrack=$PATA doregion=$REGION pixtrip=$PIXTRIP allpata=$ALLPATA nol1=$NOL1 keepDup=$KEEPDUP keepBad=$KEEPBAD ; done
