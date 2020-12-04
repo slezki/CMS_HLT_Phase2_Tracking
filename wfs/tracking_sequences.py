@@ -93,7 +93,8 @@ hltPhase2PixelTracksSequence = cms.Sequence(
     #hltPhase2PixelTracksCleaner +
     #hltPhase2PixelTripletsCleaner +
     hltPhase2PixelTripletsSelector +
-    hltPhase2PixelQuadrupletsSelector
+    hltPhase2PixelQuadrupletsSelector + 
+    hltPhase2PixelTracksClean 
 #    hltPhase2PixelTracksMerger
 )
 
@@ -105,7 +106,8 @@ hltPhase2PixelTracksSequenceL1 = cms.Sequence(
     hltPhase2PixelTracksSeedLayers +
     hltPhase2PixelTracksHitDoublets +
     hltPhase2PixelTracksHitSeeds +
-    hltPhase2PixelTracks
+    hltPhase2PixelTracks +
+    hltPhase2PixelTracksClean 
 )
 
 hltPhase2PixelVerticesSequence = cms.Sequence(
@@ -343,7 +345,7 @@ l1_pixel_reco_triplets = cms.Path(
     hltPhase2PixelTracksSequence +
     hltPhase2PixelVerticesSequence +
     hltPhase2L1TracksSequenceClassification +
-    hltPhase2InitialStepSequence +
+    hltPhase2InitialStepSequenceL1 +
     hltPhase2HighPtTripletStepSequence +
     hltPhase2GeneralTracks
 )

@@ -81,6 +81,7 @@ def customizePixelTracksSoAonCPU(process,vertex=True) :
   process.hltPhase2PixelTrackSoA.onGPU = False
   process.hltPhase2PixelTrackSoA.pixelRecHitSrc = 'siPixelRecHits'#'siPixelRecHitHostSoA'
   process.hltPhase2PixelTrackSoA.isUpgrade = True
+  process.hltPhase2PixelTrackSoA.fit5as4 = True
  
   process.hltPhase2PixelTrackSoA.doClusterCut = False
 
@@ -493,7 +494,7 @@ def l1_pixel_recovery_triplets(process,timing):
     #process.hltPhase2HighPtTripletStepClusters.oldClusterRemovalInfo = cms.InputTag("hltPhase2PixelTrackClusters")
     process.hltPhase2HighPtTripletStepSeedLayers.FPix.skipClusters = cms.InputTag("hltPhase2HighPtTripletStepClusters")
     process.hltPhase2HighPtTripletStepSeedLayers.BPix.skipClusters = cms.InputTag("hltPhase2HighPtTripletStepClusters")
-
+    process.hltPhase2HighPtTripletStepClusters.oldClusterRemovalInfo = cms.InputTag("hltPhase2InitialStepClusters")
     ##masking with pixel tracks
     # process.hltPhase2L1TracksTaskSeed.add(process.hltPhase2L1TrackStepClusters)
     # process.hltPhase2L1TrackStepClusters.trajectories = cms.InputTag("hltPhase2PixelTracks")
@@ -517,8 +518,8 @@ def l1_pixel_recovery_triplets(process,timing):
     process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1,2)
 
     #process.hltPhase2InitialStepTracks.clusterRemovalInfo = cms.InputTag("hltPhase2L1TrackStepClusters")
-
-    process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag(
+    if not timing:
+    	process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag(
     "hltPhase2GeneralTracks","hltPhase2CutsRecoTracksL1","hltPhase2CutsRecoTracksHighPtTripletStepHp",
     "hltPhase2CutsRecoTracksInitialStep", "hltPhase2CutsRecoTracksInitialStepHp","hltPhase2CutsRecoTracksHighPtTripletStep",
     "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo", "hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
@@ -586,7 +587,9 @@ def customizeOriginal_v6(process,timing):
 def customizeSingleIt(process,timing):
 
         process.schedule = cms.Schedule(*[process.raw2digi_step,process.single_it])
-
+	
+	process.hltPhase2InitialStepTrackCutClassifier.mva.minPixelHits = cms.vint32(0,0,4)
+	
 	if not timing:
             process.hltPhase2TrackValidatorTrackingOnly.cores = cms.InputTag("highPtJetsForTrk")
             process.hltPhase2TrackValidatorTrackingOnly.associators = cms.untracked.VInputTag("hltPhase2TrackingParticleRecoTrackAsssociation")
@@ -638,6 +641,10 @@ def customizeL1SingleIt(process,timing):
         process.hltPhase2InitialStepClusters.trajectories = cms.InputTag("hltPhase2L1CtfTracks")
         process.hltPhase2InitialStepTrackCandidates.phase2clustersToSkip = cms.InputTag("hltPhase2InitialStepClusters")
 	process.hltPhase2L1TracksCutClassifier.vertices = cms.InputTag( "hltPhase2L1PrimaryVertex" )
+	
+	process.hltPhase2InitialStepTrackCutClassifier.mva.minPixelHits = cms.vint32(0,0,4)
+	process.hltPhase2InitialStepTrackCutClassifier.vertices = cms.InputTag( "hltPhase2L1PrimaryVertex" )
+
 	if not timing:
             process.hltPhase2VertexAnalysisL1.vertexRecoCollections = cms.VInputTag("hltPhase2L1PrimaryVertex","hltPhase2VertexFromL1")
 

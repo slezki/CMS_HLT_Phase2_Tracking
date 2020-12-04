@@ -23,7 +23,7 @@ validation_purel1 = cms.Path(hltPhase2TrackValidatorL1)
 
 validation_l1initial = cms.Path(hltPhase2TrackValidatorPixelTrackingOnly + hltPhase2TrackValidatorTrackingOnly + hltPhase2TrackValidatorL1)
 
-validation_l1trip = cms.Path(hltPhase2TrackValidatorPixelTrackingOnly + hltPhase2TrackValidatorTrackingOnly + hltPhase2TrackValidatorL1)
+validation_l1trip = cms.Path(hltPhase2TrackValidatorPixelTrackingOnly + hltPhase2TrackValidatorTrackingOnly + hltPhase2TrackValidatorL1 +hltPhase2TrackValidatorFromPVStandalone +hltPhase2TrackValidatorBHadronTrackingOnly)
 
 validation_base = cms.EndPath(hltMultiTrackValidation + hltTrackAssociatorByHits)
 

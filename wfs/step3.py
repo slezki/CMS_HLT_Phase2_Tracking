@@ -42,7 +42,9 @@ options.register('n',1,VarParsing.VarParsing.multiplicity.singleton,VarParsing.V
 options.register('skip',0,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"events to skip")
 options.register('threads',16,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"num of threads")
 
+#L1 Tracks
 options.register('l1extended',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"l1 extended")
+options.register('nol1',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"do not include l1tracks in generaltracks")
 
 #Pixel setups
 options.register('pixtrip',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"pixel Triplets")
@@ -55,6 +57,10 @@ options.register('patatrack',False,VarParsing.VarParsing.multiplicity.singleton,
 options.register('clean',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Use Cleaned Patatrack Pixel Tracks")
 options.register('allpata',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Seeding only from Patatrack Pixel Tracks")
 options.register('doregion',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Seeding only from Patatrack Pixel Tracks")
+options.register('rhoVtx',300,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx for region rho distance (x1000)")
+options.register('zVtx',100,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx for region z distance (x1000)")
+options.register('keepBad',99,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"keepBad")
+options.register('keepDup',99,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"keepDup")
 
 #Vetexing
 options.register('davertex',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"da pixel vertexing")
@@ -112,7 +118,7 @@ from MCs.ttbar import ttbar
 filelist = ttbar
 
 if not options.T2:
-    filelist = ["/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FBF7F649-BDF7-4147-922E-5A8B67377742.root",
+    filelist = [
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FC1BA259-9788-6549-99ED-79CE138052B4.root",
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FC47CF76-E9D0-B140-9C3E-AD994236A741.root",
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FC56902D-DB9B-8844-ABB3-6E5F78B53E86.root",
@@ -279,8 +285,7 @@ if options.wf == -5:
   
     # customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.05,numVertex=30,minSumPt2=20)
     #process.hltPhase2PixelVertices.ZSeparation = float(options.zsep) / 1000.0
-    if options.clean:
-        suff = suff + "_clean"
+    if options.clean: 
 	process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksMerger") 
    #process.hltPhase2PixelVertices.TrackCollection = cms.InputTag("hltPhase2PixelQuadrupletsSelector")
 if options.wf == -8:
@@ -288,8 +293,7 @@ if options.wf == -8:
     suff = "m8"
     # customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.05,numVertex=30,minSumPt2=20)
     #process.hltPhase2PixelVertices.ZSeparation = float(options.zsep) / 1000.0
-    if options.clean:
-        suff = suff + "_clean"
+    if options.clean: 
         process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksMerger")
     #process.hltPhase2PixelVertices.TrackCollection = cms.InputTag("hltPhase2PixelQuadrupletsSelector")
 
@@ -328,26 +332,57 @@ if options.wf == -1:
     suff = "m1"
     customizeOriginal_v6(process,timing)
     process.hltPhase2TrimmedPixelVertices = process.MeasurementTrackerEvent.clone()
-    if options.allpata and options.patatrack:
- 	suff = suff + "_tripFromTracks"
-	process.hltPhase2PixelTracksCleaner.rhoVtx = 100.0 
-	process.hltPhase2PixelTracksCleaner.useVtx = False
-	process.hltPhase2PixelTracksCleaner.zetaVtx = 100.0
-	
-	process.hltPhase2PixelTripletsCleaner.rhoVtx = 100.0 
-        process.hltPhase2PixelTripletsCleaner.useVtx = False
-        process.hltPhase2PixelTripletsCleaner.zetaVtx = 100.0
 
-        process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksCleaner")#hltPhase2PixelQuadrupletsSelector")#hltPhase2PixelTracksCleaner")#hltPhase2PixelQuadrupletsSelector")
-        process.hltPhase2HighPtTripletStepSeeds = process.hltPhase2InitialStepSeeds.clone()
-	process.hltPhase2HighPtTripletStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTripletsCleaner")
-        
+if options.allpata and options.patatrack:
+    suff = suff + "_tripFromTracks"
+    process.hltPhase2PixelTracksCleaner.rhoVtx = 100.0 
+    process.hltPhase2PixelTracksCleaner.useVtx = False
+    process.hltPhase2PixelTracksCleaner.zetaVtx = 100.0
 	
-        if hasattr(process,"hltPhase2HighPtTripletStepHitDoublets"):
-		delattr(process,"hltPhase2HighPtTripletStepHitDoublets")
-	if hasattr(process,"hltPhase2HighPtTripletStepHitTriplets"):
-		delattr(process,"hltPhase2HighPtTripletStepHitTriplets")
+    process.hltPhase2PixelTripletsCleaner.rhoVtx = 100.0 
+    process.hltPhase2PixelTripletsCleaner.useVtx = False
+    process.hltPhase2PixelTripletsCleaner.zetaVtx = 100.0
+   
+    process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksCleaner")#hltPhase2PixelQuadrupletsSelector")#hltPhase2PixelTracksCleaner")#hltPhase2PixelQuadrupletsSelector")
+    process.hltPhase2HighPtTripletStepSeeds = process.hltPhase2InitialStepSeeds.clone()
+    process.hltPhase2HighPtTripletStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTripletsCleaner")
+    
+ 
 	
+    if hasattr(process,"hltPhase2HighPtTripletStepHitDoublets"):
+	delattr(process,"hltPhase2HighPtTripletStepHitDoublets")
+    if hasattr(process,"hltPhase2HighPtTripletStepHitTriplets"):
+ 	delattr(process,"hltPhase2HighPtTripletStepHitTriplets")
+
+if options.allpata and options.clean and options.patatrack:
+
+	process.hltPhase2PixelTracksCleaner.rhoVtx = options.rhoVtx /1000.0
+        process.hltPhase2PixelTracksCleaner.zetaVtx = options.zVtx / 1000.0
+        process.hltPhase2PixelTripletsCleaner.useVtx = True
+        process.hltPhase2PixelTracksCleaner.useVtx = False
+        process.hltPhase2PixelTripletsCleaner.rhoVtx = options.rhoVtx /1000.0
+        process.hltPhase2PixelTripletsCleaner.zetaVtx = options.zVtx / 1000.0
+
+        if options.froml1:
+		process.hltPhase2PixelTracksCleaner.vertexTag = cms.InputTag("hltPhase2L1PrimaryVertex")	
+		process.hltPhase2PixelTracksCleaner.vertexTag = cms.InputTag("hltPhase2L1PrimaryVertex")
+
+if options.patatrack and options.clean and not options.allpata:
+	
+	process.hltPhase2PixelTracksCleaner.rhoVtx = options.rhoVtx /1000.0
+        process.hltPhase2PixelTracksCleaner.zetaVtx = options.zVtx / 1000.0
+        process.hltPhase2PixelTripletsCleaner.useVtx = True
+        process.hltPhase2PixelTracksCleaner.useVtx = False
+	process.hltPhase2PixelTripletsCleaner.rhoVtx = options.rhoVtx /1000.0
+        process.hltPhase2PixelTripletsCleaner.zetaVtx = options.zVtx / 1000.0
+
+        process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksMerger")
+	
+	if options.froml1:
+                process.hltPhase2PixelTracksCleaner.vertexTag = cms.InputTag("hltPhase2L1PrimaryVertex")
+                process.hltPhase2PixelTracksCleaner.vertexTag = cms.InputTag("hltPhase2L1PrimaryVertex")
+else:
+	process.hltPhase2PixelTracksMerger = process.hltPhase2PixelTracksCleaner.clone()	
 #L1 Customizing
 if options.wf == 0:
     suff = "purel1"
@@ -403,6 +438,9 @@ else:
 
 suff = suff + "_skip_" + str(options.skip) + "_n_" + str(options.n)
 
+if options.clean:
+    suff = suff + "_zVtx" + str(options.zVtx)
+    suff = suff + "_rhoVtx" + str(options.rhoVtx)
 if options.l1extended:
     process.hltPhase2L1TrackSeedsFromL1Tracks.InputCollection = cms.InputTag("TTTracksFromExtendedTrackletEmulation","Level1TTTracks")
 if options.fullvertex or not options.timing:
@@ -412,7 +450,7 @@ if options.fullvertex or not options.timing:
 if options.fastl1:
     process.hltPhase2L1PrimaryVertex.TrackLabel = cms.InputTag("hltPhase2TrackFromL1")
     suff = suff + "_fastl1vertex"
-elif options.froml1:
+elif options.froml1 and not options.timing:
     process.hltPhase2VertexAnalysisL1.vertexRecoCollections = cms.VInputTag("hltPhase2L1PrimaryVertex","hltPhase2VertexFromL1")
     suff = suff + "_froml1vertex"
 if options.patavertex:
@@ -422,16 +460,26 @@ if options.patatrack:
 #    if options.wf == -5:
  #       process.hltPhase2InitialStepSeeds = process.hltPhase2SoAPixelSeeds.clone()
     process.hltPhase2PixelTrackSoA.doRegion = options.doregion
-    if options.doregion: 
-	suff = suff + "_region"	
-    	if options.wf==8 or options.wf == 7 or options.wf==-7 or options.wf==-6:
+    process.hltPhase2PixelTracks.keepBad = options.keepBad
+    process.hltPhase2PixelTracks.keepDup = options.keepDup
+    if options.clean:
+	suff = suff + "_clean"
+    if options.keepBad < 99:
+	suff = suff + "_keepBad_"+str(options.keepBad)
+    if options.keepDup <99:
+	 suff = suff + "_keepDup_"+str(options.keepDup)
+    if options.doregion:  
+	if options.froml1:
+		process.pixelVertexCoordinates.src = "hltPhase2L1PrimaryVertex"
 		suff = suff + "_regionFomL1"
 	##process.pixelVertexCoordinates.src = "hltPhase2L1PrimaryVertex"
 		#process.pixelVertexCoordinates.src = "hltPhase2L1PrimaryVertex"
     	else:
-		suff = suff + "_region"
+		suff = suff + "_regionL1"
+    
     if options.pixtrip:
         process.hltPhase2PixelTrackSoA.minHitsPerNtuplet = 3
+	suff = suff + "_pixtrips"
     suff = suff + "_pata"
     process.quickTrackAssociatorByHits.Purity_SimToReco = cms.double(0.65)
 if options.davertex:
@@ -445,6 +493,9 @@ if hasattr(process,"hltPhase2InitialStepSeeds"):
 if hasattr(process,"hltPhase2HighPtTripletStepSeeds"):
 	if options.allpata==True or options.wf <=-5:
 		process.hltPhase2HighPtTripletStepSeeds.useProtoTrackKinematics = cms.bool(options.protokin)
+
+if not options.patatrack:
+	process.hltPhase2PixelVertices.TrackCollection = cms.InputTag( "hltPhase2PixelTracks")
 	
 if options.protokin:
 	suff = suff + "_protokin"
@@ -453,6 +504,34 @@ suff = suff + "_zsep_" + str(options.zsep)
 
 suff = suff + "_" + options.note
 
+if options.nol1:
+	process.hltPhase2InitialStepTrackCandidates.phase2clustersToSkip = cms.InputTag("hltPhase2InitialStepClusters")
+	process.hltPhase2HighPtTripletStepSeedLayers.FPix.skipClusters = cms.InputTag("hltPhase2HighPtTripletStepClusters")
+    	process.hltPhase2HighPtTripletStepSeedLayers.BPix.skipClusters = cms.InputTag("hltPhase2HighPtTripletStepClusters")
+	process.hltPhase2HighPtTripletStepClusters.oldClusterRemovalInfo = cms.InputTag("hltPhase2InitialStepClusters")
+	
+	process.trackAlgoPriorityOrder.algoOrder = cms.vstring('initialStep','highPtTripletStep')
+    	process.hltPhase2GeneralTracks.TrackProducers = cms.VInputTag("hltPhase2InitialStepTracksSelectionHighPurity","hltPhase2HighPtTripletStepTracksSelectionHighPurity")
+    	process.hltPhase2GeneralTracks.hasSelector = cms.vint32(0,0,0)
+    	process.hltPhase2GeneralTracks.indivShareFrac = cms.vdouble(1.0,1.0)
+    	process.hltPhase2GeneralTracks.selectedTrackQuals= cms.VInputTag(cms.InputTag("hltPhase2InitialStepTracksSelectionHighPurity"),
+                                                                     cms.InputTag("hltPhase2HighPtTripletStepTracksSelectionHighPurity"))
+	process.hltPhase2GeneralTracks.setsToMerge.tLists = cms.vint32(0,1)
+
+	suff = suff + "_nol1"
+
+    #process.hltPhase2InitialStepTracks.clusterRemovalInfo = cms.InputTag("hltPhase2L1TrackStepClusters")
+	if not options.timing:
+		process.hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag(
+    "hltPhase2GeneralTracks","hltPhase2CutsRecoTracksHighPtTripletStepHp",
+    "hltPhase2CutsRecoTracksInitialStep", "hltPhase2CutsRecoTracksInitialStepHp","hltPhase2CutsRecoTracksHighPtTripletStep",
+    "hltPhase2CutsRecoTracksInitialStepByOriginalAlgo", "hltPhase2CutsRecoTracksInitialStepByOriginalAlgoHp",
+    "hltPhase2CutsRecoTracksHighPtTripletStepByOriginalAlgo","hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMask",
+    "hltPhase2CutsRecoTracksHighPtTripletStepByAlgoMaskHp",
+    "hltPhase2GeneralTracksPt09", "hltPhase2CutsRecoTracksPt09Hp", "hltPhase2CutsRecoTracksBtvLike", "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
+    "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp", "hltPhase2CutsRecoTracksPt09InitialStep", "hltPhase2CutsRecoTracksPt09InitialStepHp",
+    "hltPhase2CutsRecoTracksL1StepByOriginalAlgo","hltPhase2CutsRecoTracksL1StepByOriginalAlgoHp")
+	
 #DependecyGraph
 #from FWCore.ParameterSet.Utilities import moduleLabelsInSequences
 process.DependencyGraph.highlightModules = ["hltPhase2PixelTracks","hltPhase2PixelVertices","hltPhase2InitialStepTracks","hltPhase2InitialStepTrackCandidates"]
@@ -589,7 +668,11 @@ process.FastTimerService.dqmModuleMemoryRange      =  100000
 process.FastTimerService.dqmModuleMemoryResolution =     500
 
 process.FastTimerService.writeJSONSummary = cms.untracked.bool(True)
-process.FastTimerService.jsonFileName = cms.untracked.string('wf_' + suff + '_timing.json')
+
+if options.timing:
+	suff = suff + "_timing_nthreads_" + str(options.threads)
+
+process.FastTimerService.jsonFileName = cms.untracked.string('wf_' + suff + '.json')
 
 if 'MessageLogger' in process.__dict__:
     process.MessageLogger.categories.append('TriggerSummaryProducerAOD')
