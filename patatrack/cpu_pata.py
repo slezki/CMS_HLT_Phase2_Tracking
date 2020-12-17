@@ -10,12 +10,19 @@ from Configuration.Eras.Era_Phase2C9_cff import Phase2C9
 from Configuration.ProcessModifiers.pixelNtupleFit_cff import pixelNtupleFit
 import FWCore.ParameterSet.VarParsing as VarParsing
 
+from DQM.SiTrackerPhase2.Phase2TrackerMonitorDigi_cff import *
+from DQM.SiTrackerPhase2.Phase2ITMonitorRecHit_cff import *
+
+from Validation.SiTrackerPhase2V.Phase2TrackerValidateDigi_cff import *
+from Validation.SiTrackerPhase2V.Phase2ITValidateRecHit_cff import *
+
+
 #from ttbar import ttbar
 
 def customizePixelTracksSoAonCPU(process) :
 
   from RecoLocalTracker.SiPixelRecHits.siPixelRecHitHostSoA_cfi import siPixelRecHitHostSoA as _siPixelRecHitFromSOA
-  from RecoPixelVertexing.PixelVertexFinding.pixelVertexCoordinates_cfi import pixelVertexCoordinates as _pixelVertexCoordinates
+  #from RecoPixelVertexing.PixelVertexFinding.pixelVertexCoordinates_cfi import pixelVertexCoordinates as _pixelVertexCoordinates
 
   process.load('RecoLocalTracker/SiPixelRecHits/siPixelRecHitHostSoA_cfi')
   process.load('RecoPixelVertexing.PixelTriplets.caHitNtupletCUDA_cfi')
@@ -41,34 +48,32 @@ def customizePixelTracksSoAonCPU(process) :
   process.pixelTrackSoA.trackQualityCuts.quadrupletMaxTip = 0.15
   process.pixelTrackSoA.trackQualityCuts.quadrupletMaxZip = 11.5
 
-  process.pixelTrackSoA.trackQualityCuts.upgrade = True
-  process.pixelTrackSoA.trackQualityCuts.tripletChi2MaxPt = 2.5
-  process.pixelTrackSoA.trackQualityCuts.chi2MaxPt = 2.5
+  #process.pixelTrackSoA.trackQualityCuts.upgrade = True
+  #process.pixelTrackSoA.trackQualityCuts.tripletChi2MaxPt = 2.5
+  #process.pixelTrackSoA.trackQualityCuts.chi2MaxPt = 2.5
 
   process.pixelVertexSoA = process.pixelVertexCUDA.clone()
   process.pixelTrackSoA.isUpgrade = True
-
+  process.pixelTrackSoA.doClusterCut= False
 
   #process.pixelVertexSoA.eps = 0.01
-  process.pixelVertexSoA.onGPU = False
-  process.pixelVertexSoA.pixelTrackSrc = 'pixelTrackSoA'
+#  process.pixelVertexSoA.onGPU = False
+#  process.pixelVertexSoA.pixelTrackSrc = 'pixelTrackSoA'
   process.pixelTracks = process.pixelTrackProducerFromSoA.clone()
   process.pixelTracks.pixelRecHitLegacySrc = 'siPixelRecHitsPreSplitting'#'siPixelRecHitHostSoA'
-
-  #process.pixelVertices = process.pixelVertexFromSoA.clone()
 
   process.siPixelRecHitsPreSplitting = _siPixelRecHitFromSOA.clone()
   process.siPixelRecHitsPreSplitting.Upgrade = True
   process.siPixelRecHitsPreSplittingTask = cms.Task(process.siPixelRecHitsPreSplitting)
   process.siPixelRecHitsPreSplitting.convertToLegacy = True
   
-  process.vertexFromL1 = cms.EDProducer("L1ToVertex")
-  process.pixelVertexCoordinates = _pixelVertexCoordinates.clone()
-  process.pixelVertexCoordinates.src = "vertexFromL1"
+  #process.vertexFromL1 = cms.EDProducer("L1ToVertex")
+  #process.pixelVertexCoordinates = _pixelVertexCoordinates.clone()
+  #process.pixelVertexCoordinates.src = "vertexFromL1"
 
   process.PixelCPEFastESProducer.Upgrade = True
   process.pixeltrackerlocalrecoTask = cms.Task(process.siPixelClustersPreSplittingTask,process.siPixelRecHitsPreSplittingTask)
-  process.reconstruction_step += process.vertexFromL1 + process.pixelVertexCoordinates + process.pixelTrackSoA#+process.pixelVertexSoA
+  process.reconstruction_step += process.pixelTrackSoA
 
   return process
 
@@ -105,14 +110,15 @@ def customizePixelTracksSoAonGPU(process) :
   process.pixelTrackCUDA.trackQualityCuts.quadrupletMinPt = 0.5
   process.pixelTrackCUDA.trackQualityCuts.quadrupletMaxTip = 0.09
   process.pixelTrackCUDA.trackQualityCuts.quadrupletMaxZip = 9.0
-  process.pixelTrackCUDA.trackQualityCuts.upgrade = True
-  process.pixelTrackCUDA.trackQualityCuts.tripletChi2MaxPt = 2.5
-  process.pixelTrackCUDA.trackQualityCuts.chi2MaxPt = 1.8
+  #process.pixelTrackCUDA.trackQualityCuts.upgrade = True
+  #process.pixelTrackCUDA.trackQualityCuts.tripletChi2MaxPt = 2.5
+  #process.pixelTrackCUDA.trackQualityCuts.chi2MaxPt = 1.8
 
   process.pixelVertexSoA = process.pixelVertexCUDA.clone()
   process.pixelTrackCUDA.isUpgrade = True
 
   process.pixelTrackSoA.src = 'pixelTrackCUDA'
+  process.pixelTrackCUDA.doClusterCut= False
 
   #process.pixelVertexSoA.eps = 0.01
   process.pixelVertexSoA.onGPU = True
@@ -122,7 +128,7 @@ def customizePixelTracksSoAonGPU(process) :
   process.pixelTracks = process.pixelTrackProducerFromSoA.clone()
   process.pixelTracks.pixelRecHitLegacySrc = 'siPixelRecHitsPreSplitting'#'siPixelRecHitFromSOA'#'siPixelRecHitHostSoA'
 
-  process.pixelVertices = process.pixelVertexFromSoA.clone()
+  #process.pixelVertices = process.pixelVertexFromSoA.clone()
 
   process.siPixelRecHitsPreSplitting = _siPixelRecHitFromSOA.clone()
   process.siPixelRecHitsPreSplitting.Upgrade = True
@@ -155,21 +161,23 @@ def customizePixelTracksSoAonGPU(process) :
   process.siPixelRecHitCUDA = siPixelRecHitCUDA.clone()
   process.siPixelRecHitCUDA.src = 'siPixelClusterDigisCUDA'
   
-  process.siPixelClustersPreSplittingTask = cms.Task(
+  process.siPixelClustersPreSplittingTask_gpu = cms.Task(
     process.siPixelClusterDigisCUDA,
     process.siPixelDigisSoA,
     process.siPixelClustersPreSplitting #siPixelDigisClustersFromSoA
   )
 
-  process.siPixelRecHitsPreSplittingTask = cms.Task(
+  process.siPixelRecHitsPreSplittingTask_gpu = cms.Task(
     process.siPixelRecHitCUDA,
     process.siPixelRecHitsPreSplitting #siPixelRecHitFromSOA
   )
 
   process.PixelCPEFastESProducer.Upgrade = True
-#  process.pixeltrackerlocalrecoTask = cms.Task(process.siPixelClustersPreSplittingTask,process.siPixelRecHitsPreSplittingTask)
+  
+  #process.pixeltrackerlocalrecoTask = cms.Task(process.siPixelClustersPreSplittingTask,process.siPixelRecHitsPreSplittingTask)
   process.reconstruction_step += process.siPixelClusterDigisCUDA + process.siPixelDigisSoA + process.siPixelRecHitCUDA +process.offlineBeamSpotCUDA + process.pixelTrackCUDA + process.pixelTrackSoA + process.pixelVertexSoA
-
+  #process.pixeltrackerlocalrecoTask = cms.Task(process.siPixelClustersPreSplittingTask_gpu,process.siPixelRecHitsPreSplittingTask_gpu)
+  
   return process
 
 process = cms.Process('RECO2',Phase2C9)#,pixelNtupleFit)
@@ -251,7 +259,16 @@ options.register ('eos',
                   VarParsing.VarParsing.multiplicity.singleton, # singleton or list
                   VarParsing.VarParsing.varType.bool,          # string, int, or float
                   "eos")
-
+options.register ('nopu',
+                  True, # default value
+                  VarParsing.VarParsing.multiplicity.singleton, # singleton or list
+                  VarParsing.VarParsing.varType.bool,          # string, int, or float
+                  "nopu")
+options.register ('timing',
+                  False, # default value
+                  VarParsing.VarParsing.multiplicity.singleton, # singleton or list
+                  VarParsing.VarParsing.varType.bool,          # string, int, or float
+                  "timing")
 options.parseArguments()
 
 process.maxEvents = cms.untracked.PSet(
@@ -268,9 +285,12 @@ process.MessageLogger = cms.Service("MessageLogger",
 )
 
 if options.eos:
-   ttbar = ["/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FBF7F649-BDF7-4147-922E-5A8B67377742.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FC1BA259-9788-6549-99ED-79CE138052B4.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FC47CF76-E9D0-B140-9C3E-AD994236A741.root",
+   ttbar = [
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/1E594011-12B6-1E4A-A56D-B59B357E97FE.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280001/08643AB5-6B23-C845-9B31-F7E0DE8CCF31.root",
+"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/68486F17-8281-C14F-BD96-45A4E52DCB82.root"]
+
+["/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FC47CF76-E9D0-B140-9C3E-AD994236A741.root",
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FC56902D-DB9B-8844-ABB3-6E5F78B53E86.root",
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FC589844-A73C-954F-BB0E-FA5FC095B1F4.root",
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FCAA527A-329A-364E-83C3-A51122C545FD.root",
@@ -284,6 +304,8 @@ if options.eos:
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FEC64627-0B7B-B841-9667-10C13141B0E5.root",
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FF5230B3-138E-5345-9C29-23945BBC0519.root",
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FFAF8045-404D-464C-9BDB-73B0AF032A55.root"]
+
+if options.nopu:
    ttbar = ["/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/DAF55EAB-0B6F-C646-B7DE-2D54C8A62073.root",
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/DF27D727-5F91-5748-B83B-9DB5CD85604E.root",
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/DFE96256-6096-3741-8739-0EB64AB681C1.root",
@@ -392,7 +414,8 @@ suff = "_" + str(options.n) + "_" + str(options.skip)
 
 if options.triplets:
     suff = suff + "_triplets"
-
+if options.gpu:
+    suff = suff + "_gpu"
 suff = suff + "_" + options.note
 reconame = reconame + suff + ".root"
 dqmname  = dqmname  + suff + ".root"
@@ -447,6 +470,16 @@ process.RECOSIMoutput_step = cms.EndPath(process.RECOSIMoutput)
 process.DQMoutput_step = cms.EndPath(process.DQMoutput)
 
 
+process.trackerphase2DQMSource = cms.Sequence( pixDigiMon 
+                                       +rechitMonitorIT)
+process.trackerphase2ValidationSource = cms.Sequence(pixDigiValid  
+                                             + rechitValidIT)
+
+process.globalValidationPixelTrackingOnly +=process.trackerphase2ValidationSource
+process.DQMOfflinePixelTracking += process.trackerphase2DQMSource
+
+process.rechitValidIT.rechitsSrc = "siPixelRecHitsPreSplitting"
+process.rechitMonitorIT.rechitsSrc = "siPixelRecHitsPreSplitting" 
 process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 process.dumper = cms.Path(process.dump)
 
@@ -454,7 +487,7 @@ process.dumper = cms.Path(process.dump)
 
 process.schedule = cms.Schedule(process.raw2digi_step)
 
-if options.pixelVal:
+if options.pixelVal and not options.timing:
     process.load('Configuration.StandardSequences.Digi_cff')
 
     process.digitisation_step = cms.Path(process.pdigi_valid)
@@ -466,15 +499,23 @@ process.schedule.extend([process.reconstruction_step])
 if options.debug:
     process.schedule.extend([process.dumper])
 
-process.schedule.extend([process.prevalidation_step,process.validation_step,process.dqmoffline_step,process.dqmofflineOnPAT_step])
-
-if options.pixelVal:
-    process.schedule.extend([process.pixel_val])
-    process.schedule.extend([process.DQMoutput_step])
-elif options.fullcontent:
-    process.schedule.extend([process.RECOSIMoutput_step,process.DQMoutput_step])
+if not options.timing:
+	process.schedule.extend([process.prevalidation_step,process.validation_step,process.dqmoffline_step,process.dqmofflineOnPAT_step])
+	if options.pixelVal:
+    		process.schedule.extend([process.pixel_val])
+    		process.schedule.extend([process.DQMoutput_step])
+	elif options.fullcontent:
+    		process.schedule.extend([process.RECOSIMoutput_step,process.DQMoutput_step])
+	else:
+    		process.schedule.extend([process.DQMoutput_step])
 else:
-    process.schedule.extend([process.DQMoutput_step])
+	process.consumer = cms.EDAnalyzer("GenericConsumer",
+   		 eventProducts = cms.untracked.vstring('pixelVertices','pixelTracks'))	
+
+	process.consume_step = cms.EndPath(process.consumer)
+
+	process.schedule.append(process.consume_step)
+
 
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
@@ -550,7 +591,7 @@ process.FastTimerService.dqmModuleMemoryRange      =  100000
 process.FastTimerService.dqmModuleMemoryResolution =     500
 
 process.FastTimerService.writeJSONSummary = cms.untracked.bool(True)
-process.FastTimerService.jsonFileName = cms.untracked.string('wf_' + suff + '_timing.json')
+process.FastTimerService.jsonFileName = cms.untracked.string('wf_' + suff + '.json')
 
 #Have logErrorHarvester wait for the same EDProducers to finish as those providing data for the OutputModule
 from FWCore.Modules.logErrorHarvester_cff import customiseLogErrorHarvesterUsingOutputCommands

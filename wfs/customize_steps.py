@@ -703,7 +703,18 @@ def customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.3,numVertex=20
         process.hltPhase2TrimmedPixelVertices.minSumPt2 = cms.double(minSumPt2)
 
         #process.hltPhase2InitialStepSeeds.usePV = cms.bool(True)
-        process.hltPhase2InitialStepSeeds.InputVertexCollection = cms.InputTag("hltPhase2TrimmedPixelVertices")
+
+
+	process.hltPhase2PixelTracksCleaner.minPt = cms.double(1.0)
+	process.hltPhase2PixelTracksCleaner.vertexTag = cms.InputTag("hltPhase2TrimmedPixelVertices") #("hltPhase2OfflinePrimaryVertices")
+	
+	process.hltPhase2PixelTracksCleaner.rhoVtx = 0.1
+	process.hltPhase2PixelTracksCleaner.useVtx = True
+    	process.hltPhase2PixelTracksCleaner.zetaVtx = 0.3
+
+ 
+ 	process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksCleaner")
+        #process.hltPhase2InitialStepSeeds.InputVertexCollection = cms.InputTag("hltPhase2TrimmedPixelVertices")
         '''
         process.hltPhase2TrackValidatorTrackingOnly.label_vertex = cms.untracked.InputTag("hltPhase2TrimmedPixelVertices")
         process.hltPhase2TrackValidatorFromPVStandalone.label_vertex = cms.untracked.InputTag("hltPhase2TrimmedPixelVertices")
