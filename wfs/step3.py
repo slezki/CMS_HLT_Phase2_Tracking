@@ -83,6 +83,11 @@ options.register('sumpt',10 ,VarParsing.VarParsing.multiplicity.singleton,VarPar
 options.register('zsep',5,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"z_sep (x1000)")
 options.register('fromPV',True,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"fromPV for ininitial step")
 
+options.register('rI',100,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx sum pt fraction (in %)")
+options.register('zI',300,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"n trimmed vtx")
+options.register('fE',600,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"minsumpt2 vtx")
+options.register('oR',50,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx sum pt fraction (in %)")
+
 #MCs
 options.register('susy',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Susy")
 options.register('dyll',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"DY ll")
@@ -118,10 +123,40 @@ from MCs.ttbar import ttbar
 filelist = ttbar
 
 if not options.T2:
-    filelist = [
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/1E594011-12B6-1E4A-A56D-B59B357E97FE.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280001/08643AB5-6B23-C845-9B31-F7E0DE8CCF31.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/68486F17-8281-C14F-BD96-45A4E52DCB82.root"]
+    filelist = ["/store/group/phys_tracking/upgrade_ttbar/015FB6F1-59B4-304C-B540-2392A983A97D.root",
+"/store/group/phys_tracking/upgrade_ttbar/049DEDCD-30D1-074F-B86C-9105C141BEFB.root",
+"/store/group/phys_tracking/upgrade_ttbar/0DAE3770-0369-AB44-8955-4F2DD9A1D031.root",
+"/store/group/phys_tracking/upgrade_ttbar/0E9C92B0-C40D-BF4B-B037-72CC40611286.root",
+"/store/group/phys_tracking/upgrade_ttbar/0F6150D3-2B6F-A347-BEE3-EB8889352356.root",
+"/store/group/phys_tracking/upgrade_ttbar/11A75A1C-68E0-6542-A6CB-A26B269F38D4.root",
+"/store/group/phys_tracking/upgrade_ttbar/1234CB2C-12CE-7E46-BB4E-1CF46BF8134F.root",
+"/store/group/phys_tracking/upgrade_ttbar/13CADEC6-EEE8-6245-B683-CBA5B2E5CC59.root",
+"/store/group/phys_tracking/upgrade_ttbar/14C2F5D4-FA8E-F942-A4A8-B429B9BB7482.root",
+"/store/group/phys_tracking/upgrade_ttbar/1650078B-2AA9-0C48-8597-437E6585942E.root",
+"/store/group/phys_tracking/upgrade_ttbar/18709C5D-26C2-F041-ACFA-F0791A80EB8E.root",
+"/store/group/phys_tracking/upgrade_ttbar/20EAA798-0F84-8C4F-A1E3-9CAC1F424534.root",
+"/store/group/phys_tracking/upgrade_ttbar/227B9AFA-2612-694B-A2E7-B566F92C4B55.root",
+"/store/group/phys_tracking/upgrade_ttbar/262C96FF-3ACC-6F4B-BCB7-57CB9D7438BC.root",
+"/store/group/phys_tracking/upgrade_ttbar/2CBFF496-D53B-7849-9326-DE18E0ED9853.root",
+"/store/group/phys_tracking/upgrade_ttbar/328BFACA-A34B-FC47-8382-0FF75AA61ACD.root",
+"/store/group/phys_tracking/upgrade_ttbar/33976E28-9C5B-7143-846C-95800C4D8CF3.root",
+"/store/group/phys_tracking/upgrade_ttbar/365143CE-D92F-6D49-AA92-632E55342AAE.root",
+"/store/group/phys_tracking/upgrade_ttbar/42D8E9C8-7563-CC4B-9706-E0CFF2822A65.root",
+"/store/group/phys_tracking/upgrade_ttbar/451C0530-4D6E-F541-BB01-A2C22C3F9F6E.root",
+"/store/group/phys_tracking/upgrade_ttbar/46AE5E92-4669-D24E-866D-A20BE8395F82.root",
+"/store/group/phys_tracking/upgrade_ttbar/46DAED64-4C7A-B24D-9F1E-9CAD01A466D8.root",
+"/store/group/phys_tracking/upgrade_ttbar/48A1FCC3-7710-094E-98B9-5C5C05CAED2B.root",
+"/store/group/phys_tracking/upgrade_ttbar/4B086AFC-7701-944F-84F9-3F1671C26D63.root",
+"/store/group/phys_tracking/upgrade_ttbar/4C3F94F2-1D13-5B44-8514-CF8FE9B971EE.root",
+"/store/group/phys_tracking/upgrade_ttbar/4C6F706B-E226-4042-AA43-AEB4E72D1B7C.root",
+"/store/group/phys_tracking/upgrade_ttbar/504FAC71-E325-084B-9984-D62FFA2E36F2.root",
+"/store/group/phys_tracking/upgrade_ttbar/51127465-66ED-B94C-8B7B-6C663B32FCB1.root",
+"/store/group/phys_tracking/upgrade_ttbar/529F0000-EB29-7F42-96C7-660B646F738A.root",
+"/store/group/phys_tracking/upgrade_ttbar/536517C8-222F-584B-A5D8-C1B1D1F374CD.root",
+"/store/group/phys_tracking/upgrade_ttbar/55891DB4-60C7-0644-9DD7-D66C0EF336A0.root",
+"/store/group/phys_tracking/upgrade_ttbar/5594D9E5-CA79-C34E-A3BD-AD6BEC9B8CA7.root",
+"/store/group/phys_tracking/upgrade_ttbar/5FCCEB41-738A-D34B-8D6E-8EA16A2C568C.root",
+]
 
 [
 "/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FC1BA259-9788-6549-99ED-79CE138052B4.root",
@@ -320,6 +355,12 @@ if options.wf == -4:
     customizeOriginal_v6(process,timing)
     customizeOriginalTrimmingInitial_v6(process,timing,fraction=options.frac/100.,numVertex=options.nvtx,minSumPt2=options.sumpt)
     customizeOriginalTrimmingTriplet_v6(process,timing,fraction=options.frac/100.,numVertex=options.nvtx,minSumPt2=options.sumpt)
+    process.hltPhase2PixelTracksCleaner.rhoVtx = options.rI / 1000.
+    process.hltPhase2PixelTracksCleaner.zetaVtx = options.zI / 1000.
+    process.hltPhase2HighPtTripletStepTrackingRegions.RegionPSet.fixedError = options.fE /1000.0
+    process.hltPhase2HighPtTripletStepTrackingRegions.RegionPSet.originRadius = options.oR / 1000.0
+    suff = suff + "_I_%d_%d_H_%d_%d"%(options.rI,options.zI,options.fE,options.oR)
+
 if options.wf == -3:
     customizeOriginal_v6(process,timing)
     suff = "m3_0p%d_%d_%d"%(options.frac,options.nvtx,options.sumpt)
@@ -406,7 +447,7 @@ if options.wf == 6:
     l1_pixel_recovery(process,timing)
 if options.wf == 7:
     l1_pixel_recovery_triplets(process,timing)
-    
+      
 if options.mkfit:
     customizeHighPtTripletForMkFit(process)
 # if options.pixtrip:
