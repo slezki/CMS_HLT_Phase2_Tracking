@@ -87,11 +87,6 @@ options.register('oR',250,VarParsing.VarParsing.multiplicity.singleton,VarParsin
 options.register('rI',250,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"r vtx for initial (x1000)")
 options.register('zI',500,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"z vtx for initial (x1000)")
 
-options.register('rI',250,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx sum pt fraction (in %)")
-options.register('zI',500,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"n trimmed vtx")
-options.register('fE',100,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"minsumpt2 vtx")
-options.register('oR',250,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx sum pt fraction (in %)")
-
 #MCs
 options.register('susy',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Susy")
 options.register('dyll',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"DY ll")
