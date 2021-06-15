@@ -87,6 +87,11 @@ options.register('oR',250,VarParsing.VarParsing.multiplicity.singleton,VarParsin
 options.register('rI',250,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"r vtx for initial (x1000)")
 options.register('zI',500,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"z vtx for initial (x1000)")
 
+options.register('rI',250,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx sum pt fraction (in %)")
+options.register('zI',500,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"n trimmed vtx")
+options.register('fE',100,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"minsumpt2 vtx")
+options.register('oR',250,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx sum pt fraction (in %)")
+
 #MCs
 options.register('susy',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Susy")
 options.register('dyll',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"DY ll")
@@ -125,7 +130,10 @@ from MCs.ttbar import ttbar
 filelist = ttbar
 
 if not options.T2:
-   filelist =["file:step1_Reprocess_L1.root","/store/group/phys_tracking/upgrade_ttbar/015FB6F1-59B4-304C-B540-2392A983A97D.root",
+
+
+
+    filelist = ["/store/group/phys_tracking/upgrade_ttbar/015FB6F1-59B4-304C-B540-2392A983A97D.root",
 "/store/group/phys_tracking/upgrade_ttbar/049DEDCD-30D1-074F-B86C-9105C141BEFB.root",
 "/store/group/phys_tracking/upgrade_ttbar/0DAE3770-0369-AB44-8955-4F2DD9A1D031.root",
 "/store/group/phys_tracking/upgrade_ttbar/0E9C92B0-C40D-BF4B-B037-72CC40611286.root",
@@ -133,7 +141,6 @@ if not options.T2:
 "/store/group/phys_tracking/upgrade_ttbar/11A75A1C-68E0-6542-A6CB-A26B269F38D4.root",
 "/store/group/phys_tracking/upgrade_ttbar/1234CB2C-12CE-7E46-BB4E-1CF46BF8134F.root",
 "/store/group/phys_tracking/upgrade_ttbar/13CADEC6-EEE8-6245-B683-CBA5B2E5CC59.root",
-"/store/group/phys_tracking/upgrade_ttbar/145779D7-EFD0-3144-B0E0-CC5F4E86190F.root",
 "/store/group/phys_tracking/upgrade_ttbar/14C2F5D4-FA8E-F942-A4A8-B429B9BB7482.root",
 "/store/group/phys_tracking/upgrade_ttbar/1650078B-2AA9-0C48-8597-437E6585942E.root",
 "/store/group/phys_tracking/upgrade_ttbar/18709C5D-26C2-F041-ACFA-F0791A80EB8E.root",
@@ -209,6 +216,7 @@ filelist=pu200
 if options.pu140:
    from MCs.pu140 import *
    filelist = pu140
+
 if options.noPU:
    from MCs.noPU import *
    filelist = noPU
@@ -373,10 +381,12 @@ if options.wf == -4:
     customizeOriginal_v6(process,timing)
     customizeOriginalTrimmingInitial_v6(process,timing,fraction=options.frac/100.,numVertex=options.nvtx,minSumPt2=options.sumpt)
     customizeOriginalTrimmingTriplet_v6(process,timing,fraction=options.frac/100.,numVertex=options.nvtx,minSumPt2=options.sumpt)
-    process.hltPhase2PixelTracksCleaner.rhoVtx = options.rI / 1000.0
-    process.hltPhase2PixelTracksCleaner.zetaVtx = options.zI /1000.0 
+
+    process.hltPhase2PixelTracksCleaner.rhoVtx = options.rI / 1000.
+    process.hltPhase2PixelTracksCleaner.zetaVtx = options.zI / 1000.
     process.hltPhase2HighPtTripletStepTrackingRegions.RegionPSet.fixedError = options.fE /1000.0
-    process.hltPhase2HighPtTripletStepTrackingRegions.RegionPSet.originRadius = options.oR/1000.0
+    process.hltPhase2HighPtTripletStepTrackingRegions.RegionPSet.originRadius = options.oR / 1000.0
+
     suff = suff + "_I_%d_%d_H_%d_%d"%(options.rI,options.zI,options.fE,options.oR)
 
 if options.wf == -3:
@@ -471,7 +481,7 @@ if options.wf == 6:
     l1_pixel_recovery(process,timing)
 if options.wf == 7:
     l1_pixel_recovery_triplets(process,timing)
-    
+      
 if options.mkfit:
     customizeHighPtTripletForMkFit(process)
 # if options.pixtrip:
