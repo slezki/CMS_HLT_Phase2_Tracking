@@ -203,7 +203,7 @@ mindrj = cms.double(0.001), #cmssw_10_6
     ),
     maxChi2 = cms.double(20),
     maxDeDx = cms.double(10.0),
-    maxDxy = cms.double(25),
+    maxDxy = cms.double(1),
     maxDz = cms.double(30),
     maxDzpvCumulative = cms.double(0.6),
     maxDzpvsigCumulative = cms.double(10),
@@ -222,7 +222,7 @@ mindrj = cms.double(0.001), #cmssw_10_6
     maxdr = cms.double(1),
     minChi2 = cms.double(0),
     minDeDx = cms.double(0.0),
-    minDxy = cms.double(-25),
+    minDxy = cms.double(-1),
     minDz = cms.double(-30),
     minEta = cms.double(-4.5),
     minHit = cms.double(-0.5),
@@ -239,7 +239,7 @@ mindrj = cms.double(0.001), #cmssw_10_6
     mindr = cms.double(0.001),
     nintChi2 = cms.int32(40),
     nintDeDx = cms.int32(40),
-    nintDxy = cms.int32(100),
+    nintDxy = cms.int32(125),
     nintDz = cms.int32(60),
     nintDzpvCumulative = cms.int32(240),
     nintDzpvsigCumulative = cms.int32(200),
@@ -602,7 +602,7 @@ hltPhase2TrackValidatorL1 = cms.EDProducer("MultiTrackValidator", #cmssw_11_1 pr
         ),
         maxChi2 = cms.double(20),
         maxDeDx = cms.double(10.0),
-        maxDxy = cms.double(25),
+        maxDxy = cms.double(1),
         maxDz = cms.double(30),
         maxDzpvCumulative = cms.double(0.6),
         maxDzpvsigCumulative = cms.double(10),
@@ -621,7 +621,7 @@ hltPhase2TrackValidatorL1 = cms.EDProducer("MultiTrackValidator", #cmssw_11_1 pr
         maxdr = cms.double(1),
         minChi2 = cms.double(0),
         minDeDx = cms.double(0.0),
-        minDxy = cms.double(-25),
+        minDxy = cms.double(-1),
         minDz = cms.double(-30),
         minEta = cms.double(-4.0),
         minHit = cms.double(-0.5),
@@ -638,7 +638,7 @@ hltPhase2TrackValidatorL1 = cms.EDProducer("MultiTrackValidator", #cmssw_11_1 pr
         mindr = cms.double(0.001),
         nintChi2 = cms.int32(40),
         nintDeDx = cms.int32(40),
-        nintDxy = cms.int32(100),
+        nintDxy = cms.int32(125),
         nintDz = cms.int32(60),
         nintDzpvCumulative = cms.int32(240),
         nintDzpvsigCumulative = cms.int32(200),
@@ -769,10 +769,10 @@ hltPhase2TrackValidatorPixelTrackingOnly.vertexAssociator = cms.untracked.InputT
 hltPhase2TrackValidatorL1.cores = cms.InputTag("highPtJetsForTrk")
 hltPhase2TrackValidatorL1.associators = cms.untracked.VInputTag("hltPhase2TrackingParticleL1TrackAsssociation")
 hltPhase2TrackValidatorL1.dirName = cms.string('Tracking/Track/')
-hltPhase2TrackValidatorL1.label = cms.VInputTag("hltPhase2L1CtfTracks")
+hltPhase2TrackValidatorL1.label = cms.VInputTag("hltPhase2CutsRecoTracksL1")
 hltPhase2TrackValidatorL1.label_vertex = cms.untracked.InputTag("hltPhase2PixelVertices")
 hltPhase2TrackValidatorL1.trackCollectionForDrCalculation = cms.InputTag("hltPhase2PixelTracks")
-hltPhase2TrackValidatorL1.trackCollectionForDrCalculation = cms.InputTag("hltPhase2L1CtfTracks")
+hltPhase2TrackValidatorL1.trackCollectionForDrCalculation = cms.InputTag("hltPhase2CutsRecoTracksL1")
 hltPhase2TrackValidatorL1.vertexAssociator = cms.untracked.InputTag("hltPhase2PixelVertexAssociatorByPositionAndTracks")
 hltPhase2TrackValidatorL1.doSeedPlots = cms.untracked.bool(False)
 
@@ -788,7 +788,7 @@ hltPhase2TrackValidatorTrackingOnly.label = cms.VInputTag(
 "hltPhase2CutsRecoTracksPt09InitialStep", "hltPhase2CutsRecoTracksPt09HighPtTripletStep", "hltPhase2CutsRecoTracksPt09InitialStepHp", "hltPhase2CutsRecoTracksPt09HighPtTripletStepHp")
 hltPhase2TrackValidatorTrackingOnly.trackCollectionForDrCalculation = cms.InputTag("hltPhase2GeneralTracks")
 hltPhase2TrackValidatorTrackingOnly.vertexAssociator = cms.untracked.InputTag("hltPhase2VertexAssociatorByPositionAndTracks")
-hltPhase2TrackValidatorTrackingOnly.label_vertex = cms.untracked.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
+hltPhase2TrackValidatorTrackingOnly.label_vertex = cms.untracked.InputTag("hltPhase2OfflinePrimaryVertices")#hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
 
 # hltPhase2TrackValidatorFromPVStandalone = hltPhase2TrackValidator.clone()
 # hltPhase2TrackValidatorFromPVStandalone.associators = cms.untracked.VInputTag("hltPhase2TrackingParticleRecoTrackAsssociation"),associators = cms.untracked.VInputTag("hltPhase2TrackingParticleRecoTrackAsssociation"),
@@ -890,15 +890,15 @@ hltPhase2TrackValidatorFromPVStandalone = cms.EDProducer("MultiTrackValidator", 
     intimeOnlyTP = cms.bool(True),
     invertRapidityCutTP = cms.bool(False), # cmssw_11_1
     label = cms.VInputTag(
-         "hltPhase2GeneralTracksFromPV", #"hltPhase2CutsRecoTracksFromPVHp", "hltPhase2GeneralTracksFromPVPt09", "hltPhase2CutsRecoTracksFromPVPt09Hp", "hltPhase2CutsRecoTracksFromPVInitialStep",
-        # "hltPhase2CutsRecoTracksFromPVHighPtTripletStep", "hltPhase2CutsRecoTracksFromPVInitialStepHp", "hltPhase2CutsRecoTracksFromPVHighPtTripletStepHp",
-        # "hltPhase2CutsRecoTracksFromPVPt09InitialStep", "hltPhase2CutsRecoTracksFromPVPt09HighPtTripletStep",
-        # "hltPhase2CutsRecoTracksFromPVPt09InitialStepHp", "hltPhase2CutsRecoTracksFromPVPt09HighPtTripletStepHp",
+         "hltPhase2GeneralTracksFromPV", "hltPhase2CutsRecoTracksFromPVHp", "hltPhase2GeneralTracksFromPVPt09", "hltPhase2CutsRecoTracksFromPVPt09Hp", "hltPhase2CutsRecoTracksFromPVInitialStep",
+         "hltPhase2CutsRecoTracksFromPVHighPtTripletStep", "hltPhase2CutsRecoTracksFromPVInitialStepHp", "hltPhase2CutsRecoTracksFromPVHighPtTripletStepHp",
+         "hltPhase2CutsRecoTracksFromPVPt09InitialStep", "hltPhase2CutsRecoTracksFromPVPt09HighPtTripletStep",
+         "hltPhase2CutsRecoTracksFromPVPt09InitialStepHp", "hltPhase2CutsRecoTracksFromPVPt09HighPtTripletStepHp",
     ),
     label_pileupinfo = cms.InputTag("addPileupInfo"),
     label_tp_effic = cms.InputTag("hltPhase2TrackingParticlesSignal"),
     label_tp_effic_refvector = cms.bool(True),
-    label_tp_fake = cms.InputTag("hltPhase2TrackingParticlesSignal"),
+    label_tp_fake = cms.InputTag("hltPhase2TrackingParticlesSignal"),#cms.InputTag("mix","MergedTrackTruth"), 
     label_tp_fake_refvector = cms.bool(True),
     label_tp_nlayers = cms.InputTag("trackingParticleNumberOfLayersProducer","trackerLayers"),
     label_tp_npixellayers = cms.InputTag("trackingParticleNumberOfLayersProducer","pixelLayers"),
