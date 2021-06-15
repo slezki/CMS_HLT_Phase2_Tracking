@@ -57,8 +57,8 @@ options.register('patatrack',False,VarParsing.VarParsing.multiplicity.singleton,
 options.register('clean',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Use Cleaned Patatrack Pixel Tracks")
 options.register('allpata',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Seeding only from Patatrack Pixel Tracks")
 options.register('doregion',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Seeding only from Patatrack Pixel Tracks")
-options.register('rhoVtx',300,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx for region rho distance (x1000)")
-options.register('zVtx',100,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx for region z distance (x1000)")
+options.register('rhoVtx',250,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx for region rho distance (x1000)")
+options.register('zVtx',500,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx for region z distance (x1000)")
 options.register('keepBad',99,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"keepBad")
 options.register('keepDup',99,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"keepDup")
 
@@ -82,11 +82,10 @@ options.register('nvtx',10,VarParsing.VarParsing.multiplicity.singleton,VarParsi
 options.register('sumpt',10 ,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"minsumpt2 vtx")
 options.register('zsep',5,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"z_sep (x1000)")
 options.register('fromPV',True,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"fromPV for ininitial step")
-
-options.register('rI',250,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx sum pt fraction (in %)")
-options.register('zI',500,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"n trimmed vtx")
-options.register('fE',100,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"minsumpt2 vtx")
-options.register('oR',250,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx sum pt fraction (in %)")
+options.register('fE',100,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"fixed Error for triplet (x1000)")
+options.register('oR',250,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"half Lenght for triplet (x1000)")
+options.register('rI',250,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"r vtx for initial (x1000)")
+options.register('zI',500,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"z vtx for initial (x1000)")
 
 #MCs
 options.register('susy',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Susy")
@@ -98,7 +97,10 @@ options.register('b0ksmm',False,VarParsing.VarParsing.multiplicity.singleton,Var
 options.register('bskkkk',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"BsToPhiPhi_KKKK MC")
 options.register('withl1',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"loading files with l1 tracks already produced")
 options.register('muons',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"DYMM MC")
+
 options.register('noPU',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"noPU events")
+options.register('pu140',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"pu140 events")
+
 
 #Miscs
 options.register ('note','',VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string, "noting")
@@ -123,6 +125,9 @@ from MCs.ttbar import ttbar
 filelist = ttbar
 
 if not options.T2:
+
+
+
     filelist = ["/store/group/phys_tracking/upgrade_ttbar/015FB6F1-59B4-304C-B540-2392A983A97D.root",
 "/store/group/phys_tracking/upgrade_ttbar/049DEDCD-30D1-074F-B86C-9105C141BEFB.root",
 "/store/group/phys_tracking/upgrade_ttbar/0DAE3770-0369-AB44-8955-4F2DD9A1D031.root",
@@ -156,44 +161,60 @@ if not options.T2:
 "/store/group/phys_tracking/upgrade_ttbar/55891DB4-60C7-0644-9DD7-D66C0EF336A0.root",
 "/store/group/phys_tracking/upgrade_ttbar/5594D9E5-CA79-C34E-A3BD-AD6BEC9B8CA7.root",
 "/store/group/phys_tracking/upgrade_ttbar/5FCCEB41-738A-D34B-8D6E-8EA16A2C568C.root",
-]
+"/store/group/phys_tracking/upgrade_ttbar/61034CCA-B2AA-F04B-82D4-776B06F5549A.root",
+"/store/group/phys_tracking/upgrade_ttbar/6516D6D5-8369-594A-9048-735AAF0E9EFB.root",
+"/store/group/phys_tracking/upgrade_ttbar/6943DAAD-30E5-6E4B-A73F-89B072EEC05E.root",
+"/store/group/phys_tracking/upgrade_ttbar/6A2973C6-ED1D-5948-B58C-1FECFEFD0627.root",
+"/store/group/phys_tracking/upgrade_ttbar/6A57A034-925B-364F-A2B1-B8BDA14B0721.root",
+"/store/group/phys_tracking/upgrade_ttbar/6B2C04CF-C82B-B94F-9057-90850F3ECCF7.root",
+"/store/group/phys_tracking/upgrade_ttbar/6C09ECB0-DA16-8948-A5FC-D791171152AB.root",
+"/store/group/phys_tracking/upgrade_ttbar/73EAEA3A-6234-3E40-B0D6-2806BFE6CDEC.root",
+"/store/group/phys_tracking/upgrade_ttbar/7470BF91-3B12-5440-B27C-04FE427CC92F.root",
+"/store/group/phys_tracking/upgrade_ttbar/784C9C63-F27E-5F43-A444-F490D8DFF51B.root",
+"/store/group/phys_tracking/upgrade_ttbar/7CB075DA-719B-6A4D-AF60-7BC0EBEA5869.root",
+"/store/group/phys_tracking/upgrade_ttbar/7D4B93AA-7FEF-4D40-BB7A-94C7CA27F480.root",
+"/store/group/phys_tracking/upgrade_ttbar/844EAF21-9C25-7242-9610-CE2F873C26C3.root",
+"/store/group/phys_tracking/upgrade_ttbar/8A0EC03A-7837-5A4A-BF3A-4AED18DABC2F.root",
+"/store/group/phys_tracking/upgrade_ttbar/8ABD3088-0F95-6F48-837C-320AC7FFEDEF.root",
+"/store/group/phys_tracking/upgrade_ttbar/8EF9A3F1-940F-9B40-A32B-0839BCA30BCF.root",
+"/store/group/phys_tracking/upgrade_ttbar/8FE4EEEB-32F0-A14A-AE88-94E85D7A3199.root",
+"/store/group/phys_tracking/upgrade_ttbar/9E38C617-9119-7A43-8579-7FEFC5783A76.root",
+"/store/group/phys_tracking/upgrade_ttbar/9FD542C1-BF55-9342-A2B6-2514946379FC.root",
+"/store/group/phys_tracking/upgrade_ttbar/A166FA37-3D98-E44F-95E4-D7D9B43AF11A.root",
+"/store/group/phys_tracking/upgrade_ttbar/A43E41C4-24BA-104A-BE86-95E1FF9CE2F3.root",
+"/store/group/phys_tracking/upgrade_ttbar/A568BC6B-5D5E-5F48-B2F2-E640FCF093AE.root",
+"/store/group/phys_tracking/upgrade_ttbar/ACEB5B5B-537D-0C4F-BEBB-CD8771DD53C7.root",
+"/store/group/phys_tracking/upgrade_ttbar/AEE102A8-E95A-8740-9983-17AF3C1329E9.root",
+"/store/group/phys_tracking/upgrade_ttbar/B242ED9D-09EE-3D41-92E4-77062951D758.root",
+"/store/group/phys_tracking/upgrade_ttbar/B678394F-8C24-B345-9A09-1DE2E8E13716.root",
+"/store/group/phys_tracking/upgrade_ttbar/B758C6A6-A9E1-1A4E-A486-BB82ADE9C3A2.root",
+"/store/group/phys_tracking/upgrade_ttbar/BD7C61A9-B7D9-2444-8645-BEA2E68D2060.root",
+"/store/group/phys_tracking/upgrade_ttbar/BE04E6A0-1936-8D44-A0A1-EA76F70BAC89.root",
+"/store/group/phys_tracking/upgrade_ttbar/C41F2167-DC8B-4045-A535-0D083499F6AD.root",
+"/store/group/phys_tracking/upgrade_ttbar/C657316E-7A9E-A246-B1F6-972BC05C44F6.root",
+"/store/group/phys_tracking/upgrade_ttbar/C7BA2638-BC46-A54E-86F3-137D3652A9CE.root",
+"/store/group/phys_tracking/upgrade_ttbar/CC7C5560-9C25-464E-A454-141093649736.root",
+"/store/group/phys_tracking/upgrade_ttbar/CC90651E-BB43-8B40-AD35-D046BBF45456.root",
+"/store/group/phys_tracking/upgrade_ttbar/CCB6C333-0D6A-0E4C-8ED4-AE67C6177C41.root",
+"/store/group/phys_tracking/upgrade_ttbar/D0B6D156-5143-2343-8D93-A5C44DEFB586.root",
+"/store/group/phys_tracking/upgrade_ttbar/D5B9F0B4-CDD4-B14B-A0AB-5AA08C15B1B4.root",
+"/store/group/phys_tracking/upgrade_ttbar/DFFB3465-8A25-1F4F-95C7-0F2A565DC371.root",
+"/store/group/phys_tracking/upgrade_ttbar/E2A8D49E-A947-CB4F-ACDB-84D1D20C5206.root",
+"/store/group/phys_tracking/upgrade_ttbar/F3B78BA1-3656-5541-A648-600BE38BF611.root",
+"/store/group/phys_tracking/upgrade_ttbar/F6E4AA63-7B99-2D47-AE5D-C68745838A20.root",
+"/store/group/phys_tracking/upgrade_ttbar/FB8D623F-5BED-F746-809B-76FD78F65279.root",
+"/store/group/phys_tracking/upgrade_ttbar/FCFDFCC2-F905-C246-8827-E5FED5204905.root"]
 
-[
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FC1BA259-9788-6549-99ED-79CE138052B4.root",
-#"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FC56902D-DB9B-8844-ABB3-6E5F78B53E86.root",
-#"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FC589844-A73C-954F-BB0E-FA5FC095B1F4.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FCAA527A-329A-364E-83C3-A51122C545FD.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FCACFB78-AF68-5A48-9FEC-A323FD8EEE2E.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FCCA1ABA-C564-D74E-9F43-D41529C8EAEB.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FCDDAE03-8A9D-B44C-B42B-8446EDBB5236.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FCFDFCC2-F905-C246-8827-E5FED5204905.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FE3E90BC-C4F4-4040-BFB6-868C48E88215.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FEA85932-B228-F243-BE4C-3311AE475A4A.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FEAF20C5-8D1A-954E-A081-632FBE5745B1.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FEC64627-0B7B-B841-9667-10C13141B0E5.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FF5230B3-138E-5345-9C29-23945BBC0519.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FFAF8045-404D-464C-9BDB-73B0AF032A55.root"]#[f[5:] for f in filelist]
+from MCs.pu200 import *
+filelist=pu200
+
+if options.pu140:
+   from MCs.pu140 import *
+   filelist = pu140
 
 if options.noPU:
-   filelist = ["/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/DAF55EAB-0B6F-C646-B7DE-2D54C8A62073.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/DF27D727-5F91-5748-B83B-9DB5CD85604E.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/DFE96256-6096-3741-8739-0EB64AB681C1.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/E21DD179-F13E-E543-A0B2-C1ABDAAAD7F8.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/E30D1362-CED7-974F-8930-782B23F11751.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/E486070C-A1D5-8B41-BA9A-686077807269.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/E5437AA8-386B-DB43-8B35-B6690CD5DD19.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/E7BA8C7B-A811-CA49-9582-33226BD76252.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/EEF49391-A7E3-9C41-AC3F-6B1A0F1B9DA0.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/F0932A00-A9EB-1E42-A56F-C0C89754E73E.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/F14A1F9D-BA98-1D43-9130-D66073D43469.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/F3AABCB2-269C-644C-A09A-FBF7124D5B7E.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/F6B21094-64EE-DD41-839A-28B159129F80.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/F7E3C394-24D7-4046-989F-B7075DCB0BB0.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/F7ECC566-E0F5-754A-9465-FA24A4D67734.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/FE308DD9-D66F-4545-B0F2-9E44880D0054.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/FF0494EC-DE4E-3C46-BC68-2AEE51390533.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/FFD62905-0181-D44F-8BEF-2557BFF9F040.root"]
-
+   from MCs.noPU import *
+   filelist = noPU
 if options.ztt:
     from MCs.b0kstarmumu import b0kstarmumu
     filelist = b0kstarmumu
@@ -232,7 +253,7 @@ process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring()
     )
 
-process.source.inputCommands = cms.untracked.vstring("keep *")
+process.source.inputCommands = cms.untracked.vstring("keep *")#,"drop *L1TkPrimaryVertex*_*_*RECO")
 process.options = cms.untracked.PSet()
 process.source.skipEvents=cms.untracked.uint32(options.skip)
 
@@ -349,16 +370,18 @@ if options.wf == -7:
     suff = "m7_0p%d_%d_%d"%(options.frac,options.nvtx,options.sumpt)
     process.hltPhase2InitialStepSeeds.InputVertexCollection = cms.InputTag("hltPhase2L1PrimaryVertex")
     hltPhase2TrimmedVertexTrackingRegions.VertexCollection = cms.InputTag( "hltPhase2L1PrimaryVertex" )
- 
+    
 if options.wf == -4:
     suff = "m4_0p%d_%d_%d"%(options.frac,options.nvtx,options.sumpt)
     customizeOriginal_v6(process,timing)
     customizeOriginalTrimmingInitial_v6(process,timing,fraction=options.frac/100.,numVertex=options.nvtx,minSumPt2=options.sumpt)
     customizeOriginalTrimmingTriplet_v6(process,timing,fraction=options.frac/100.,numVertex=options.nvtx,minSumPt2=options.sumpt)
+
     process.hltPhase2PixelTracksCleaner.rhoVtx = options.rI / 1000.
     process.hltPhase2PixelTracksCleaner.zetaVtx = options.zI / 1000.
     process.hltPhase2HighPtTripletStepTrackingRegions.RegionPSet.fixedError = options.fE /1000.0
     process.hltPhase2HighPtTripletStepTrackingRegions.RegionPSet.originRadius = options.oR / 1000.0
+
     suff = suff + "_I_%d_%d_H_%d_%d"%(options.rI,options.zI,options.fE,options.oR)
 
 if options.wf == -3:
@@ -392,7 +415,8 @@ if options.allpata and options.patatrack:
     process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksCleaner")#hltPhase2PixelQuadrupletsSelector")#hltPhase2PixelTracksCleaner")#hltPhase2PixelQuadrupletsSelector")
     process.hltPhase2HighPtTripletStepSeeds = process.hltPhase2InitialStepSeeds.clone()
     process.hltPhase2HighPtTripletStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTripletsCleaner")
-    
+    process.hltPhase2HighPtTripletStepTrackCandidates.phase2clustersToSkip = cms.InputTag("hltPhase2HighPtTripletStepClusters")
+    process.hltPhase2HighPtTripletStepSeeds.mixed= cms.bool(False)
  
 	
     if hasattr(process,"hltPhase2HighPtTripletStepHitDoublets"):
@@ -406,12 +430,17 @@ if options.allpata and options.clean and options.patatrack:
         process.hltPhase2PixelTracksCleaner.zetaVtx = options.zVtx / 1000.0
         process.hltPhase2PixelTripletsCleaner.useVtx = True
         process.hltPhase2PixelTracksCleaner.useVtx = False
+        if options.fromPV:
+		process.hltPhase2PixelTracksCleaner.nVertices = 10
         process.hltPhase2PixelTripletsCleaner.rhoVtx = options.rhoVtx /1000.0
         process.hltPhase2PixelTripletsCleaner.zetaVtx = options.zVtx / 1000.0
 
         if options.froml1:
 		process.hltPhase2PixelTracksCleaner.vertexTag = cms.InputTag("hltPhase2L1PrimaryVertex")	
 		process.hltPhase2PixelTracksCleaner.vertexTag = cms.InputTag("hltPhase2L1PrimaryVertex")
+	if options.wf == -4:
+		process.hltPhase2PixelTripletsCleaner.vertexTag = cms.InputTag("hltPhase2TrimmedPixelVertices")
+		process.hltPhase2PixelTracksCleaner.vertexTag = cms.InputTag("hltPhase2TrimmedPixelVertices")
 
 if options.patatrack and options.clean and not options.allpata:
 	
@@ -472,9 +501,13 @@ elif options.susy:
     suff = suff + "_susy"
 elif options.dyll:
     suff = suff + "_dyll"
+elif options.noPU:
+    suff = suff + "_noPU"
+elif options.pu140:
+    suff = suff + "_pu140"
 else:
     suff = suff + "_ttb"
-
+  
     # if not timing and not options.onlypixel:
     #     process.prevalidation_startup = process.prevalidation_startup_offline
     #     process.dqm_vertex = process.dqm_vertex_offline
@@ -577,6 +610,9 @@ if options.nol1:
     "hltPhase2GeneralTracksPt09", "hltPhase2CutsRecoTracksPt09Hp", "hltPhase2CutsRecoTracksBtvLike", "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
     "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp", "hltPhase2CutsRecoTracksPt09InitialStep", "hltPhase2CutsRecoTracksPt09InitialStepHp",
     "hltPhase2CutsRecoTracksL1StepByOriginalAlgo","hltPhase2CutsRecoTracksL1StepByOriginalAlgoHp")
+
+if options.patatrack and not options.timing:
+	process.hltPhase2PixelVertexAnalysisTrackingOnly.vertexRecoCollections.append("vertexFromL1") # = cms.VInputTag("hltPhase2PixelVertices", "hltPhase2SelectedPixelVertices","hltPhase2TrimmedPixelVertices")
 	
 #DependecyGraph
 #from FWCore.ParameterSet.Utilities import moduleLabelsInSequences
@@ -719,6 +755,10 @@ if options.timing:
 	suff = suff + "_timing_nthreads_" + str(options.threads)
 
 process.FastTimerService.jsonFileName = cms.untracked.string('wf_' + suff + '.json')
+
+process.dump=cms.EDAnalyzer('EventContentAnalyzer')
+process.dumper = cms.Path(process.dump)
+
 
 if 'MessageLogger' in process.__dict__:
     process.MessageLogger.categories.append('TriggerSummaryProducerAOD')

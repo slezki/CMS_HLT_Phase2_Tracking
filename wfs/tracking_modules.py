@@ -1982,7 +1982,6 @@ hltPhase2InitialStepTracks = cms.EDProducer("TrackProducer",
 
 
 ####DA Vertexing
-
 hltPhase2DAPrimaryVerticesUnsorted = cms.EDProducer("PrimaryVertexProducer",
     TkClusParameters = cms.PSet(
         TkDAClusParameters = cms.PSet(
@@ -1992,6 +1991,8 @@ hltPhase2DAPrimaryVerticesUnsorted = cms.EDProducer("PrimaryVertexProducer",
             coolingFactor = cms.double(0.6),
             d0CutOff = cms.double(3.0),
             dzCutOff = cms.double(3.0),
+	    delta_highT = cms.double(0.01),
+            delta_lowT = cms.double(0.001),
             uniquetrkweight = cms.double(0.8),
             vertexSize = cms.double(0.006),
             zmerge = cms.double(0.01)

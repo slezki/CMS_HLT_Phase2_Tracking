@@ -84,15 +84,16 @@ def customizePixelTracksSoAonCPU(process,vertex=True) :
   process.hltPhase2PixelTrackSoA.fit5as4 = True
  
   process.hltPhase2PixelTrackSoA.doClusterCut = False
+  process.hltPhase2PixelTrackSoA.earlyFishbone = True
 
-  process.hltPhase2PixelTrackSoA.trackQualityCuts.tripletMinPt = 0.8
+  process.hltPhase2PixelTrackSoA.trackQualityCuts.tripletMinPt = 0.9
   process.hltPhase2PixelTrackSoA.trackQualityCuts.tripletMaxTip = 0.22
   process.hltPhase2PixelTrackSoA.trackQualityCuts.tripletMaxZip = 11.5
 
-  process.hltPhase2PixelTrackSoA.trackQualityCuts.quadrupletMinPt = 0.8
-  process.hltPhase2PixelTrackSoA.trackQualityCuts.quadrupletMaxTip = 0.25
-  process.hltPhase2PixelTrackSoA.trackQualityCuts.quadrupletMaxZip = 12.0
-
+  process.hltPhase2PixelTrackSoA.trackQualityCuts.quadrupletMinPt = 0.9
+  process.hltPhase2PixelTrackSoA.trackQualityCuts.quadrupletMaxTip = 0.16
+  process.hltPhase2PixelTrackSoA.trackQualityCuts.quadrupletMaxZip = 11.0
+  
   process.hltPhase2PixelTrackSoA.trackQualityCuts.upgrade = True
   process.hltPhase2PixelTrackSoA.trackQualityCuts.tripletChi2MaxPt = 2.5
   process.hltPhase2PixelTrackSoA.trackQualityCuts.chi2MaxPt = 3.5
@@ -705,13 +706,12 @@ def customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.3,numVertex=20
         #process.hltPhase2InitialStepSeeds.usePV = cms.bool(True)
 
 
-	process.hltPhase2PixelTracksCleaner.minPt = cms.double(1.0)
+	process.hltPhase2PixelTracksCleaner.minPt = cms.double(0.9)
 	process.hltPhase2PixelTracksCleaner.vertexTag = cms.InputTag("hltPhase2TrimmedPixelVertices") #("hltPhase2OfflinePrimaryVertices")
 	
-	process.hltPhase2PixelTracksCleaner.rhoVtx = 0.1
+	process.hltPhase2PixelTracksCleaner.rhoVtx = 0.25
 	process.hltPhase2PixelTracksCleaner.useVtx = True
-    	process.hltPhase2PixelTracksCleaner.zetaVtx = 0.3
-
+    	process.hltPhase2PixelTracksCleaner.zetaVtx = 0.6
  
  	process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksCleaner")
         #process.hltPhase2InitialStepSeeds.InputVertexCollection = cms.InputTag("hltPhase2TrimmedPixelVertices")
