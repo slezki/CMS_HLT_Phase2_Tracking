@@ -2051,9 +2051,11 @@ hltPhase2PvMonitor = cms.EDProducer("PrimaryVertexMonitor",
     DzMax = cms.double(2000.0),
     DzMin = cms.double(-2000.0),
     EtaBin = cms.int32(41),
+    EtaBin2D = cms.int32(9),
     EtaMax = cms.double(4.0),
     EtaMin = cms.double(-4.0),
     PhiBin = cms.int32(32),
+    PhiBin2D = cms.int32(12),
     PhiMax = cms.double(3.141592654),
     PhiMin = cms.double(-3.141592654),
     TkSizeBin = cms.int32(100),
@@ -2064,7 +2066,9 @@ hltPhase2PvMonitor = cms.EDProducer("PrimaryVertexMonitor",
     Ypos = cms.double(0.0),
     beamSpotLabel = cms.InputTag("offlineBeamSpot"),
     ndof = cms.int32(4),
+    useHPforAlignmentPlots = cms.bool(True),
     vertexLabel = cms.InputTag("hltPhase2PixelVertices") #("hltPhase2OfflinePrimaryVertices")
+    #vertexLabel = cms.InputTag("offlinePrimaryVertices")
 )
 
 hltPhase2TrackingDQMgoodPixelVertices = cms.EDFilter("VertexSelector",
