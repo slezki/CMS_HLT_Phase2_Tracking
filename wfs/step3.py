@@ -234,7 +234,8 @@ if options.susy:
     filelist = susy
 
 #if options.susy:
-   
+
+filelist=["file:/lustre/cms/store/user/adiflori/TTbar_14TeV_noPU_Summer20HLTTDR/7811C351-1CFA-6240-8B37-CA62DB0EE0FB.root"] 
 # filelist=["/store/mc/Phase2HLTTDRWinter20DIGI/DoubleElectron_FlatPt-1To100/GEN-SIM-DIGI-RAW/PU200_110X_mcRun4_realistic_v3-v2/20000/6BF09AEE-5B7E-1340-9529-9A0E5E0F9442.root"]
 #filelist=["/store/relval/CMSSW_11_1_0_patch1/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW-RECO/110X_mcRun4_realistic_v3_2026D49PU200_raw1100_ProdType1-v1/10000/AFD88583-675F-C14D-B057-6DD8121634D5.root"]
 

@@ -970,7 +970,7 @@ hltPhase2TrackerCollisionSelectedTrackMonCommongeneralTracks = cms.EDProducer("T
         ("genericTriggerEventPSet" , cms.PSet(
         andOr = cms.bool(False),
         andOrDcs = cms.bool(False),
-        dcsInputTag = cms.InputTag("scalersRawToDigi"),
+        dcsInputTag = cms.InputTag("scalersRawToDigi"), dcsRecordInputTag = cms.InputTag("onlineMetaDataDigis"),
         dcsPartitions = cms.vint32(
             24, 25, 26, 27, 28,
             29
@@ -1289,7 +1289,7 @@ hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPV0p1 = cms.EDProducer(
         ("genericTriggerEventPSet" , cms.PSet(
         andOr = cms.bool(False),
         andOrDcs = cms.bool(False),
-        dcsInputTag = cms.InputTag("scalersRawToDigi"),
+        dcsInputTag = cms.InputTag("scalersRawToDigi"), dcsRecordInputTag = cms.InputTag("onlineMetaDataDigis"),
         dcsPartitions = cms.vint32(
             24, 25, 26, 27, 28,
             29
@@ -1608,7 +1608,7 @@ hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPt1 = cms.EDProducer("T
         ("genericTriggerEventPSet" , cms.PSet(
         andOr = cms.bool(False),
         andOrDcs = cms.bool(False),
-        dcsInputTag = cms.InputTag("scalersRawToDigi"),
+        dcsInputTag = cms.InputTag("scalersRawToDigi"), dcsRecordInputTag = cms.InputTag("onlineMetaDataDigis"),
         dcsPartitions = cms.vint32(
             24, 25, 26, 27, 28,
             29
@@ -1929,6 +1929,7 @@ hltPhase2TrackerCollisionSelectedTrackMonCommonhighPurityPtRange0to1 = cms.EDPro
         andOr = cms.bool(False),
         andOrDcs = cms.bool(False),
         dcsInputTag = cms.InputTag("scalersRawToDigi"),
+        dcsRecordInputTag = cms.InputTag("onlineMetaDataDigis"),
         dcsPartitions = cms.vint32(
             24, 25, 26, 27, 28,
             29
