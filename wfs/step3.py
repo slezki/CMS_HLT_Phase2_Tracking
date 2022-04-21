@@ -1,20 +1,17 @@
 # Auto generated configuration file
-# using:
-# Revision: 1.19
-# Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v
-# with command line options: step3 --conditions auto:phase2_realistic_T15 -n 10 --era Phase2C9 --eventcontent RECOSIM,DQM --runUnscheduled -s RAW2DIGI,RECO:reconstruction_trackingOnly,VALIDATION:@trackingOnlyValidation,DQM:@trackingOnlyDQM --datatier GEN-SIM-RECO,DQMIO --geometry Extended2026D49 --filein file:step2.root --fileout file:step3.root
+# using: 
+# Revision: 1.19 
+# Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
+# with command line options: step3 -s RAW2DIGI,RECO:reconstruction_trackingOnly,VALIDATION:@trackingOnlyValidation,DQM:@trackingOnlyDQM --conditions auto:phase2_realistic_T21 --datatier GEN-SIM-RECO,DQMIO -n 10 --eventcontent RECOSIM,DQM --geometry Extended2026D88 --era Phase2C11I13M9 --filein file:step2.root --fileout file:step3.root
 import FWCore.ParameterSet.Config as cms
-from Configuration.Eras.Era_Phase2C9_cff import Phase2C9
 
-# import sys
-# sys.path.insert(1, './MCs/')
+from Configuration.Eras.Era_Phase2C11I13M9_cff import Phase2C11I13M9
 
 from SLHCUpgradeSimulations.Configuration.aging import customise_aging_1000
 import FWCore.ParameterSet.VarParsing as VarParsing
 from customize_steps import *
-#from Configuration.StandardSequences.Reconstruction_cff import *
 
-process = cms.Process('RECO2',Phase2C9)#,l1tracking)
+process = cms.Process('RECO',Phase2C11I13M9)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -22,7 +19,7 @@ process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('SimGeneral.MixingModule.mixNoPU_cfi')
-process.load('Configuration.Geometry.GeometryExtended2026D77Reco_cff')
+process.load('Configuration.Geometry.GeometryExtended2026D88Reco_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.RawToDigi_cff')
 process.load('Configuration.StandardSequences.Reconstruction_cff')
@@ -38,9 +35,9 @@ options.register ('wf',-1, VarParsing.VarParsing.multiplicity.singleton,VarParsi
 options.register('timing',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"only timing")
 options.register('debug',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"debug")
 
-options.register('n',1,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"max events")
+options.register('n',10,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"max events")
 options.register('skip',0,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"events to skip")
-options.register('threads',16,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"num of threads")
+options.register('threads',4,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"num of threads")
 
 #L1 Tracks
 options.register('l1extended',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"l1 extended")
@@ -69,9 +66,6 @@ options.register('patavertex',False,VarParsing.VarParsing.multiplicity.singleton
 options.register('fastl1',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"fastl1 vertexing")
 options.register('froml1',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"froml1 vertexing")
 
-#Files
-options.register('T2',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"running on T2_Bari")
-
 #EventContent
 options.register('fullcontent',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"full content")
 options.register('recosim',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"recosim content")
@@ -88,7 +82,7 @@ options.register('zI',500,VarParsing.VarParsing.multiplicity.singleton,VarParsin
 options.register('fE',100,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"minsumpt2 vtx")
 options.register('oR',250,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"vtx sum pt fraction (in %)")
 
-#MCs
+#Samples
 options.register('susy',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"Susy")
 options.register('dyll',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"DY ll")
 options.register('ztt',False,VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"ZTT MC")
@@ -106,147 +100,56 @@ options.register ('note','',VarParsing.VarParsing.multiplicity.singleton,VarPars
 
 options.parseArguments()
 
+from MCs.inputFiles import PU200_122x
+filelist = PU200_122x
+
+if options.PU200:
+    from MCs.inputFiles import PU200_122x
+    filelist = PU200_122x
+
+if options.noPU:
+    from MCs.inputFiles import noPU_122x
+    filelist = noPU_122x
+
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(options.n),
     output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
 
-process.MessageLogger = cms.Service("MessageLogger",
-    destinations      = cms.untracked.vstring('debug'),
-    debug = cms.untracked.PSet(
-        threshold = cms.untracked.string('DEBUG'),
-        default = cms.untracked.PSet(limit = cms.untracked.int32(-1))
-    ),
-    debugModules      = cms.untracked.vstring('*')                               #7
-)                                                                       #8
-
-from MCs.ttbar import ttbar
-filelist = ttbar
-
-
-if options.PU200:
-    from MCs.inputFiles import PU200_123x
-    filelist = PU200_123x
-    
-'''
-if not options.T2:
-    filelist = ["/store/group/phys_tracking/upgrade_ttbar/015FB6F1-59B4-304C-B540-2392A983A97D.root",
-"/store/group/phys_tracking/upgrade_ttbar/049DEDCD-30D1-074F-B86C-9105C141BEFB.root",
-"/store/group/phys_tracking/upgrade_ttbar/0DAE3770-0369-AB44-8955-4F2DD9A1D031.root",
-"/store/group/phys_tracking/upgrade_ttbar/0E9C92B0-C40D-BF4B-B037-72CC40611286.root",
-"/store/group/phys_tracking/upgrade_ttbar/0F6150D3-2B6F-A347-BEE3-EB8889352356.root",
-"/store/group/phys_tracking/upgrade_ttbar/11A75A1C-68E0-6542-A6CB-A26B269F38D4.root",
-"/store/group/phys_tracking/upgrade_ttbar/1234CB2C-12CE-7E46-BB4E-1CF46BF8134F.root",
-"/store/group/phys_tracking/upgrade_ttbar/13CADEC6-EEE8-6245-B683-CBA5B2E5CC59.root",
-"/store/group/phys_tracking/upgrade_ttbar/14C2F5D4-FA8E-F942-A4A8-B429B9BB7482.root",
-"/store/group/phys_tracking/upgrade_ttbar/1650078B-2AA9-0C48-8597-437E6585942E.root",
-"/store/group/phys_tracking/upgrade_ttbar/20EAA798-0F84-8C4F-A1E3-9CAC1F424534.root",
-"/store/group/phys_tracking/upgrade_ttbar/227B9AFA-2612-694B-A2E7-B566F92C4B55.root",
-"/store/group/phys_tracking/upgrade_ttbar/262C96FF-3ACC-6F4B-BCB7-57CB9D7438BC.root",
-"/store/group/phys_tracking/upgrade_ttbar/2CBFF496-D53B-7849-9326-DE18E0ED9853.root",
-"/store/group/phys_tracking/upgrade_ttbar/328BFACA-A34B-FC47-8382-0FF75AA61ACD.root",
-"/store/group/phys_tracking/upgrade_ttbar/33976E28-9C5B-7143-846C-95800C4D8CF3.root",
-"/store/group/phys_tracking/upgrade_ttbar/365143CE-D92F-6D49-AA92-632E55342AAE.root",
-"/store/group/phys_tracking/upgrade_ttbar/42D8E9C8-7563-CC4B-9706-E0CFF2822A65.root",
-"/store/group/phys_tracking/upgrade_ttbar/451C0530-4D6E-F541-BB01-A2C22C3F9F6E.root",
-"/store/group/phys_tracking/upgrade_ttbar/46AE5E92-4669-D24E-866D-A20BE8395F82.root",
-"/store/group/phys_tracking/upgrade_ttbar/46DAED64-4C7A-B24D-9F1E-9CAD01A466D8.root",
-"/store/group/phys_tracking/upgrade_ttbar/48A1FCC3-7710-094E-98B9-5C5C05CAED2B.root",
-"/store/group/phys_tracking/upgrade_ttbar/4B086AFC-7701-944F-84F9-3F1671C26D63.root",
-"/store/group/phys_tracking/upgrade_ttbar/4C3F94F2-1D13-5B44-8514-CF8FE9B971EE.root",
-"/store/group/phys_tracking/upgrade_ttbar/4C6F706B-E226-4042-AA43-AEB4E72D1B7C.root",
-"/store/group/phys_tracking/upgrade_ttbar/504FAC71-E325-084B-9984-D62FFA2E36F2.root",
-"/store/group/phys_tracking/upgrade_ttbar/51127465-66ED-B94C-8B7B-6C663B32FCB1.root",
-"/store/group/phys_tracking/upgrade_ttbar/529F0000-EB29-7F42-96C7-660B646F738A.root",
-"/store/group/phys_tracking/upgrade_ttbar/536517C8-222F-584B-A5D8-C1B1D1F374CD.root",
-"/store/group/phys_tracking/upgrade_ttbar/55891DB4-60C7-0644-9DD7-D66C0EF336A0.root",
-"/store/group/phys_tracking/upgrade_ttbar/5594D9E5-CA79-C34E-A3BD-AD6BEC9B8CA7.root",
-"/store/group/phys_tracking/upgrade_ttbar/5FCCEB41-738A-D34B-8D6E-8EA16A2C568C.root",
-]
-
-[
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FC1BA259-9788-6549-99ED-79CE138052B4.root",
-#"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FC56902D-DB9B-8844-ABB3-6E5F78B53E86.root",
-#"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FC589844-A73C-954F-BB0E-FA5FC095B1F4.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FCAA527A-329A-364E-83C3-A51122C545FD.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FCACFB78-AF68-5A48-9FEC-A323FD8EEE2E.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FCCA1ABA-C564-D74E-9F43-D41529C8EAEB.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FCDDAE03-8A9D-B44C-B42B-8446EDBB5236.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FCFDFCC2-F905-C246-8827-E5FED5204905.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FE3E90BC-C4F4-4040-BFB6-868C48E88215.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FEA85932-B228-F243-BE4C-3311AE475A4A.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FEAF20C5-8D1A-954E-A081-632FBE5745B1.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FEC64627-0B7B-B841-9667-10C13141B0E5.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FF5230B3-138E-5345-9C29-23945BBC0519.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/PU200_111X_mcRun4_realistic_T15_v1-v2/280000/FFAF8045-404D-464C-9BDB-73B0AF032A55.root"]#[f[5:] for f in filelist]
-'''
-
-if options.noPU:
-    from MCs.inputFiles import noPU_123x
-    filelist = noPU_123x
-'''
-   filelist = ["/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/DAF55EAB-0B6F-C646-B7DE-2D54C8A62073.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/DF27D727-5F91-5748-B83B-9DB5CD85604E.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/DFE96256-6096-3741-8739-0EB64AB681C1.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/E21DD179-F13E-E543-A0B2-C1ABDAAAD7F8.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/E30D1362-CED7-974F-8930-782B23F11751.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/E486070C-A1D5-8B41-BA9A-686077807269.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/E5437AA8-386B-DB43-8B35-B6690CD5DD19.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/E7BA8C7B-A811-CA49-9582-33226BD76252.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/EEF49391-A7E3-9C41-AC3F-6B1A0F1B9DA0.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/F0932A00-A9EB-1E42-A56F-C0C89754E73E.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/F14A1F9D-BA98-1D43-9130-D66073D43469.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/F3AABCB2-269C-644C-A09A-FBF7124D5B7E.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/F6B21094-64EE-DD41-839A-28B159129F80.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/F7E3C394-24D7-4046-989F-B7075DCB0BB0.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/F7ECC566-E0F5-754A-9465-FA24A4D67734.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/FE308DD9-D66F-4545-B0F2-9E44880D0054.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/FF0494EC-DE4E-3C46-BC68-2AEE51390533.root",
-"/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/TT_TuneCP5_14TeV-powheg-pythia8/FEVT/NoPU_111X_mcRun4_realistic_T15_v1-v1/100000/FFD62905-0181-D44F-8BEF-2557BFF9F040.root"]
-'''
-
-if options.ztt:
-    from MCs.b0kstarmumu import b0kstarmumu
-    filelist = b0kstarmumu
-if options.dstmmm:
-    from MCs.dstmmm import dstmmm #bdksmm import bdksmm
-    filelist = dstmmm
-if options.bdksmm:
-    from MCs.bdksmm import bdksmm #bsphikkkk import bsphikkkk
-    filelist = bdksmm
-if options.b0ksmm:
-    from MCs.b0ksmm import b0ksmm #dstaumumumu import dstaumumumu
-    filelist = b0ksmm
-if options.bskkkk:
-    from MCs.bskkkk import bskkkk
-    filelist = bskkkk
-if options.withl1:
-    from MCs.ttbarl1 import ttbarl1
-    filelist = ttbarl1
-if options.muons:
-    from MCs.muons import muon_files
-    filelist = muon_files
-if options.dyll:
-    from MCs.dyll_50 import * 
-    filelist = dyll
-if options.susy:
-    from MCs.susy import *
-    filelist = susy
-
-#if options.susy:
-
-filelist=["file:/lustre/cms/store/user/adiflori/TTbar_14TeV_noPU_Summer20HLTTDR/7811C351-1CFA-6240-8B37-CA62DB0EE0FB.root"] 
-# filelist=["/store/mc/Phase2HLTTDRWinter20DIGI/DoubleElectron_FlatPt-1To100/GEN-SIM-DIGI-RAW/PU200_110X_mcRun4_realistic_v3-v2/20000/6BF09AEE-5B7E-1340-9529-9A0E5E0F9442.root"]
-#filelist=["/store/relval/CMSSW_11_1_0_patch1/RelValTTbar_14TeV/GEN-SIM-DIGI-RAW-RECO/110X_mcRun4_realistic_v3_2026D49PU200_raw1100_ProdType1-v1/10000/AFD88583-675F-C14D-B057-6DD8121634D5.root"]
-
+# Input source
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(filelist),
     secondaryFileNames = cms.untracked.vstring()
-    )
+)
 
-process.source.inputCommands = cms.untracked.vstring("keep *")
-process.options = cms.untracked.PSet()
-process.source.skipEvents=cms.untracked.uint32(options.skip)
+process.options = cms.untracked.PSet(
+    FailPath = cms.untracked.vstring(),
+    IgnoreCompletely = cms.untracked.vstring(),
+    Rethrow = cms.untracked.vstring(),
+    SkipEvent = cms.untracked.vstring(),
+    allowUnscheduled = cms.obsolete.untracked.bool,
+    canDeleteEarly = cms.untracked.vstring(),
+    deleteNonConsumedUnscheduledModules = cms.untracked.bool(True),
+    dumpOptions = cms.untracked.bool(False),
+    emptyRunLumiMode = cms.obsolete.untracked.string,
+    eventSetup = cms.untracked.PSet(
+        forceNumberOfConcurrentIOVs = cms.untracked.PSet(
+            allowAnyLabel_=cms.required.untracked.uint32
+        ),
+        numberOfConcurrentIOVs = cms.untracked.uint32(0)
+    ),
+    fileMode = cms.untracked.string('FULLMERGE'),
+    forceEventSetupCacheClearOnNewRun = cms.untracked.bool(False),
+    makeTriggerResults = cms.obsolete.untracked.bool,
+    numberOfConcurrentLuminosityBlocks = cms.untracked.uint32(0),
+    numberOfConcurrentRuns = cms.untracked.uint32(1),
+    numberOfStreams = cms.untracked.uint32(0),
+    numberOfThreads = cms.untracked.uint32(options.threads),
+    printDependencies = cms.untracked.bool(False),
+    sizeOfStackForThreadsInKB = cms.optional.untracked.uint32,
+    throwIfIllegalParameter = cms.untracked.bool(True),
+    wantSummary = cms.untracked.bool(False)
+)
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
@@ -255,18 +158,45 @@ process.configurationMetadata = cms.untracked.PSet(
     version = cms.untracked.string('$Revision: 1.19 $')
 )
 
+# Output definition
+'''
+process.RECOSIMoutput = cms.OutputModule("PoolOutputModule",
+    dataset = cms.untracked.PSet(
+        dataTier = cms.untracked.string('GEN-SIM-RECO'),
+        filterName = cms.untracked.string('')
+    ),
+    fileName = cms.untracked.string('file:step3.root'),
+    outputCommands = process.RECOSIMEventContent.outputCommands,
+    splitLevel = cms.untracked.int32(0)
+)
+
+process.DQMoutput = cms.OutputModule("DQMRootOutputModule",
+    dataset = cms.untracked.PSet(
+        dataTier = cms.untracked.string('DQMIO'),
+        filterName = cms.untracked.string('')
+    ),
+    fileName = cms.untracked.string('file:step3_inDQM.root'),
+    outputCommands = process.DQMEventContent.outputCommands,
+    splitLevel = cms.untracked.int32(0)
+)
+'''
+# Additional output definition
+
 # Other statements
 process.mix.playback = True
 process.mix.digitizers = cms.PSet()
 for a in process.aliases: delattr(process, a)
 process.RandomNumberGeneratorService.restoreStateLabel=cms.untracked.string("randomEngineStateProducer")
 from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag, '111X_mcRun4_realistic_T15_v2', '')
-process.GlobalTag = GlobalTag(process.GlobalTag, '123X_mcRun4_realistic_v3', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic_T21', '')
+
+#print(" ########## debug - 1 - ########## ")
 
 process.load('raw2digi_step_cff')
 process.load("RecoJets.JetProducers.caloJetsForTrk_cff")
 process.load("tracking_sequences")
+
+#print(" ########## debug - 2 - ########## ")
 
 if not options.timing:
     process.load("SimTracker.TrackAssociatorProducers.quickTrackAssociatorByHits_cfi")# import quickTrackAssociatorByHits
@@ -279,15 +209,21 @@ if not options.timing:
     process.load('prevalidation_sequences')
     process.load('dqm_sequences')
 
+#print(" ########## debug - 3 - ########## ")
+
 # load the DQMStore and DQMRootOutputModule
 # enable multithreading
 process.load( "DQMServices.Core.DQMStore_cfi" )
 process.DQMStore.enableMultiThread = True
 
+#print(" ########## debug - 4 - ########## ")
+
 process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool( True ),
     sizeOfStackForThreadsInKB = cms.untracked.uint32( 10*1024 )
 )
+
+#print(" ########## debug - 5 - ########## ")
 
 T = min(options.threads,options.n)
 
@@ -305,28 +241,24 @@ process.options.numberOfStreams=cms.untracked.uint32(T)
 
 timing = options.timing
 
-
 suff = str(options.wf)
-
 
 #TRIMMING OPTIONS
 if options.wf < -1:
 
     if not options.timing:
-    	process.hltPhase2PixelVertexAnalysisTrackingOnly.vertexRecoCollections = cms.VInputTag("hltPhase2PixelVertices", "hltPhase2SelectedPixelVertices","hltPhase2TrimmedPixelVertices")
+        process.hltPhase2PixelVertexAnalysisTrackingOnly.vertexRecoCollections = cms.VInputTag("hltPhase2PixelVertices", "hltPhase2SelectedPixelVertices","hltPhase2TrimmedPixelVertices")
 
     process.hltPhase2InitialStepSeeds.usePV = cms.bool(options.fromPV)
     process.hltPhase2PixelVerticesSequence = cms.Sequence(
         process.hltPhase2PixelVertices +
         process.hltPhase2TrimmedPixelVertices +
- 	process.hltPhase2PixelTracksCleaner
+        process.hltPhase2PixelTracksCleaner
     )
     #Minimal reasonable setup
     process.hltPhase2TrimmedPixelVertices.fractionSumPt2 = cms.double( 0.01 )
     process.hltPhase2TrimmedPixelVertices.minSumPt2 = cms.double( 10.0 )
     process.hltPhase2TrimmedPixelVertices.maxVtx = cms.uint32( 100 ) # > 200 # previous 100
-
-
 
 if options.onlypixel:
     options.wf = -100
@@ -335,21 +267,14 @@ if options.onlypixel:
 if options.wf == -5:
     customizeSingleIt(process,timing)
     suff = "m5"
-  
-    # customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.05,numVertex=30,minSumPt2=20)
-    #process.hltPhase2PixelVertices.ZSeparation = float(options.zsep) / 1000.0
     if options.clean: 
         process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksMerger") 
-   #process.hltPhase2PixelVertices.TrackCollection = cms.InputTag("hltPhase2PixelQuadrupletsSelector")
 
 if options.wf == -8:
     customizeL1SingleIt(process,timing)
     suff = "m8"
-    # customizeOriginalTrimmingInitial_v6(process,timing,fraction=0.05,numVertex=30,minSumPt2=20)
-    #process.hltPhase2PixelVertices.ZSeparation = float(options.zsep) / 1000.0
     if options.clean: 
         process.hltPhase2InitialStepSeeds.InputCollection = cms.InputTag("hltPhase2PixelTracksMerger")
-    #process.hltPhase2PixelVertices.TrackCollection = cms.InputTag("hltPhase2PixelQuadrupletsSelector")
 
 if options.wf == -6:
     l1_pixel_recovery_triplets(process,timing)
@@ -383,9 +308,6 @@ if options.wf == -2:
     customizeOriginal_v6(process,timing)
     suff = "m2_0p%d_%d_%d"%(options.frac,options.nvtx,options.sumpt)
     customizeOriginalTrimmingInitial_v6(process,timing,fraction=options.frac/100.,numVertex=options.nvtx,minSumPt2=options.sumpt)
-# if options.wf == -5:
-#     suff = "m5"
-#     customizeOriginal_v6_withvertex(process,timing)
 
 ##ORIGINAL v6_1
 if options.wf == -1:
@@ -398,7 +320,7 @@ if options.allpata and options.patatrack:
     process.hltPhase2PixelTracksCleaner.rhoVtx = 100.0 
     process.hltPhase2PixelTracksCleaner.useVtx = False
     process.hltPhase2PixelTracksCleaner.zetaVtx = 100.0
-	
+    
     process.hltPhase2PixelTripletsCleaner.rhoVtx = 100.0 
     process.hltPhase2PixelTripletsCleaner.useVtx = False
     process.hltPhase2PixelTripletsCleaner.zetaVtx = 100.0
@@ -439,7 +361,8 @@ if options.patatrack and options.clean and not options.allpata:
         process.hltPhase2PixelTracksCleaner.vertexTag = cms.InputTag("hltPhase2L1PrimaryVertex")
 
 else:
-	process.hltPhase2PixelTracksMerger = process.hltPhase2PixelTracksCleaner.clone()	
+    process.hltPhase2PixelTracksMerger = process.hltPhase2PixelTracksCleaner.clone()   
+
 #L1 Customizing
 if options.wf == 0:
     suff = "purel1"
@@ -458,11 +381,9 @@ if options.wf == 6:
     l1_pixel_recovery(process,timing)
 if options.wf == 7:
     l1_pixel_recovery_triplets(process,timing)
-      
+
 if options.mkfit:
     customizeHighPtTripletForMkFit(process)
-# if options.pixtrip:
-#     pixelTriplets(process)
 
 if options.onlypixel:
     customizePixelOnly(process,timing)
@@ -485,13 +406,6 @@ elif options.dyll:
     suff = suff + "_dyll"
 else:
     suff = suff + "_ttb"
-
-    # if not timing and not options.onlypixel:
-    #     process.prevalidation_startup = process.prevalidation_startup_offline
-    #     process.dqm_vertex = process.dqm_vertex_offline
-    # elif not timing:
-    #     process.prevalidation_startup = process.prevalidation_startup_offline
-    #     process.dqm_commons = process.dqm_commons_offline
 
 suff = suff + "_skip_" + str(options.skip) + "_n_" + str(options.n)
 
@@ -530,7 +444,7 @@ if options.patatrack:
             process.pixelVertexCoordinates.src = "hltPhase2L1PrimaryVertex"
             suff = suff + "_regionFomL1"
         ##process.pixelVertexCoordinates.src = "hltPhase2L1PrimaryVertex"
-		#process.pixelVertexCoordinates.src = "hltPhase2L1PrimaryVertex"
+        #process.pixelVertexCoordinates.src = "hltPhase2L1PrimaryVertex"
         else:
             suff = suff + "_regionL1"
     
@@ -545,17 +459,17 @@ if options.davertex:
 elif not options.patavertex:
     process.hltPhase2PixelVertices.ZSeparation = float(options.zsep) / 1000.0
 
-if hasattr(process,"hltPhase2InitialStepSeeds"):	
-	process.hltPhase2InitialStepSeeds.useProtoTrackKinematics = cms.bool(options.protokin)
+if hasattr(process,"hltPhase2InitialStepSeeds"):    
+    process.hltPhase2InitialStepSeeds.useProtoTrackKinematics = cms.bool(options.protokin)
 if hasattr(process,"hltPhase2HighPtTripletStepSeeds"):
-	if options.allpata==True or options.wf <=-5:
-		process.hltPhase2HighPtTripletStepSeeds.useProtoTrackKinematics = cms.bool(options.protokin)
+    if options.allpata==True or options.wf <=-5:
+        process.hltPhase2HighPtTripletStepSeeds.useProtoTrackKinematics = cms.bool(options.protokin)
 
 if not options.patatrack:
-	process.hltPhase2PixelVertices.TrackCollection = cms.InputTag( "hltPhase2PixelTracks")
-	
+    process.hltPhase2PixelVertices.TrackCollection = cms.InputTag( "hltPhase2PixelTracks")
+    
 if options.protokin:
-	suff = suff + "_protokin"
+    suff = suff + "_protokin"
 
 suff = suff + "_zsep_" + str(options.zsep)
 
@@ -587,13 +501,14 @@ if options.nol1:
         "hltPhase2GeneralTracksPt09", "hltPhase2CutsRecoTracksPt09Hp", "hltPhase2CutsRecoTracksBtvLike", "hltPhase2CutsRecoTracksInitialStepByAlgoMask",
         "hltPhase2CutsRecoTracksInitialStepByAlgoMaskHp", "hltPhase2CutsRecoTracksPt09InitialStep", "hltPhase2CutsRecoTracksPt09InitialStepHp",
         "hltPhase2CutsRecoTracksL1StepByOriginalAlgo","hltPhase2CutsRecoTracksL1StepByOriginalAlgoHp")
-	
+    
 #DependecyGraph
 #from FWCore.ParameterSet.Utilities import moduleLabelsInSequences
 process.DependencyGraph.highlightModules = ["hltPhase2PixelTracks","hltPhase2PixelVertices","hltPhase2InitialStepTracks","hltPhase2InitialStepTrackCandidates"]
 
 process.DependencyGraph.showPathDependencies = True
 process.DependencyGraph.fileName = 'dependency' + suff + '.gv'
+
 
 process.RECOSIMoutput = cms.OutputModule("PoolOutputModule",
     dataset = cms.untracked.PSet(
@@ -615,7 +530,6 @@ process.DQMoutput = cms.OutputModule("DQMRootOutputModule",
     splitLevel = cms.untracked.int32(0)
 )
 
-
 process.FEVTDEBUGHLToutput = cms.OutputModule("PoolOutputModule",
     dataset = cms.untracked.PSet(
         dataTier = cms.untracked.string('GEN-SIM-DIGI-RAW-RECO-HLTDEBUG'),
@@ -631,7 +545,6 @@ if not timing:
     process.schedule.extend([process.DQMoutput_step])
 
 if options.fullcontent:
-
 
     process.FEVTDEBUGHLToutput = cms.OutputModule("PoolOutputModule",
         dataset = cms.untracked.PSet(
@@ -679,95 +592,46 @@ if 'PrescaleService' in process.__dict__:
         if not hasattr(process,pset.pathName.value()):
             process.PrescaleService.prescaleTable.remove(pset)
 
-### Tracking @ HLT: set up FastTimerService; analogous setting can be obtained with option --timing in hltGetConfiguration
-# configure the FastTimerService
-process.load( "HLTrigger.Timer.FastTimerService_cfi" )
-# print a text summary at the end of the job
-process.FastTimerService.printEventSummary         = False
-process.FastTimerService.printRunSummary           = False
-process.FastTimerService.printJobSummary           = True
 
-# enable DQM plots
-process.FastTimerService.enableDQM                 = True
+#print(" ########## debug - 6 - ########## ")
+# Path and EndPath definitions
+#process.raw2digi_step = cms.Path(process.RawToDigi)
+#process.reconstruction_step = cms.Path(process.reconstruction_trackingOnly)
+#process.prevalidation_step = cms.Path(process.globalPrevalidationTrackingOnly)
+#process.validation_step = cms.EndPath(process.globalValidationTrackingOnly)
+#process.dqmoffline_step = cms.EndPath(process.DQMOfflineTracking)
+#process.dqmofflineOnPAT_step = cms.EndPath(process.PostDQMOffline)
+#process.RECOSIMoutput_step = cms.EndPath(process.RECOSIMoutput)
+#process.DQMoutput_step = cms.EndPath(process.DQMoutput)
 
-# enable per-path DQM plots (starting with CMSSW 9.2.3-patch2)
-process.FastTimerService.enableDQMbyPath           = True
-
-# enable per-module DQM plots
-process.FastTimerService.enableDQMbyModule         = True
-
-# enable per-event DQM plots vs lumisection
-process.FastTimerService.enableDQMbyLumiSection    = True
-process.FastTimerService.dqmLumiSectionsRange      = 2500
-
-# set the time resolution of the DQM plots
-tr = 10000000000.
-tp = 10000000000.
-tm = 2000000000.
-process.FastTimerService.dqmTimeRange              = tr
-process.FastTimerService.dqmTimeResolution         = tr/100.0
-process.FastTimerService.dqmPathTimeRange          = tp
-process.FastTimerService.dqmPathTimeResolution     = tp/100.0
-process.FastTimerService.dqmModuleTimeRange        = tm
-process.FastTimerService.dqmModuleTimeResolution   = tm/100.0
-
-# set the base DQM folder for the plots
-process.FastTimerService.dqmPath                   = 'HLT/TimerService'
-process.FastTimerService.enableDQMbyProcesses      = True
-
-
-process.FastTimerService.dqmMemoryRange            = 1000000
-process.FastTimerService.dqmMemoryResolution       =    5000
-process.FastTimerService.dqmPathMemoryRange        = 1000000
-process.FastTimerService.dqmPathMemoryResolution   =    5000
-process.FastTimerService.dqmModuleMemoryRange      =  100000
-process.FastTimerService.dqmModuleMemoryResolution =     500
-
-process.FastTimerService.writeJSONSummary = cms.untracked.bool(True)
-
-if options.timing:
-	suff = suff + "_timing_nthreads_" + str(options.threads)
-
-process.FastTimerService.jsonFileName = cms.untracked.string('wf_' + suff + '.json')
-
-'''
-if 'MessageLogger' in process.__dict__:
-    process.MessageLogger.categories.append('TriggerSummaryProducerAOD')
-    process.MessageLogger.categories.append('L1GtTrigReport')
-    process.MessageLogger.categories.append('L1TGlobalSummary')
-    process.MessageLogger.categories.append('HLTrigReport')
-    process.MessageLogger.categories.append('FastReport')
-'''
-#
-#ustomizeGeneralTracksToPixelL1TracksStep(process)
-#customizeGeneralTracksToPixelTripletL1TracksStep(process)
-#customizeGeneralTracksToInitialL1TracksStep(process)
-#customizeGeneralTracksToInitialL1TracksStepMasking(process)
+#print(" ########## debug - 7 - ########## ")
+# Schedule definition
+#process.schedule = cms.Schedule(process.raw2digi_step,process.reconstruction_step,process.prevalidation_step,process.validation_step,process.dqmoffline_step,process.dqmofflineOnPAT_step,process.RECOSIMoutput_step,process.DQMoutput_step)
+#process.schedule = cms.Schedule(process.raw2digi_step,process.reconstruction_step,process.validation_step,process.dqmofflineOnPAT_step,process.DQMoutput_step)
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
+
+#print(" ########## debug - 8 - ########## ")
 
 # customisation of the process.
 
 # Automatic addition of the customisation function from SimGeneral.MixingModule.fullMixCustomize_cff
-from SimGeneral.MixingModule.fullMixCustomize_cff import setCrossingFrameOn
+from SimGeneral.MixingModule.fullMixCustomize_cff import setCrossingFrameOn 
 
 #call to customisation function setCrossingFrameOn imported from SimGeneral.MixingModule.fullMixCustomize_cff
 process = setCrossingFrameOn(process)
 
 # End of customisation functions
-#do not add changes to your config after this point (unless you know what you are doing)
-from FWCore.ParameterSet.Utilities import convertToUnscheduled
-# process=convertToUnschedule   d(process)
 
-if options.timing:
-   open('step3_dump.py', 'w').write(process.dumpPython())
+#print(" ########## debug - 9 - ########## ")
 # Customisation from command line
-process = customise_aging_1000(process)
 
 #Have logErrorHarvester wait for the same EDProducers to finish as those providing data for the OutputModule
 from FWCore.Modules.logErrorHarvester_cff import customiseLogErrorHarvesterUsingOutputCommands
 process = customiseLogErrorHarvesterUsingOutputCommands(process)
-
+#print(" ########## debug - 10 - ########## ")
 # Add early deletion of temporary data products to reduce peak memory need
 from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete
 process = customiseEarlyDelete(process)
+# End adding early deletion
+#print(" ########## debug - 11 - ########## ")
