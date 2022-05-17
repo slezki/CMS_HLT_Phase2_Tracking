@@ -1178,3 +1178,84 @@ hltPhase2TrackValidatorSeedingTrackingOnly = cms.EDProducer("MultiTrackValidator
 #                              #hltPhase2TrackValidatorBHadronTrackingOnly +
 #                              #hltPhase2TrackValidatorSeedingTrackingOnly
 # )
+
+hltPhase2TrackValidatorPixelTrackExtendedWithMTD = hltPhase2TrackValidator.clone()
+hltPhase2TrackValidatorPixelTrackExtendedWithMTD.associators = cms.untracked.VInputTag("hltPhase2TrackingParticlePixelTrackAsssociation")
+hltPhase2TrackValidatorPixelTrackExtendedWithMTD.dirName = cms.string('Tracking/PixelTrackWithMTD/')
+hltPhase2TrackValidatorPixelTrackExtendedWithMTD.label = cms.VInputTag("hltPhase2PixelTrackExtenderWithMTD")
+hltPhase2TrackValidatorPixelTrackExtendedWithMTD.label_vertex = cms.untracked.InputTag("hltPhase2PixelVertices")
+hltPhase2TrackValidatorPixelTrackExtendedWithMTD.trackCollectionForDrCalculation = cms.InputTag("hltPhase2PixelTrackExtenderWithMTD")
+hltPhase2TrackValidatorPixelTrackExtendedWithMTD.vertexAssociator = cms.untracked.InputTag("hltPhase2PixelVertexAssociatorByPositionAndTracks")
+
+'''
+hltMTDpixelTracksValid = cms.EDProducer('MtdTracksValidation',
+  folder = cms.string('Tracking/PixelTrackWithMTD/MTD'),
+  inputTagG      = cms.InputTag('hltPhase2PixelTracks'),#generalTracks'),
+  inputTagT      = cms.InputTag('hltPixelTrackExtenderWithMTDBase'),
+  inputTagV      = cms.InputTag('hltPhase2PixelVertices'), #offlinePrimaryVertices4D'),
+  inputTagH      = cms.InputTag('generatorSmeared'),
+  tmtd           = cms.InputTag('hltPixelTrackExtenderWithMTDBase', 'generalTracktmtd'),
+  sigmatmtd      = cms.InputTag('hltPixelTrackExtenderWithMTDBase', 'generalTracksigmatmtd'),
+  t0Src          = cms.InputTag('hltPixelTrackExtenderWithMTDBase', 'generalTrackt0'),
+  sigmat0Src     = cms.InputTag('hltPixelTrackExtenderWithMTDBase', 'generalTracksigmat0'),
+  trackAssocSrc  = cms.InputTag('hltPixelTrackExtenderWithMTDBase', 'generalTrackassoc'),
+  pathLengthSrc  = cms.InputTag('hltPixelTrackExtenderWithMTDBase', 'generalTrackPathLength'),
+  t0SafePID      = cms.InputTag('tofPID', 't0safe'),
+  sigmat0SafePID = cms.InputTag('tofPID', 'sigmat0safe'),
+  sigmat0PID     = cms.InputTag('tofPID', 'sigmat0'),
+  t0PID          = cms.InputTag('tofPID', 't0'),
+  trackMVAQual = cms.InputTag('mtdTrackQualityMVA', 'mtdQualMVA'),
+  trackMinimumPt  = cms.double(1), ### !!!
+  trackMinimumEta = cms.double(1.5),
+  trackMaximumEta = cms.double(3.2),
+  mightGet = cms.optional.untracked.vstring
+)
+'''
+'''
+hltPhase2MTDPixelTracksValid = cms.EDProducer("MtdTracksValidation",
+    folder = cms.string('Tracking/PixelTrackWithMTD/MTD'),
+    inputTagG = cms.InputTag("hltPhase2PixelTracks"),
+    inputTagH = cms.InputTag("generatorSmeared"),
+    inputTagT = cms.InputTag("hltPixelTrackExtenderWithMTD"),
+    inputTagV = cms.InputTag("hltPhase2PixelVertices"),
+    mightGet = cms.optional.untracked.vstring,
+    pathLengthSrc = cms.InputTag("hltPixelTrackExtenderWithMTD","generalTrackPathLength"),
+    sigmat0PID = cms.InputTag("tofPID","sigmat0"),
+    sigmat0SafePID = cms.InputTag("tofPID","sigmat0safe"),
+    sigmat0Src = cms.InputTag("hltPixelTrackExtenderWithMTD","generalTracksigmat0"),
+    sigmatmtd = cms.InputTag("hltPixelTrackExtenderWithMTD","generalTracksigmatmtd"),
+    t0PID = cms.InputTag("tofPID","t0"),
+    t0SafePID = cms.InputTag("tofPID","t0safe"),
+    t0Src = cms.InputTag("hltPixelTrackExtenderWithMTD","generalTrackt0"),
+    tmtd = cms.InputTag("hltPixelTrackExtenderWithMTD","generalTracktmtd"),
+    trackAssocSrc = cms.InputTag("hltPixelTrackExtenderWithMTD","generalTrackassoc"),
+    trackMVAQual = cms.InputTag("mtdTrackQualityMVA","mtdQualMVA"),
+    trackMaximumEta = cms.double(3.2),
+    trackMinimumEta = cms.double(1.5),
+    trackMinimumPt = cms.double(1)
+)
+'''
+
+hltPhase2MTDPixelTracksValid = cms.EDProducer('MtdTracksValidation',
+  folder = cms.string('Tracking/PixelTrackWithMTD/MTD'),
+  inputTagG      = cms.InputTag('hltPhase2PixelTracks'),#generalTracks'),
+  inputTagT      = cms.InputTag('hltPhase2PixelTrackExtenderWithMTD'),
+  inputTagV      = cms.InputTag('hltPhase2PixelVertices'), #offlinePrimaryVertices4D'),
+  inputTagH      = cms.InputTag('generatorSmeared'),
+  tmtd           = cms.InputTag('hltPhase2PixelTrackExtenderWithMTD', 'generalTracktmtd'),
+  sigmatmtd      = cms.InputTag('hltPhase2PixelTrackExtenderWithMTD', 'generalTracksigmatmtd'),
+  t0Src          = cms.InputTag('hltPhase2PixelTrackExtenderWithMTD', 'generalTrackt0'),
+  sigmat0Src     = cms.InputTag('hltPhase2PixelTrackExtenderWithMTD', 'generalTracksigmat0'),
+  trackAssocSrc  = cms.InputTag('hltPhase2PixelTrackExtenderWithMTD', 'generalTrackassoc'),
+  pathLengthSrc  = cms.InputTag('hltPhase2PixelTrackExtenderWithMTD', 'generalTrackPathLength'),
+  t0SafePID      = cms.InputTag('hltPhase2TofPID', 't0safe'),
+  sigmat0SafePID = cms.InputTag('hltPhase2TofPID', 'sigmat0safe'),
+  sigmat0PID     = cms.InputTag('hltPhase2TofPID', 'sigmat0'),
+  t0PID          = cms.InputTag('hltPhase2TofPID', 't0'),
+  trackMVAQual = cms.InputTag('mtdTrackQualityMVA', 'mtdQualMVA'),
+  trackMinimumPt  = cms.double(1), ### !!!
+  trackMinimumEta = cms.double(1.5),
+  trackMaximumEta = cms.double(3.2),
+  mightGet = cms.optional.untracked.vstring
+)
+

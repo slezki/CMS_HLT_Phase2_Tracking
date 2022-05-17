@@ -97,7 +97,7 @@ hltPhase2StartUp = cms.Sequence(
     itLocalReco +
      #cmssw_10_6
     otLocalReco +
-    #caloLocalReco +
+    caloLocalReco +
     trackerClusterCheck +
     caloTowerForTrk  
     )
@@ -405,6 +405,46 @@ vertexing = cms.Path(
     vertexReco
 )
 
+'''
+hltPhase2PixelTracksSequence = cms.Sequence(
+    hltPhase2PixelTrackFilterByKinematics +
+    hltPhase2PixelFitterByHelixProjections +
+    hltPhase2PixelTracksTrackingRegions +
+    hltPhase2PixelTracksSeedLayers +
+    hltPhase2PixelTracksHitDoublets +
+    hltPhase2PixelTracksHitSeeds +
+    hltPhase2PixelTracks +
+    #hltPhase2PixelTracksCleaner +
+    #hltPhase2PixelTripletsCleaner +
+    hltPhase2PixelTripletsSelector +
+    hltPhase2PixelQuadrupletsSelector + 
+    hltPhase2PixelTracksClean 
+#    hltPhase2PixelTracksMerger
+)
+'''
+
+hltPhase2PixelTracksExtenderWithMTDSequence = cms.Sequence(
+    hltPhase2PixelTracksSequence +
+    #mtdLocalReco +
+    fastTimingLocalReco +
+    hltPhase2PixelTrackExtenderWithMTD
+)
+
+pixelTracksWithMTD = cms.Path(
+    hltPhase2StartUp +
+    hltPhase2PixelTracksExtenderWithMTDSequence + ## MTD
+    #hltPhase2PixelTracksSequence +
+    #pixeltrackerlocalreco +
+    #caloLocalReco +
+    #mtdUncalibratedRecHits +
+    #mtdRecHits +
+    #mtdClusters +
+    #hltPhase2MTDTrackingRecHits +
+    #fastTimingLocalReco +
+    #hltPhase2PixelTrackExtenderWithMTD +
+    hltPhase2PixelVerticesSequence 
+##############################################
+)
 
 
 #

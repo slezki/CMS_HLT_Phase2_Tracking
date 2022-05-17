@@ -108,8 +108,8 @@ if options.PU200:
     filelist = PU200_122x
 
 if options.noPU:
-    from MCs.inputFiles import noPU_122x
-    filelist = noPU_122x
+    from MCs.inputFiles import noPU_123x
+    filelist = noPU_123x
 
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(options.n),
@@ -315,6 +315,11 @@ if options.wf == -1:
     customizeOriginal_v6(process,timing)
     process.hltPhase2TrimmedPixelVertices = process.MeasurementTrackerEvent.clone()
 
+if options.wf == 9:
+    suff = "m9"
+    customizeOriginal_pixelTracksWithMTD(process,timing)
+    process.hltPhase2TrimmedPixelVertices = process.MeasurementTrackerEvent.clone()
+
 if options.allpata and options.patatrack:
     suff = suff + "_tripFromTracks"
     process.hltPhase2PixelTracksCleaner.rhoVtx = 100.0 
@@ -414,7 +419,7 @@ if options.clean:
     suff = suff + "_rhoVtx" + str(options.rhoVtx)
 if options.l1extended:
     process.hltPhase2L1TrackSeedsFromL1Tracks.InputCollection = cms.InputTag("TTTracksFromExtendedTrackletEmulation","Level1TTTracks")
-if options.fullvertex or not options.timing:
+if (options.fullvertex or not options.timing) and options.wf != 9:
     process.schedule.extend([process.vertexing])
     suff = suff + "_fullvertexing"
 
